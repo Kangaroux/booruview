@@ -1,4 +1,9 @@
 services:
+  api:
+    build:
+      context: api
+      dockerfile: Dockerfile
+
   caddy:
     build:
       context: .
