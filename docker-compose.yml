@@ -1,0 +1,7 @@
+services:
+  caddy:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    ports:
+      - "80:80"
