@@ -3,8 +3,6 @@ services:
     build:
       context: api
     command: gow run .
-    environment:
-      - DBURL=postgres://postgres:password@db/viewer
     volumes:
       - ./api:/app
 
@@ -25,12 +23,10 @@ services:
       - ./client:/app
 
   db:
-    image: postgres:17.4-alpine
-    environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=viewer
+    image: valkey/valkey:8.1-alpine
+    command: valkey-server --save 60 1 --loglevel warning
     volumes:
-      - dbdata:/var/lib/postgresql/data
+      - dbdata:/data
 
 volumes:
   dbdata:
