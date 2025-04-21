@@ -3,6 +3,8 @@
 log
 file_server
 handle_path /api/* {
-	uri strip_prefix /api
 	reverse_proxy http://api:8000
+}
+handle_errors 502 {
+	respond "{err.status_code} {err.status_text}"
 }
