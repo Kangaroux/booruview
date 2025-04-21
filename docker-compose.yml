@@ -3,6 +3,8 @@ services:
     build:
       context: api
     command: gow run .
+    environment:
+      - "VALKEY_ADDR=db:6379"
     volumes:
       - ./api:/app
 
