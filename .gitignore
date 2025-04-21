@@ -1,4 +1,5 @@
 .git
-.vscode
 .env
+.vscode
+client/dist
 node_modules

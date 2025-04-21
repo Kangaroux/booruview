@@ -3,6 +3,8 @@ services:
     build:
       context: api
     command: gow run .
+    environment:
+      - DBURL=postgres://postgres:password@db/viewer
     volumes:
       - ./api:/app
 
@@ -21,3 +23,14 @@ services:
     command: yarn build --watch --sourcemap
     volumes:
       - ./client:/app
+
+  db:
+    image: postgres:17.4-alpine
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=viewer
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+volumes:
+  dbdata:
