@@ -2,7 +2,9 @@ services:
   api:
     build:
       context: api
-      dockerfile: Dockerfile
+    command: gow run .
+    volumes:
+      - ./api:/app
 
   caddy:
     build:
@@ -10,3 +12,12 @@ services:
       dockerfile: server/Dockerfile
     ports:
       - "80:80"
+    volumes:
+      - ./client/dist:/srv:ro   # Live client updates
+
+  client:
+    build:
+      context: client
+    command: yarn build --watch --sourcemap
+    volumes:
+      - ./client:/app
