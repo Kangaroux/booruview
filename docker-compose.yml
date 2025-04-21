@@ -9,7 +9,7 @@ services:
   caddy:
     build:
       context: .
-      dockerfile: server/Dockerfile
+      dockerfile: caddy/Dockerfile
     ports:
       - "80:80"
     volumes:
