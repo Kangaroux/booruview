@@ -3,7 +3,6 @@ package gelbooru
 import (
 	"encoding/json"
 	"io"
-	"net/http"
 	"strconv"
 
 	api "github.com/kangaroux/booru-viewer"
@@ -38,8 +37,8 @@ func ParseTagType(raw string) api.TagType {
 	return api.Unknown
 }
 
-func SearchTags(qs string) ([]api.BooruTag, error) {
-	rawResp, err := http.Get(ApiUrl + "?page=autocomplete2&term=" + qs)
+func SearchTags(qs string) ([]api.TagResponse, error) {
+	rawResp, err := api.HttpGet(ApiUrl + "?page=autocomplete2&term=" + qs)
 	if err != nil {
 		return nil, err
 	}
@@ -55,9 +54,9 @@ func SearchTags(qs string) ([]api.BooruTag, error) {
 		return nil, err
 	}
 
-	tags := []api.BooruTag{}
+	tags := []api.TagResponse{}
 	for _, t := range resp {
-		data := api.BooruTag{
+		data := api.TagResponse{
 			Name: t.Label,
 			Type: ParseTagType(t.Type),
 		}
