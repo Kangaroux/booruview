@@ -58,7 +58,7 @@ func SearchTags(qs string) ([]api.TagResponse, error) {
 	for _, t := range resp {
 		data := api.TagResponse{
 			Name: t.Label,
-			Type: ParseTagType(t.Type),
+			Type: ParseTagType(t.Category),
 		}
 
 		if data.Type == api.Unknown {
