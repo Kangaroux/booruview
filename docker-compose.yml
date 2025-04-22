@@ -2,7 +2,7 @@ services:
   api:
     build:
       context: api
-    command: gow run .
+    command: gow run cmd/main.go
     environment:
       - "VALKEY_ADDR=db:6379"
     volumes:
@@ -26,7 +26,6 @@ services:
 
   db:
     image: valkey/valkey:8.1-alpine
-    command: valkey-server --save 60 1 --loglevel warning
     volumes:
       - dbdata:/data
 
