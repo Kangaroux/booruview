@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineModel, ref, watch } from "vue";
-import TagChip from "./components/TagChip.vue";
+import TagList from "./components/TagList.vue";
 
 type SearchResponse = {
   results: Tag[];
@@ -8,7 +8,7 @@ type SearchResponse = {
 
 const debounceMs = 200;
 const query = defineModel("query", {default: ""});
-const results = ref<Tag[]>();
+const results = ref<Tag[]>([]);
 const timer = ref();
 
 const doSearch = (query: string) => {
@@ -30,12 +30,22 @@ watch(query, (query, _, onCleanup) => {
 </script>
 
 <template>
-  <input type="text" v-model="query" />
-  <ul>
-    <li v-for="r in results"><TagChip :tag="r" /></li>
-  </ul>
+  <div class="search-container">
+    <input class="search" type="text" v-model="query" />
+    <TagList :tags="results" />
+  </div>
 </template>
 
 <style scoped>
-
+.search {
+  background-color: #252525;
+  border: 1px solid #555;
+  color: #DDD;
+  display: block;
+  width: 100%;
+  padding: 8px;
+}
+.search-container {
+  width: 300px;
+}
 </style>

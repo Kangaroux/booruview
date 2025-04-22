@@ -1,7 +1,15 @@
 @import "~/@csstools/normalize.css";
 
 body {
-  background-color: #303030;
+  background-color: #151515;
+  color: #EEE;
+}
+
+* {
+  box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
-  color: #eee;
+}
+
+body, input {
+  font-size: 20px;
 }
