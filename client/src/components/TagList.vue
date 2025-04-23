@@ -1,11 +1,55 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
+import { defineProps, ref, useTemplateRef, watch } from "vue";
 
 const { tags } = defineProps<{tags: Tag[]}>();
+const focusIndex = ref(0);
+
+const listRef = useTemplateRef("list");
+
+function doFocus(index: number) {
+    if(!listRef.value || tags.length === 0)
+        return;
+
+    const item = listRef.value.children.item(index) as HTMLLIElement;
+    focusIndex.value = index;
+    item.focus();
+}
+
+function selectPrev() {
+    if(tags.length === 0)
+        return;
+
+    let val = focusIndex.value - 1;
+    if(val < 0)
+        val = tags.length - 1;
+
+    doFocus(val);
+}
+
+function selectNext() {
+    if(tags.length === 0)
+        return;
+
+    let val = focusIndex.value + 1;
+    if(val >= tags.length)
+        val = 0;
+
+    doFocus(val);
+}
+
+function onFocus() {
+    doFocus(0);
+}
 </script>
 
 <template>
-    <ul class="tag-list" tabindex="0">
+    <ul ref="list"
+        class="tag-list"
+        tabindex="0"
+        @focus="onFocus"
+        @keydown.down.prevent="selectNext"
+        @keydown.up.prevent="selectPrev"
+        >
         <template v-for="tag, i in tags" :key="tag.name">
             <li class="list-item" :class="tag.type" :title="tag.name" tabindex="-1">
                 <span class="name">{{ tag.name }}</span>
@@ -38,7 +82,7 @@ const { tags } = defineProps<{tags: Tag[]}>();
     cursor: pointer;
 }
 
-.list-item:hover {
+.list-item:hover, .list-item:focus {
     background-color: #303030;
 }
 
