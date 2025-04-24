@@ -164,7 +164,7 @@ func ListPosts(tags string) ([]api.PostResponse, error) {
 			SampleUrl:   p.SampleUrl,
 		}
 
-		if createdAt, err := time.Parse("", p.CreatedAt); err == nil {
+		if createdAt, err := time.Parse(time.RubyDate, p.CreatedAt); err == nil {
 			data.CreatedAtTimestamp = createdAt.Unix()
 		} else {
 			log.Println("warning: failed to parse post created_at:", err)
