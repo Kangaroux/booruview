@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
+import { computed, defineProps } from "vue";
 const { tag } = defineProps<{ tag: Tag }>();
 </script>
 
 <template>
-    <button class="chip" :class="tag.type">
-        {{ tag.name }} ({{ tag.count }})
-    </button>
+    <div class="chip" :class="tag.type">{{ tag.name }}</div>
 </template>
 
 <style scoped>
@@ -14,10 +12,14 @@ const { tag } = defineProps<{ tag: Tag }>();
     padding: 8px;
     border: none;
     border-radius: 8px;
+    display: inline-block;
+    font-size: 16px;
+    color: #000;
 }
 
 .tag {
-    background-color: #fff;
+    background-color: #303030;
+    color: hsl(208, 56%, 75%);
 }
 
 .artist {
@@ -40,7 +42,7 @@ const { tag } = defineProps<{ tag: Tag }>();
 
 .deprecated,
 .unknown {
-    background-color: #666;
-    color: #fff;
+    background-color: #DDD;
+    color: #000;
 }
 </style>
