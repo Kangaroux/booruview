@@ -11,7 +11,7 @@ var (
 	valkeyClient valkey.Client
 )
 
-const KeyTtl = 10 * 60 // seconds
+const KeyTtl = 60 * 60 // seconds
 
 func InitValkey() error {
 	if hasInit {
