@@ -7,7 +7,7 @@ const tags = ref<Tag[]>([]);
 </script>
 
 <template>
-    <TagSearch @submit="t => tags = tags.concat(t)"/>
+    <TagSearch @submit="(t) => (tags = tags.concat(t))" />
 
     <template v-for="t in tags">
         <TagChip :tag="t" />

@@ -7,7 +7,7 @@ type SearchResponse = {
 };
 const debounceMs = 200;
 
-const emit = defineEmits<{submit: [value: Tag]}>();
+const emit = defineEmits<{ submit: [value: Tag] }>();
 
 const forceRenderKey = ref(0);
 const query = ref("");
@@ -40,7 +40,7 @@ function changeSelection(direction: number) {
 }
 
 function autoComplete() {
-    if(suggestions.value.length === 0) {
+    if (suggestions.value.length === 0) {
         return;
     }
 
@@ -49,7 +49,7 @@ function autoComplete() {
 }
 
 function onInput(e: Event) {
-    if(e.target === null) {
+    if (e.target === null) {
         return;
     }
 
@@ -57,7 +57,7 @@ function onInput(e: Event) {
     const newVal = (e.target as HTMLInputElement).value.trimStart();
     const changed = query.value !== newVal;
 
-    if(changed) {
+    if (changed) {
         query.value = newVal;
     } else {
         // query.value didn't change but the DOM element still has the whitespace.
@@ -68,29 +68,29 @@ function onInput(e: Event) {
 
 // Emits an event to the parent with the tag info
 function submit() {
-    if(query.value.length === 0) {
+    if (query.value.length === 0) {
         return;
     }
 
     let tag: Tag;
 
-    if(selectedIndex.value !== -1) {
+    if (selectedIndex.value !== -1) {
         tag = suggestions.value[selectedIndex.value];
 
         // Refocus the search input if the user was selecting a suggestion
         inputRef.value?.focus();
     } else {
-        const match = suggestions.value.find(t => t.name === query.value);
+        const match = suggestions.value.find((t) => t.name === query.value);
 
         // User is submitting a raw tag that wasn't in the search suggestions
-        if(match) {
+        if (match) {
             tag = match;
         } else {
             tag = {
                 count: 0,
                 name: query.value,
                 type: "unknown",
-            }
+            };
         }
     }
 
@@ -132,7 +132,10 @@ watch(query, (query, _, onCleanup) => {
             @input="onInput"
             @focus="selectedIndex = -1"
         />
-        <SearchSuggestions :tags="suggestions" :selected-index="selectedIndex" />
+        <SearchSuggestions
+            :tags="suggestions"
+            :selected-index="selectedIndex"
+        />
     </div>
 </template>
 
