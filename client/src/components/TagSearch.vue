@@ -48,8 +48,12 @@ function chooseSuggestion() {
 }
 
 function onInput(e: Event) {
+    if(e.target === null) {
+        return;
+    }
+
     // Prevent the user from entering any leading whitespace
-    const newVal = e.target.value.trimStart();
+    const newVal = (e.target as HTMLInputElement).value.trimStart();
     const changed = query.value !== newVal;
 
     if(changed) {
@@ -66,18 +70,27 @@ function submit() {
         return;
     }
 
-    // Find tag in suggestions
-    let tag = suggestions.value.find(t => t.name === query.value);
+    let tag: Tag;
 
-    if(!tag) {
+    if(selectedIndex.value !== -1) {
+        tag = suggestions.value[selectedIndex.value];
+    } else {
+        const match = suggestions.value.find(t => t.name === query.value);
+
         // User is submitting a raw tag that wasn't in the search suggestions
-        tag = {
-            count: 0,
-            name: query.value,
-            type: "unknown",
+        if(match) {
+            tag = match;
+        } else {
+            tag = {
+                count: 0,
+                name: query.value,
+                type: "unknown",
+            }
         }
     }
 
+    query.value = "";
+    selectedIndex.value = -1;
     emit("submit", tag);
 }
 
