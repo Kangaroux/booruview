@@ -5,15 +5,15 @@ import SearchSuggestions from "./SearchSuggestions.vue";
 type SearchResponse = {
     results: Tag[];
 };
+const debounceMs = 200;
 
 const emit = defineEmits<{submit: [value: Tag]}>();
 
-const debounceMs = 200;
+const forceRenderKey = ref(0);
 const query = ref("");
 const selectedIndex = ref(-1);
 const suggestions = ref<Tag[]>([]);
 const timer = ref();
-const forceRenderKey = ref(0);
 
 function doSearch(query: string) {
     // Encoding the query prevents trailing whitespace from being stripped
@@ -38,7 +38,7 @@ function changeSelection(direction: number) {
     selectedIndex.value = direction;
 }
 
-function chooseSuggestion() {
+function autoComplete() {
     if(suggestions.value.length === 0) {
         return;
     }
@@ -65,6 +65,7 @@ function onInput(e: Event) {
     }
 }
 
+// Emits an event to the parent with the tag info
 function submit() {
     if(query.value.length === 0) {
         return;
@@ -94,6 +95,7 @@ function submit() {
     emit("submit", tag);
 }
 
+// Setup a debounce to fetch search results shortly after the user stops typing
 watch(query, (query, _, onCleanup) => {
     onCleanup(() => clearTimeout(timer.value));
 
@@ -111,7 +113,7 @@ watch(query, (query, _, onCleanup) => {
     <div
         class="search-container"
         @keydown.enter.prevent="submit()"
-        @keydown.tab.prevent="chooseSuggestion()"
+        @keydown.tab.prevent="autoComplete()"
         @keydown.up.prevent="changeSelection(-1)"
         @keydown.down.prevent="changeSelection(1)"
     >
