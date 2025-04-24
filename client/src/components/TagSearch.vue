@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineEmits, ref, watch } from "vue";
+import { defineEmits, ref, useTemplateRef, watch } from "vue";
 import SearchSuggestions from "./SearchSuggestions.vue";
 
 type SearchResponse = {
@@ -14,6 +14,7 @@ const query = ref("");
 const selectedIndex = ref(-1);
 const suggestions = ref<Tag[]>([]);
 const timer = ref();
+const inputRef = useTemplateRef("input");
 
 function doSearch(query: string) {
     // Encoding the query prevents trailing whitespace from being stripped
@@ -75,6 +76,9 @@ function submit() {
 
     if(selectedIndex.value !== -1) {
         tag = suggestions.value[selectedIndex.value];
+
+        // Refocus the search input if the user was selecting a suggestion
+        inputRef.value?.focus();
     } else {
         const match = suggestions.value.find(t => t.name === query.value);
 
@@ -123,6 +127,7 @@ watch(query, (query, _, onCleanup) => {
         <input
             class="search"
             type="text"
+            ref="input"
             :value="query"
             @input="onInput"
             @focus="selectedIndex = -1"
