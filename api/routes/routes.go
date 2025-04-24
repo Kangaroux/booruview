@@ -4,6 +4,7 @@ import "github.com/gorilla/mux"
 
 func NewRouter() *mux.Router {
 	r := mux.NewRouter()
+	r.Path("/posts").HandlerFunc(PostsHandler)
 	r.Path("/tagsearch").HandlerFunc(TagSearchHandler)
 
 	return r

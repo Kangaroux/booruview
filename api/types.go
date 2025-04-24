@@ -19,16 +19,16 @@ type TagResponse struct {
 }
 
 type PostResponse struct {
-	Id                 int
-	CreatedAtTimestamp int64 `json:"created_at"`
-	Score              int
-	Width              int
-	Height             int
-	Rating             string
+	Id                 int    `json:"id"`
+	CreatedAtTimestamp int64  `json:"created_at"`
+	Score              int    `json:"score"`
+	Width              int    `json:"width"`
+	Height             int    `json:"height"`
+	Rating             string `json:"rating"`
 	SourceUrl          string `json:"source_url"`
-	Uploader           string
+	Uploader           string `json:"uploader"`
 	UploaderUrl        string `json:"uploader_url"`
-	Tags               string
+	Tags               string `json:"tags"`
 	ImageUrl           string `json:"file_url"`
 	PreviewUrl         string `json:"preview_url"`
 	SampleUrl          string `json:"sample_url"`

@@ -6,40 +6,40 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"slices"
 	"strings"
-	"unicode"
 
 	api "github.com/kangaroux/booru-viewer"
 	"github.com/kangaroux/booru-viewer/gelbooru"
 	"github.com/valkey-io/valkey-go"
 )
 
-type TagSearchResponse struct {
-	Results []api.TagResponse `json:"results"`
+type PostsResponse struct {
+	Results []api.PostResponse `json:"results"`
 }
 
-func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
-	resp := TagSearchResponse{
-		Results: []api.TagResponse{},
+func PostsHandler(w http.ResponseWriter, r *http.Request) {
+	resp := PostsResponse{
+		Results: []api.PostResponse{},
 	}
 	vc := api.Valkey()
 
-	query := strings.TrimLeftFunc(r.FormValue("q"), unicode.IsSpace)
-	// Words are separated by underscores even though they are rendered using whitespace
-	query = strings.ReplaceAll(query, " ", "_")
+	// Clean up the query so we're left with a sorted list of unique tags
+	normalized := slices.DeleteFunc(
+		strings.Split(r.FormValue("q"), " "),
+		func(s string) bool {
+			return len(s) == 0
+		},
+	)
+	slices.Sort(normalized)
 
-	if query == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	fmt.Printf("key: '%s'\n", gelbooru.TagSearchCacheKey(query))
+	query := strings.Join(normalized, " ")
 
 	// Check cache for query
 	cached := vc.Do(context.Background(),
 		vc.B().
 			Get().
-			Key(gelbooru.TagSearchCacheKey(query)).
+			Key(gelbooru.PostCacheKey(query)).
 			Build(),
 	)
 	hit := true
@@ -70,7 +70,7 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Cache miss
-	results, err := gelbooru.SearchTags(query)
+	results, err := gelbooru.ListPosts(query)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -90,7 +90,7 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 	vc.Do(context.Background(),
 		vc.B().
 			Setex().
-			Key(gelbooru.TagSearchCacheKey(query)).
+			Key(gelbooru.PostCacheKey(query)).
 			Seconds(api.KeyTtl).
 			Value(string(respBody)). // TODO?: compress with DEFLATE (~33% original size)
 			Build(),

@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/url"
 	"strconv"
-	"strings"
 	"time"
 
 	api "github.com/kangaroux/booru-viewer"
@@ -121,14 +120,14 @@ var (
 	postLimitStr = strconv.Itoa(postLimit)
 )
 
-func ListPosts(tags []string) ([]api.PostResponse, error) {
+func ListPosts(tags string) ([]api.PostResponse, error) {
 	params := url.Values{}
 	params.Add("page", "dapi")
 	params.Add("s", "post")
 	params.Add("q", "index")
 	params.Add("json", "1")
 	params.Add("limit", postLimitStr)
-	params.Add("tags", strings.Join(tags, " "))
+	params.Add("tags", tags)
 
 	rawResp, err := api.HttpGet(ApiUrl + "?" + params.Encode())
 	if err != nil {

@@ -1,7 +1,15 @@
 package gelbooru
 
-var prefix = "gb:"
+var (
+	prefix     = "gb:"
+	postPrefix = prefix + "post:"
+	tagPrefix  = prefix + "tag:"
+)
 
-func CacheKey(key string) string {
-	return prefix + key
+func PostCacheKey(key string) string {
+	return postPrefix + key
+}
+
+func TagSearchCacheKey(key string) string {
+	return tagPrefix + key
 }
