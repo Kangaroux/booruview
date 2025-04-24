@@ -3,6 +3,8 @@ services:
     build:
       context: api
     command: gow run cmd/main.go
+    ports:
+      - "8000:8000"
     environment:
       - "VALKEY_ADDR=db:6379"
     volumes:
