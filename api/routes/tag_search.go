@@ -1,9 +1,9 @@
 package routes
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -33,8 +33,6 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf("key: '%s'\n", gelbooru.TagSearchCacheKey(query))
-
 	// Check cache for query
 	cached := vc.Do(context.Background(),
 		vc.B().
@@ -63,9 +61,7 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		fmt.Println("cache hit")
-
-		w.Write(data)
+		api.DecompressData(w, data)
 		return
 	}
 
@@ -86,13 +82,22 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	buf := bytes.Buffer{}
+	if err := api.CompressData(&buf, respBody); err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	log.Printf("compression ratio: %.2f\n", float32(buf.Len())/float32(len(respBody)))
+
 	// Save to cache
 	vc.Do(context.Background(),
 		vc.B().
 			Setex().
 			Key(gelbooru.TagSearchCacheKey(query)).
 			Seconds(api.KeyTtl).
-			Value(string(respBody)). // TODO?: compress with DEFLATE (~33% original size)
+			Value(buf.String()).
 			Build(),
 	).Error()
 
