@@ -1,55 +1,28 @@
 <script setup lang="ts">
-import { defineProps, ref, useTemplateRef, watch } from "vue";
+import { defineProps, useTemplateRef, watchPostEffect } from "vue";
 
-const { tags } = defineProps<{tags: Tag[]}>();
-const focusIndex = ref(0);
+const props = defineProps<{
+    selectedIndex: number,
+    tags: Tag[]
+}>();
 
 const listRef = useTemplateRef("list");
 
-function doFocus(index: number) {
-    if(!listRef.value || tags.length === 0)
+watchPostEffect(() => {
+    if(!listRef.value || props.tags.length === 0 || props.selectedIndex < 0)
         return;
 
-    const item = listRef.value.children.item(index) as HTMLLIElement;
-    focusIndex.value = index;
-    item.focus();
-}
+    const item = listRef.value.children.item(props.selectedIndex);
 
-function selectPrev() {
-    if(tags.length === 0)
-        return;
-
-    let val = focusIndex.value - 1;
-    if(val < 0)
-        val = tags.length - 1;
-
-    doFocus(val);
-}
-
-function selectNext() {
-    if(tags.length === 0)
-        return;
-
-    let val = focusIndex.value + 1;
-    if(val >= tags.length)
-        val = 0;
-
-    doFocus(val);
-}
-
-function onFocus() {
-    doFocus(0);
-}
+    if(!item)
+        console.error("shouldn't happen");
+    else
+        (item as HTMLLIElement).focus();
+});
 </script>
 
 <template>
-    <ul ref="list"
-        class="tag-list"
-        tabindex="0"
-        @focus="onFocus"
-        @keydown.down.prevent="selectNext"
-        @keydown.up.prevent="selectPrev"
-        >
+    <ul ref="list" class="tag-list" tabindex="0">
         <template v-for="tag, i in tags" :key="tag.name">
             <li class="list-item" :class="tag.type" :title="tag.name" tabindex="-1">
                 <span class="name">{{ tag.name }}</span>
