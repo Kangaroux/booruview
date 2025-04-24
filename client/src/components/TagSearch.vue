@@ -13,7 +13,8 @@ const timer = ref();
 const selectedIndex = ref(-1);
 
 function doSearch(query: string) {
-  fetch("/api/search?q=" + query)
+  // Encoding the query prevents trailing whitespace from being stripped
+	fetch("/api/search?q=" + encodeURIComponent(query))
   .then(resp => resp.json().then((json: SearchResponse) => {
     results.value = json.results;
 }))

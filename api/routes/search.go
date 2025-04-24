@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"unicode"
 
 	api "github.com/kangaroux/booru-viewer"
 	"github.com/kangaroux/booru-viewer/gelbooru"
@@ -23,7 +24,10 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	vc := api.Valkey()
 
-	query := strings.TrimSpace(r.FormValue("q"))
+	query := strings.TrimLeftFunc(r.FormValue("q"), unicode.IsSpace)
+	// Words are separated by underscores even though they are rendered using whitespace
+	query = strings.ReplaceAll(query, " ", "_")
+
 	if query == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
