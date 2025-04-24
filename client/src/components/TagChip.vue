@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {defineProps } from "vue";
-const { tag } = defineProps<{tag: Tag}>();
+import { defineProps } from "vue";
+const { tag } = defineProps<{ tag: Tag }>();
 </script>
 
 <template>
@@ -17,29 +17,30 @@ const { tag } = defineProps<{tag: Tag}>();
 }
 
 .tag {
-    background-color: #FFF;
+    background-color: #fff;
 }
 
 .artist {
-    background-color: #A00;
-    color: #FFF;
+    background-color: #a00;
+    color: #fff;
 }
 
 .copyright {
-    background-color: #A0A;
-    color: #FFF;
+    background-color: #a0a;
+    color: #fff;
 }
 
 .character {
-    background-color: #0A0;
+    background-color: #0a0;
 }
 
 .metadata {
-    background-color: #F80;
+    background-color: #f80;
 }
 
-.deprecated, .unknown {
+.deprecated,
+.unknown {
     background-color: #666;
-    color: #FFF;
+    color: #fff;
 }
 </style>

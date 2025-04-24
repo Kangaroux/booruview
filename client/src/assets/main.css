@@ -1,15 +1,16 @@
 @import "~/@csstools/normalize.css";
 
 body {
-  background-color: #151515;
-  color: #EEE;
+    background-color: #151515;
+    color: #eee;
 }
 
 * {
-  box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-body, input {
-  font-size: 20px;
+body,
+input {
+    font-size: 20px;
 }

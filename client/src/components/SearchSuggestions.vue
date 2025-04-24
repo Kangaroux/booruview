@@ -2,29 +2,36 @@
 import { defineProps, useTemplateRef, watchPostEffect } from "vue";
 
 const props = defineProps<{
-    selectedIndex: number,
-    tags: Tag[]
+    selectedIndex: number;
+    tags: Tag[];
 }>();
 
 const listRef = useTemplateRef("list");
 
 watchPostEffect(() => {
-    if(!listRef.value || props.tags.length === 0 || props.selectedIndex < 0)
+    if (!listRef.value || props.tags.length === 0 || props.selectedIndex < 0) {
         return;
+    }
 
     const item = listRef.value.children.item(props.selectedIndex);
 
-    if(!item)
+    if (!item) {
         console.error("shouldn't happen");
-    else
+    } else {
         (item as HTMLLIElement).focus();
+    }
 });
 </script>
 
 <template>
     <ul ref="list" class="tag-list" tabindex="0">
-        <template v-for="tag, i in tags" :key="tag.name">
-            <li class="list-item" :class="tag.type" :title="tag.name" tabindex="-1">
+        <template v-for="(tag, i) in tags" :key="tag.name">
+            <li
+                class="list-item"
+                :class="tag.type"
+                :title="tag.name"
+                tabindex="-1"
+            >
                 <span class="name">{{ tag.name }}</span>
                 <span class="count">{{ tag.count }}</span>
             </li>
@@ -55,7 +62,8 @@ watchPostEffect(() => {
     cursor: pointer;
 }
 
-.list-item:hover, .list-item:focus {
+.list-item:hover,
+.list-item:focus {
     background-color: #303030;
 }
 
@@ -73,22 +81,23 @@ watchPostEffect(() => {
 }
 
 .artist {
-    color: #A00;
+    color: #a00;
 }
 
 .copyright {
-    color: #A0A;
+    color: #a0a;
 }
 
 .character {
-    color: #0A0;
+    color: #0a0;
 }
 
 .metadata {
-    color: #F80;
+    color: #f80;
 }
 
-.deprecated, .unknown {
+.deprecated,
+.unknown {
     color: #666;
 }
 </style>

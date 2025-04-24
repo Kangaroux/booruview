@@ -3,6 +3,5 @@ import TagSearch from "./components/TagSearch.vue";
 </script>
 
 <template>
-  <TagSearch />
+    <TagSearch />
 </template>
-
