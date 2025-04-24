@@ -147,7 +147,7 @@ func ListPosts(tags string) ([]api.PostResponse, error) {
 		return nil, err
 	}
 
-	posts := make([]api.PostResponse, len(resp.Post))
+	posts := make([]api.PostResponse, 0, len(resp.Post))
 	for _, p := range resp.Post {
 		data := api.PostResponse{
 			Id:          p.Id,
