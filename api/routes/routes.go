@@ -4,7 +4,7 @@ import "github.com/gorilla/mux"
 
 func NewRouter() *mux.Router {
 	r := mux.NewRouter()
-	r.Path("/search").HandlerFunc(SearchHandler)
+	r.Path("/tagsearch").HandlerFunc(TagSearchHandler)
 
 	return r
 }

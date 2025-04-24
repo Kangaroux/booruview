@@ -18,7 +18,7 @@ const inputRef = useTemplateRef("input");
 
 function doSearch(query: string) {
     // Encoding the query prevents trailing whitespace from being stripped
-    fetch("/api/search?q=" + encodeURIComponent(query))
+    fetch("/api/tagsearch?q=" + encodeURIComponent(query))
         .then((resp) =>
             resp.json().then((json: SearchResponse) => {
                 suggestions.value = json.results;

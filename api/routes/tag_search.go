@@ -14,12 +14,12 @@ import (
 	"github.com/valkey-io/valkey-go"
 )
 
-type SearchResponse struct {
+type TagSearchResponse struct {
 	Results []api.TagResponse `json:"results"`
 }
 
-func SearchHandler(w http.ResponseWriter, r *http.Request) {
-	resp := SearchResponse{
+func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
+	resp := TagSearchResponse{
 		Results: []api.TagResponse{},
 	}
 	vc := api.Valkey()
