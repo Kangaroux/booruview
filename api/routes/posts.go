@@ -22,7 +22,6 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	resp := PostsResponse{
 		Results: []api.PostResponse{},
 	}
-	vc := api.Valkey()
 
 	// Clean up the query so we're left with a sorted list of unique tags
 	normalized := slices.DeleteFunc(
@@ -34,40 +33,19 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	slices.Sort(normalized)
 
 	query := strings.Join(normalized, " ")
-
-	// Check cache for query
-	cached := vc.Do(context.Background(),
-		vc.B().
-			Get().
-			Key(gelbooru.PostCacheKey(query)).
-			Build(),
-	)
-	hit := true
-
-	if err := cached.Error(); err != nil {
-		if valkey.IsValkeyNil(err) {
-			hit = false
-		} else {
-			log.Println(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	}
-
-	// Cache hit
-	if hit {
-		data, err := cached.AsBytes()
-		if err != nil {
-			log.Println(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		api.DecompressData(w, data)
+	cached, err := getCachedPosts(query)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	// Cache miss
+	// Cache hit
+	if cached != nil {
+		api.DecompressData(w, cached)
+		return
+	}
+
 	results, err := gelbooru.ListPosts(query)
 	if err != nil {
 		log.Println(err)
@@ -84,17 +62,47 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	buf := bytes.Buffer{}
-	if err := api.CompressData(&buf, respBody); err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	writePostsToCache(query, respBody)
+	w.Write(respBody)
+}
+
+func getCachedPosts(tags string) ([]byte, error) {
+	vc := api.Valkey()
+
+	cached := vc.Do(context.Background(),
+		vc.B().
+			Get().
+			Key(gelbooru.PostCacheKey(tags)).
+			Build(),
+	)
+
+	if err := cached.Error(); err != nil {
+		if valkey.IsValkeyNil(err) {
+			return nil, nil
+		} else {
+			return nil, err
+		}
 	}
 
-	log.Printf("compression ratio: %.2f\n", float32(buf.Len())/float32(len(respBody)))
+	data, err := cached.AsBytes()
+	if err != nil {
+		return nil, err
+	}
 
-	// Save to cache
-	vc.Do(context.Background(),
+	return data, nil
+}
+
+func writePostsToCache(query string, data []byte) error {
+	vc := api.Valkey()
+
+	buf := bytes.Buffer{}
+	if err := api.CompressData(&buf, data); err != nil {
+		return err
+	}
+
+	log.Printf("compression ratio: %.2f\n", float32(buf.Len())/float32(len(data)))
+
+	return vc.Do(context.Background(),
 		vc.B().
 			Setex().
 			Key(gelbooru.PostCacheKey(query)).
@@ -102,6 +110,4 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 			Value(buf.String()).
 			Build(),
 	).Error()
-
-	w.Write(respBody)
 }
