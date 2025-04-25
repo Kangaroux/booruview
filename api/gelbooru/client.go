@@ -150,18 +150,18 @@ func ListPosts(tags string) ([]api.PostResponse, error) {
 	posts := make([]api.PostResponse, 0, len(resp.Post))
 	for _, p := range resp.Post {
 		data := api.PostResponse{
-			Id:          p.Id,
-			Score:       p.Score,
-			Width:       p.Width,
-			Height:      p.Height,
-			Rating:      p.Rating,
-			SourceUrl:   p.SourceUrl,
-			Uploader:    p.Uploader,
-			UploaderUrl: fmt.Sprintf("https://gelbooru.com/index.php?page=account&s=profile&id=%d", p.UploaderId),
-			Tags:        p.Tags,
-			ImageUrl:    p.ImageUrl,
-			PreviewUrl:  p.PreviewUrl,
-			SampleUrl:   p.SampleUrl,
+			Id:           p.Id,
+			Score:        p.Score,
+			Width:        p.Width,
+			Height:       p.Height,
+			Rating:       p.Rating,
+			SourceUrl:    p.SourceUrl,
+			Uploader:     p.Uploader,
+			UploaderUrl:  fmt.Sprintf("https://gelbooru.com/index.php?page=account&s=profile&id=%d", p.UploaderId),
+			Tags:         p.Tags,
+			ThumbnailUrl: p.PreviewUrl,
+			LowResUrl:    p.SampleUrl,
+			ImageUrl:     p.ImageUrl,
 		}
 
 		if createdAt, err := time.Parse(time.RubyDate, p.CreatedAt); err == nil {

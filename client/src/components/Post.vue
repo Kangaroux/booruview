@@ -5,7 +5,7 @@ const { post } = defineProps<{
 </script>
 
 <template>
-    <img :src="post.preview_url" />
+    <img :src="post.thumbnail_url" />
     <p>{{ post.tags }}</p>
 </template>
 

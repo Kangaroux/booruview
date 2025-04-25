@@ -29,7 +29,7 @@ type PostResponse struct {
 	Uploader           string `json:"uploader"`
 	UploaderUrl        string `json:"uploader_url"`
 	Tags               string `json:"tags"`
-	ImageUrl           string `json:"file_url"`
-	PreviewUrl         string `json:"preview_url"`
-	SampleUrl          string `json:"sample_url"`
+	ThumbnailUrl       string `json:"thumbnail_url"`
+	LowResUrl          string `json:"lowres_url"`
+	ImageUrl           string `json:"image_url"`
 }

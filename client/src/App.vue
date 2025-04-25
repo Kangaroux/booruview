@@ -31,7 +31,7 @@ function doSearch() {
 
     <button type="submit" @click="doSearch">search</button>
 
-    <div v-for="p in posts">
+    <div v-for="p in posts" :key="p.id">
         <Post :post="p" />
     </div>
 </template>

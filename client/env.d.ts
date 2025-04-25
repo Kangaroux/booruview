@@ -27,7 +27,7 @@ type Post = {
     source_url: string;
     uploader: string;
     tags: string;
-    file_url: string;
-    preview_url: string;
-    sample_url: string;
+    thumbnail_url: string;
+    lowres_url: string;
+    image_url: string;
 };
