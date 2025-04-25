@@ -5,7 +5,7 @@ import SearchSuggestions from "./SearchSuggestions.vue";
 type SearchResponse = {
     results: Tag[];
 };
-const debounceMs = 200;
+const debounceMs = 150;
 
 const emit = defineEmits<{ submit: [value: Tag] }>();
 
