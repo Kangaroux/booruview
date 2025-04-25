@@ -1,15 +1,20 @@
 package gelbooru
 
 var (
-	prefix     = "gb:"
-	postPrefix = prefix + "post:"
-	tagPrefix  = prefix + "tag:"
+	prefix          = "gb:"
+	postPrefix      = prefix + "post:"
+	tagPrefix       = prefix + "tag:"
+	tagSearchPrefix = prefix + "tagsearch:"
 )
 
 func PostCacheKey(key string) string {
 	return postPrefix + key
 }
 
-func TagSearchCacheKey(key string) string {
+func TagCacheKey(key string) string {
 	return tagPrefix + key
+}
+
+func TagSearchCacheKey(key string) string {
+	return tagSearchPrefix + key
 }

@@ -25,17 +25,32 @@ type SearchResponse struct {
 }
 
 var (
-	typeLookup = map[string]api.TagType{
+	tagTypeMap = map[string]api.TagType{
 		"tag":       api.Tag,
 		"artist":    api.Artist,
 		"character": api.Character,
 		"copyright": api.Copyright,
 		"metadata":  api.Metadata,
 	}
+
+	tagNumericTypeMap = map[int]api.TagType{
+		0: api.Tag,
+		1: api.Artist,
+		3: api.Copyright,
+		4: api.Character,
+		5: api.Metadata,
+	}
 )
 
 func ParseTagType(raw string) api.TagType {
-	if val, ok := typeLookup[raw]; ok {
+	if val, ok := tagTypeMap[raw]; ok {
+		return val
+	}
+	return api.Unknown
+}
+
+func ParseTagNumericType(raw int) api.TagType {
+	if val, ok := tagNumericTypeMap[raw]; ok {
 		return val
 	}
 	return api.Unknown
@@ -62,8 +77,8 @@ func SearchTags(query string) ([]api.TagResponse, error) {
 		return nil, err
 	}
 
-	tags := []api.TagResponse{}
-	for _, t := range resp {
+	tags := make([]api.TagResponse, len(resp))
+	for i, t := range resp {
 		data := api.TagResponse{
 			Name: t.Label,
 			Type: ParseTagType(t.Category),
@@ -79,7 +94,7 @@ func SearchTags(query string) ([]api.TagResponse, error) {
 		}
 
 		data.Count = count
-		tags = append(tags, data)
+		tags[i] = data
 	}
 
 	return tags, nil
@@ -147,8 +162,8 @@ func ListPosts(tags string) ([]api.PostResponse, error) {
 		return nil, err
 	}
 
-	posts := make([]api.PostResponse, 0, len(resp.Post))
-	for _, p := range resp.Post {
+	posts := make([]api.PostResponse, len(resp.Post))
+	for i, p := range resp.Post {
 		data := api.PostResponse{
 			Id:           p.Id,
 			Score:        p.Score,
@@ -170,8 +185,61 @@ func ListPosts(tags string) ([]api.PostResponse, error) {
 			log.Println("warning: failed to parse post created_at:", err)
 		}
 
-		posts = append(posts, data)
+		posts[i] = data
 	}
 
 	return posts, nil
+}
+
+type TagInfo struct {
+	Id        int
+	Name      string
+	Count     int
+	Type      int
+	Ambiguous int
+}
+
+type FullTagInfoResponse struct {
+	Attributes struct {
+		Limit  int
+		Offset int
+		Count  int
+	} `json:"@attributes"`
+
+	Tag []TagInfo
+}
+
+func ListTagInfo(tags string) ([]api.TagResponse, error) {
+	params := url.Values{}
+	params.Add("page", "dapi")
+	params.Add("s", "tag")
+	params.Add("q", "index")
+	params.Add("json", "1")
+	params.Add("names", tags)
+
+	rawResp, err := api.HttpGet(ApiUrl + "?" + params.Encode())
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := io.ReadAll(rawResp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var resp FullTagInfoResponse
+	if err := json.Unmarshal(body, &resp); err != nil {
+		return nil, err
+	}
+
+	tagInfo := make([]api.TagResponse, resp.Attributes.Count)
+	for i, t := range resp.Tag {
+		tagInfo[i] = api.TagResponse{
+			Name:  t.Name,
+			Type:  ParseTagNumericType(t.Type),
+			Count: t.Count,
+		}
+	}
+
+	return tagInfo, nil
 }
