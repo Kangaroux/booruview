@@ -96,7 +96,7 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 		vc.B().
 			Setex().
 			Key(gelbooru.TagSearchCacheKey(query)).
-			Seconds(api.KeyTtl).
+			Seconds(api.TagSearchTtl).
 			Value(buf.String()).
 			Build(),
 	).Error()

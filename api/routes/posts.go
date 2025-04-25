@@ -98,8 +98,8 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		vc.B().
 			Setex().
 			Key(gelbooru.PostCacheKey(query)).
-			Seconds(api.KeyTtl).
-			Value(buf.String()). // TODO?: compress with DEFLATE (~33% original size)
+			Seconds(api.PostTtl).
+			Value(buf.String()).
 			Build(),
 	).Error()
 

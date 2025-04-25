@@ -11,7 +11,10 @@ var (
 	valkeyClient valkey.Client
 )
 
-const KeyTtl = 60 * 60 // seconds
+const (
+	PostTtl      = 5 * 60  // seconds
+	TagSearchTtl = 60 * 60 // seconds
+)
 
 func InitValkey() error {
 	if hasInit {
