@@ -22,7 +22,6 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 	resp := TagSearchResponse{
 		Results: []api.TagResponse{},
 	}
-	vc := api.Valkey()
 
 	query := strings.TrimLeftFunc(r.FormValue("q"), unicode.IsSpace)
 	// Words are separated by underscores even though they are rendered using whitespace
@@ -33,39 +32,19 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check cache for query
-	cached := vc.Do(context.Background(),
-		vc.B().
-			Get().
-			Key(gelbooru.TagSearchCacheKey(query)).
-			Build(),
-	)
-	hit := true
-
-	if err := cached.Error(); err != nil {
-		if valkey.IsValkeyNil(err) {
-			hit = false
-		} else {
-			log.Println(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	}
-
-	// Cache hit
-	if hit {
-		data, err := cached.AsBytes()
-		if err != nil {
-			log.Println(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		api.DecompressData(w, data)
+	cached, err := getCachedTagSearch(query)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	// Cache miss
+	// Cache hit
+	if cached != nil {
+		api.DecompressData(w, cached)
+		return
+	}
+
 	results, err := gelbooru.SearchTags(query)
 	if err != nil {
 		log.Println(err)
@@ -74,7 +53,6 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp.Results = results
-
 	respBody, err := json.Marshal(resp)
 	if err != nil {
 		log.Println(err)
@@ -82,17 +60,45 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	buf := bytes.Buffer{}
-	if err := api.CompressData(&buf, respBody); err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	writeTagSearchToCache(query, respBody)
+	w.Write(respBody)
+}
+
+func getCachedTagSearch(query string) ([]byte, error) {
+	vc := api.Valkey()
+	cached := vc.Do(context.Background(),
+		vc.B().
+			Get().
+			Key(gelbooru.TagSearchCacheKey(query)).
+			Build(),
+	)
+
+	if err := cached.Error(); err != nil {
+		if valkey.IsValkeyNil(err) {
+			return nil, nil
+		} else {
+			return nil, err
+		}
 	}
 
-	log.Printf("compression ratio: %.2f\n", float32(buf.Len())/float32(len(respBody)))
+	data, err := cached.AsBytes()
+	if err != nil {
+		return nil, err
+	}
 
-	// Save to cache
-	vc.Do(context.Background(),
+	return data, nil
+}
+
+func writeTagSearchToCache(query string, data []byte) error {
+	vc := api.Valkey()
+	buf := bytes.Buffer{}
+	if err := api.CompressData(&buf, data); err != nil {
+		return err
+	}
+
+	log.Printf("compression ratio: %.2f\n", float32(buf.Len())/float32(len(data)))
+
+	return vc.Do(context.Background(),
 		vc.B().
 			Setex().
 			Key(gelbooru.TagSearchCacheKey(query)).
@@ -100,6 +106,4 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 			Value(buf.String()).
 			Build(),
 	).Error()
-
-	w.Write(respBody)
 }

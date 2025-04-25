@@ -68,7 +68,6 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 func getCachedPosts(tags string) ([]byte, error) {
 	vc := api.Valkey()
-
 	cached := vc.Do(context.Background(),
 		vc.B().
 			Get().
@@ -94,7 +93,6 @@ func getCachedPosts(tags string) ([]byte, error) {
 
 func writePostsToCache(query string, data []byte) error {
 	vc := api.Valkey()
-
 	buf := bytes.Buffer{}
 	if err := api.CompressData(&buf, data); err != nil {
 		return err
