@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	api "github.com/kangaroux/booru-viewer"
@@ -16,7 +17,7 @@ var (
 	ApiUrl = "https://gelbooru.com/index.php"
 )
 
-type SearchResponse struct {
+type TagSearchResponse struct {
 	Type     string
 	Label    string
 	Value    string
@@ -72,7 +73,7 @@ func SearchTags(query string) ([]api.TagResponse, error) {
 	}
 
 	// Search API returns up to 10 results
-	resp := make([]SearchResponse, 10)
+	resp := make([]TagSearchResponse, 10)
 	if err := json.Unmarshal(body, &resp); err != nil {
 		return nil, err
 	}
@@ -173,7 +174,7 @@ func ListPosts(tags string) ([]api.PostResponse, error) {
 			SourceUrl:    p.SourceUrl,
 			Uploader:     p.Uploader,
 			UploaderUrl:  fmt.Sprintf("https://gelbooru.com/index.php?page=account&s=profile&id=%d", p.UploaderId),
-			Tags:         p.Tags,
+			Tags:         strings.Split(p.Tags, " "),
 			ThumbnailUrl: p.PreviewUrl,
 			LowResUrl:    p.SampleUrl,
 			ImageUrl:     p.ImageUrl,
@@ -209,7 +210,9 @@ type FullTagInfoResponse struct {
 	Tag []TagInfo
 }
 
-func ListTagInfo(tags string) ([]api.TagResponse, error) {
+// ListTags returns a list of info found on the given tags (e.g. count, type).
+// tags should be one or more tags separated by a space.
+func ListTags(tags string) ([]api.TagResponse, error) {
 	params := url.Values{}
 	params.Add("page", "dapi")
 	params.Add("s", "tag")
