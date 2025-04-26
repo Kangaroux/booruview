@@ -2,7 +2,6 @@ package routes
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"slices"
 	"strings"
@@ -27,16 +26,14 @@ func TagsHandler(w http.ResponseWriter, r *http.Request) {
 
 	tags, err := gelbooru.ListTags(strings.Join(query, " "))
 	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		handleError(w, err)
 		return
 	}
 
 	resp := TagsResponse{Results: tags}
 	data, err := json.Marshal(resp)
 	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		handleError(w, err)
 		return
 	}
 

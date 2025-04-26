@@ -35,8 +35,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	query := strings.Join(normalized, " ")
 	cached, err := getCachedPosts(query)
 	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		handleError(w, err)
 		return
 	}
 
@@ -48,8 +47,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	results, err := gelbooru.ListPosts(query)
 	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		handleError(w, err)
 		return
 	}
 
@@ -57,8 +55,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	respBody, err := json.Marshal(resp)
 	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		handleError(w, err)
 		return
 	}
 

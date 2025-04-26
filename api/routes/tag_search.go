@@ -34,8 +34,7 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 
 	cached, err := getCachedTagSearch(query)
 	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		handleError(w, err)
 		return
 	}
 
@@ -47,16 +46,14 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 
 	results, err := gelbooru.SearchTags(query)
 	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		handleError(w, err)
 		return
 	}
 
 	resp.Results = results
 	respBody, err := json.Marshal(resp)
 	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		handleError(w, err)
 		return
 	}
 
