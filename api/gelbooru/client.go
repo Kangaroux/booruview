@@ -58,12 +58,6 @@ func ParseTagNumericType(raw int) api.TagType {
 }
 
 func SearchTags(query string) ([]api.TagResponse, error) {
-	// Search filters are not tags and will always be an empty response
-	if IsSearchFilter(query) {
-		log.Println("skipping search filter")
-		return nil, nil
-	}
-
 	params := url.Values{}
 	params.Add("page", "autocomplete2")
 	params.Add("term", query)
