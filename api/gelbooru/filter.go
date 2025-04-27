@@ -24,7 +24,7 @@ var (
 
 func IsSearchFilter(tag string) bool {
 	// Filters always have a colon, e.g. score:>5
-	filter := strings.SplitN(tag, ":", 1)[0]
+	filter := strings.SplitN(tag, ":", 2)[0]
 	filter = strings.TrimPrefix(filter, "-")
 	_, match := searchFilters[filter]
 	return match
