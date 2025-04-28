@@ -11,6 +11,25 @@ const (
 	Unknown   TagType = "unknown"
 )
 
+func ParseTagType(val string) TagType {
+	switch val {
+	case string(Tag):
+		return Tag
+	case string(Artist):
+		return Artist
+	case string(Copyright):
+		return Copyright
+	case string(Character):
+		return Character
+	case string(Metadata):
+		return Metadata
+	case string(Unknown):
+		return Unknown
+	default:
+		return Unknown
+	}
+}
+
 type TagResponse struct {
 	Name  string  `json:"name"`
 	Type  TagType `json:"type"`

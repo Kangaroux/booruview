@@ -34,7 +34,6 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Search filters are not tags and will always be an empty response
 	if gelbooru.IsSearchFilter(query) {
-		log.Println("skip")
 		respBody, err := json.Marshal(resp)
 		if err != nil {
 			handleError(w, err)

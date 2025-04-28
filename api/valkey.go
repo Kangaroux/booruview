@@ -13,6 +13,7 @@ var (
 
 const (
 	PostTtl      = 5 * 60  // seconds
+	TagTtl       = 60 * 60 // seconds
 	TagSearchTtl = 60 * 60 // seconds
 )
 
