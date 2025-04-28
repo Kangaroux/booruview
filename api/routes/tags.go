@@ -32,13 +32,13 @@ func TagsHandler(w http.ResponseWriter, r *http.Request) {
 			return len(s) == 0 || gelbooru.IsSearchFilter(s)
 		},
 	)
+	slices.Sort(query)
+	query = slices.Compact(query)
 
 	if len(query) > tagLimit {
 		handle400Error(w, fmt.Sprintf("limit of %d tags", tagLimit))
 		return
 	}
-
-	slices.Sort(query)
 
 	cached, cachedMap, err := getCachedTags(query)
 	if err != nil {
