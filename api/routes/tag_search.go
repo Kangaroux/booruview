@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 	"strings"
 	"unicode"
@@ -28,7 +27,7 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 	query = strings.ReplaceAll(query, " ", "_")
 
 	if query == "" {
-		w.WriteHeader(http.StatusBadRequest)
+		handle400Error(w, "required GET param `q` is missing or blank")
 		return
 	}
 
@@ -103,8 +102,6 @@ func writeTagSearchToCache(query string, data []byte) error {
 	if err := api.CompressData(&buf, data); err != nil {
 		return err
 	}
-
-	log.Printf("compression ratio: %.2f\n", float32(buf.Len())/float32(len(data)))
 
 	return vc.Do(context.Background(),
 		vc.B().
