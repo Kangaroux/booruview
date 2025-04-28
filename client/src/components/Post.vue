@@ -28,6 +28,7 @@ const image = computed<{url: string, width: number, height: number}>(() => {
         :width="image.width"
         :height="image.height"
         loading="lazy"
+        referrerpolicy="no-referrer"
     />
     <p>{{ post.tags }}</p>
 </template>
