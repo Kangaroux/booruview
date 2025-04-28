@@ -103,19 +103,23 @@ func SearchTags(query string) ([]api.TagResponse, error) {
 
 // NOTE: This is a trimmed down version of the response
 type PostResponse struct {
-	Id         int
-	CreatedAt  string `json:"created_at"`
-	Score      int
-	Width      int
-	Height     int
-	Rating     string
-	SourceUrl  string `json:"source"`
-	Uploader   string `json:"owner"`
-	UploaderId int    `json:"creator_id"`
-	Tags       string
-	ImageUrl   string `json:"file_url"`
-	PreviewUrl string `json:"preview_url"`
-	SampleUrl  string `json:"sample_url"`
+	Id            int
+	CreatedAt     string `json:"created_at"`
+	Score         int
+	Rating        string
+	SourceUrl     string `json:"source"`
+	Uploader      string `json:"owner"`
+	UploaderId    int    `json:"creator_id"`
+	Tags          string
+	ImageUrl      string `json:"file_url"`
+	Width         int
+	Height        int
+	PreviewUrl    string `json:"preview_url"`
+	PreviewWidth  int    `json:"preview_width"`
+	PreviewHeight int    `json:"preview_height"`
+	SampleUrl     string `json:"sample_url"`
+	SampleWidth   int    `json:"sample_width"`
+	SampleHeight  int    `json:"sample_height"`
 }
 
 type FullPostResponse struct {
@@ -166,18 +170,23 @@ func ListPosts(tags string) ([]api.PostResponse, error) {
 	posts := make([]api.PostResponse, len(resp.Post))
 	for i, p := range resp.Post {
 		data := api.PostResponse{
-			Id:           p.Id,
-			Score:        p.Score,
-			Width:        p.Width,
-			Height:       p.Height,
-			Rating:       p.Rating,
-			SourceUrl:    p.SourceUrl,
-			Uploader:     p.Uploader,
-			UploaderUrl:  fmt.Sprintf("https://gelbooru.com/index.php?page=account&s=profile&id=%d", p.UploaderId),
-			Tags:         strings.Split(p.Tags, " "),
-			ThumbnailUrl: p.PreviewUrl,
-			LowResUrl:    p.SampleUrl,
-			ImageUrl:     p.ImageUrl,
+			Id:    p.Id,
+			Score: p.Score,
+
+			Rating:          p.Rating,
+			SourceUrl:       p.SourceUrl,
+			Uploader:        p.Uploader,
+			UploaderUrl:     fmt.Sprintf("https://gelbooru.com/index.php?page=account&s=profile&id=%d", p.UploaderId),
+			Tags:            strings.Split(p.Tags, " "),
+			ThumbnailUrl:    p.PreviewUrl,
+			ThumbnailWidth:  p.PreviewWidth,
+			ThumbnailHeight: p.PreviewHeight,
+			LowResUrl:       p.SampleUrl,
+			LowResWidth:     p.SampleWidth,
+			LowResHeight:    p.SampleHeight,
+			ImageUrl:        p.ImageUrl,
+			Width:           p.Width,
+			Height:          p.Height,
 		}
 
 		if createdAt, err := time.Parse(time.RubyDate, p.CreatedAt); err == nil {
