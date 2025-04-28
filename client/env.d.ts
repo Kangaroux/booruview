@@ -23,7 +23,7 @@ type Post = {
     rating: Rating;
     source_url: string;
     uploader: string;
-    tags: string;
+    tags: string[];
     thumbnail_url: string;
     thumbnail_width: number;
     thumbnail_height: number;
