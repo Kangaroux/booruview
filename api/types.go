@@ -49,8 +49,8 @@ type PostResponse struct {
 	ThumbnailWidth     int      `json:"thumbnail_width"`
 	ThumbnailHeight    int      `json:"thumbnail_height"`
 	LowResUrl          string   `json:"lowres_url"`
-	LowResWidth        int      `json:"low_res_width"`
-	LowResHeight       int      `json:"low_res_height"`
+	LowResWidth        int      `json:"lowres_width"`
+	LowResHeight       int      `json:"lowres_height"`
 	ImageUrl           string   `json:"image_url"`
 	Width              int      `json:"width"`
 	Height             int      `json:"height"`

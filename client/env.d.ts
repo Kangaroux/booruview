@@ -6,7 +6,6 @@ type TagType =
     | "copyright"
     | "character"
     | "metadata"
-    | "deprecated"
     | "unknown";
 
 type Tag = {
@@ -29,8 +28,8 @@ type Post = {
     thumbnail_width: number;
     thumbnail_height: number;
     lowres_url: string;
-    low_res_width: number;
-    low_res_height: number;
+    lowres_width: number;
+    lowres_height: number;
     image_url: string;
     width: number;
     height: number;
