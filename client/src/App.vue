@@ -59,12 +59,12 @@ function doSearch() {
 
     padding: 0 10px;
 
-    column-count: 2;
+    column-width: 600px;
     column-gap: 10px;
 }
 
 .post {
-
+    break-inside: avoid-column;
 }
 
 .searchButton {
