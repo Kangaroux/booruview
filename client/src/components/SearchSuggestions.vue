@@ -46,10 +46,6 @@ watchPostEffect(() => {
 .tag-list {
     margin: 0;
     padding: 0;
-
-    /* Renders the list above the focus outline of the search box */
-    position: relative;
-    z-index: 1;
 }
 
 .list-item {

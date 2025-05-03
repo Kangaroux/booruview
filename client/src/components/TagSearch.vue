@@ -145,6 +145,7 @@ watch(query, (query, _, onCleanup) => {
             @focus="selectedIndex = -1"
         />
         <SearchSuggestions
+            class="suggestions"
             :tags="suggestions"
             :selected-index="selectedIndex"
             @on-click="onSuggestionClick"
@@ -161,7 +162,14 @@ watch(query, (query, _, onCleanup) => {
     width: 100%;
     padding: 8px;
 }
+
 .search-container {
     width: 300px;
+    position: relative;
+}
+
+.suggestions {
+    position: absolute;
+    width: 100%;
 }
 </style>
