@@ -24,7 +24,7 @@ function doSearch() {
 
 function onCloseHelp() {
     showHelp.value = false;
-    localStorage.setItem("hide-help", "1")
+    localStorage.setItem("hide-help", "1");
 }
 </script>
 
@@ -32,19 +32,38 @@ function onCloseHelp() {
     <div class="app">
         <header>
             <nav class="nav">
-                <aside class="search-help" v-if="showHelp && posts.length === 0">
+                <aside
+                    class="search-help"
+                    v-if="showHelp && posts.length === 0"
+                >
                     <p>
-                        <button class="close-btn" @click="onCloseHelp">Close</button>
+                        <button class="close-btn" @click="onCloseHelp">
+                            Close
+                        </button>
 
                         Enter one tag at a time.
                     </p>
                     <ul>
-                        <li><kbd>Tab</kbd> will auto-complete.</li>
-                        <li><kbd>Up/Down</kbd> selects a tag.</li>
-                        <li><kbd>Enter</kbd> adds the tag to your search.</li>
+                        <li>
+                            <kbd>Tab</kbd>
+                            will auto-complete.
+                        </li>
+                        <li>
+                            <kbd>Up/Down</kbd>
+                            selects a tag.
+                        </li>
+                        <li>
+                            <kbd>Enter</kbd>
+                            adds the tag to your search.
+                        </li>
                     </ul>
                     <p>
-                        <a href="https://gelbooru.com/index.php?page=wiki&s=&s=view&id=26263" target="_blank">Gelbooru Search Help</a>
+                        <a
+                            href="https://gelbooru.com/index.php?page=wiki&s=&s=view&id=26263"
+                            target="_blank"
+                        >
+                            Gelbooru Search Help
+                        </a>
                     </p>
                 </aside>
 
@@ -118,7 +137,8 @@ function onCloseHelp() {
     width: 300px;
     font-size: 14px;
 
-    p, ul {
+    p,
+    ul {
         margin: 12px;
     }
 
@@ -128,7 +148,7 @@ function onCloseHelp() {
     }
 
     kbd {
-        font-family: 'Courier New', Courier, monospace;
+        font-family: "Courier New", Courier, monospace;
     }
 
     a {
