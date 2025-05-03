@@ -38,18 +38,22 @@ function doSearch() {
     </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@use "sass:color";
+
 .nav {
     max-width: 350px;
 }
+
+$btnColor: #342b3a;
 
 .searchButton {
     display: block;
     width: 100%;
     margin-top: 8px;
-    background-color: #342b3a;
+    background-color: $btnColor;
     border-radius: 4px;
-    border: 1px solid hsl(274.5, 19.3%, 33.5%);
+    border: 1px solid color.adjust($btnColor, $lightness: 20%);
     color: #fff;
     padding: 8px;
 }
