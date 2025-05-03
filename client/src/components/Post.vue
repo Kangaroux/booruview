@@ -31,19 +31,27 @@ function loadTags() {
 </script>
 
 <template>
-    <img
-        :src="image.url"
-        :width="image.width"
-        :height="image.height"
-        loading="lazy"
-        referrerpolicy="no-referrer"
-    />
-    <button @click="showTags = !showTags" @click.once="loadTags">
-        toggle tags
-    </button>
-    <div v-if="showTags">
-        <TagChip :tag="tag" v-for="tag in tags" />
+    <div class="post">
+        <img
+            class="post-img"
+            :src="image.url"
+            :width="image.width"
+            :height="image.height"
+            loading="lazy"
+            referrerpolicy="no-referrer"
+        />
+        <button @click="showTags = !showTags" @click.once="loadTags">
+            toggle tags
+        </button>
+        <div v-if="showTags">
+            <TagChip :tag="tag" v-for="tag in tags" />
+        </div>
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.post-img {
+    width: 100%;
+    height: auto;
+}
+</style>

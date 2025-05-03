@@ -23,30 +23,48 @@ function doSearch() {
 </script>
 
 <template>
-    <header>
-        <nav class="nav">
-            <TagSearch
-                @on-search="doSearch"
-                @on-submit="(t) => (tags = tags.concat(t))"
-                :exclude-tags="tags"
-            />
-            <button class="searchButton" type="submit" @click="doSearch">
-                search
-            </button>
+    <div class="app">
+        <header>
+            <nav class="nav">
+                <TagSearch
+                    @on-search="doSearch"
+                    @on-submit="(t) => (tags = tags.concat(t))"
+                    :exclude-tags="tags"
+                />
+                <button class="searchButton" type="submit" @click="doSearch">
+                    search
+                </button>
 
-            <TagChip v-for="t in tags" :tag="t" />
-        </nav>
-    </header>
-    <main>
-        <div v-for="p in posts" :key="p.id">
-            <Post :post="p" />
-        </div>
-    </main>
+                <TagChip v-for="t in tags" :tag="t" />
+            </nav>
+        </header>
+        <main class="post-container">
+            <Post :post="p" v-for="p in posts" :key="p.id" />
+        </main>
+    </div>
 </template>
 
 <style scoped lang="scss">
+.app {
+    display: flex;
+    flex-direction: row;
+}
+
 .nav {
-    max-width: 350px;
+    width: 350px;
+}
+
+.post-container {
+    flex: 1;
+
+    padding: 0 10px;
+
+    column-count: 2;
+    column-gap: 10px;
+}
+
+.post {
+
 }
 
 .searchButton {
