@@ -164,7 +164,6 @@ watch(query, (query, _, onCleanup) => {
 }
 
 .search-container {
-    width: 300px;
     position: relative;
 }
 

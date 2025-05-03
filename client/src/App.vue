@@ -26,12 +26,9 @@ function doSearch() {
     <header>
         <nav class="nav">
             <TagSearch @submit="(t) => (tags = tags.concat(t))" :exclude-tags="tags" />
+            <button class="searchButton" type="submit" @click="doSearch">search</button>
 
-            <template v-for="t in tags">
-                <TagChip :tag="t" />
-            </template>
-
-            <button type="submit" @click="doSearch">search</button>
+            <TagChip v-for="t in tags" :tag="t" />
         </nav>
     </header>
     <main>
@@ -40,3 +37,20 @@ function doSearch() {
         </div>
     </main>
 </template>
+
+<style scoped>
+.nav {
+    max-width: 350px;
+}
+
+.searchButton {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    background-color: #342b3a;
+    border-radius: 4px;
+    border: 1px solid hsl(274.5, 19.3%, 33.5%);
+    color: #fff;
+    padding: 8px;
+}
+</style>
