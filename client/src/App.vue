@@ -23,15 +23,20 @@ function doSearch() {
 </script>
 
 <template>
-    <TagSearch @submit="(t) => (tags = tags.concat(t))" />
+    <header>
+        <nav class="nav">
+            <TagSearch @submit="(t) => (tags = tags.concat(t))" />
 
-    <template v-for="t in tags">
-        <TagChip :tag="t" />
-    </template>
+            <template v-for="t in tags">
+                <TagChip :tag="t" />
+            </template>
 
-    <button type="submit" @click="doSearch">search</button>
-
-    <div v-for="p in posts" :key="p.id">
-        <Post :post="p" />
-    </div>
+            <button type="submit" @click="doSearch">search</button>
+        </nav>
+    </header>
+    <main>
+        <div v-for="p in posts" :key="p.id">
+            <Post :post="p" />
+        </div>
+    </main>
 </template>
