@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import store from "@/store";
-import { computed, defineProps, ref } from "vue";
+import { computed, ref } from "vue";
 import TagChip from "./TagChip.vue";
 
 const { post } = defineProps<{

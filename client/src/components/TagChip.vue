@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
 const { tag } = defineProps<{ tag: Tag }>();
 </script>
 

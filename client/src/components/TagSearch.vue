@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineEmits, ref, useTemplateRef, watch } from "vue";
+import { ref, useTemplateRef, watch } from "vue";
 import SearchSuggestions from "./SearchSuggestions.vue";
 
 type SearchResponse = {

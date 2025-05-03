@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, useTemplateRef, watchPostEffect } from "vue";
+import { useTemplateRef, watchPostEffect } from "vue";
 
 const props = defineProps<{
     selectedIndex: number;
