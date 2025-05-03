@@ -25,7 +25,7 @@ function doSearch() {
 <template>
     <header>
         <nav class="nav">
-            <TagSearch @submit="(t) => (tags = tags.concat(t))" />
+            <TagSearch @submit="(t) => (tags = tags.concat(t))" :exclude-tags="tags" />
 
             <template v-for="t in tags">
                 <TagChip :tag="t" />

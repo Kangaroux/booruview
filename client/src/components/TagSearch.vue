@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, useTemplateRef, watch } from "vue";
+import { computed, ref, useTemplateRef, watch } from "vue";
 import SearchSuggestions from "./SearchSuggestions.vue";
 
 type SearchResponse = {
@@ -9,6 +9,8 @@ const debounceMs = 150;
 
 const emit = defineEmits<{ submit: [value: Tag] }>();
 
+const {excludeTags = []} = defineProps<{excludeTags?: Tag[]}>();
+
 const forceRenderKey = ref(0);
 const query = ref("");
 const selectedIndex = ref(-1);
@@ -16,12 +18,16 @@ const suggestions = ref<Tag[]>([]);
 const timer = ref();
 const inputRef = useTemplateRef("input");
 
+// Convert excluded tags to a set for fast lookups
+const excludeSet = computed(() => new Set(excludeTags.map(t => t.name)));
+
 function doSearch(query: string) {
     // Encoding the query prevents trailing whitespace from being stripped
     fetch("/api/tagsearch?q=" + encodeURIComponent(query))
         .then((resp) =>
             resp.json().then((json: SearchResponse) => {
-                suggestions.value = json.results;
+                // Remove excluded tags from suggestions
+                suggestions.value = json.results.filter(x => !excludeSet.value.has(x.name));
             }),
         )
         .catch((err) => console.error(err));
@@ -46,6 +52,12 @@ function autoComplete() {
 
     const index = selectedIndex.value === -1 ? 0 : selectedIndex.value;
     query.value = suggestions.value[index].name;
+}
+
+function onSuggestionClick(index: number) {
+    selectedIndex.value = index;
+    autoComplete();
+    submit();
 }
 
 function onInput(e: Event) {
@@ -135,7 +147,7 @@ watch(query, (query, _, onCleanup) => {
         <SearchSuggestions
             :tags="suggestions"
             :selected-index="selectedIndex"
-            @on-click="(i) => { selectedIndex = i; autoComplete(); submit() }"
+            @on-click="onSuggestionClick"
         />
     </div>
 </template>
