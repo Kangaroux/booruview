@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useTemplateRef, watchPostEffect } from "vue";
 
-const emit = defineEmits<{onClick: [index: number]}>();
+const emit = defineEmits<{ onClick: [index: number] }>();
 
 const props = defineProps<{
     selectedIndex: number;
@@ -42,7 +42,7 @@ watchPostEffect(() => {
     </ul>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .tag-list {
     margin: 0;
     padding: 0;
@@ -59,11 +59,11 @@ watchPostEffect(() => {
     display: flex;
     justify-content: space-between;
     cursor: pointer;
-}
 
-.list-item:hover,
-.list-item:focus {
-    background-color: #303030;
+    &:hover,
+    &:focus {
+        background-color: #303030;
+    }
 }
 
 .name {
@@ -76,7 +76,7 @@ watchPostEffect(() => {
 }
 
 .tag {
-    color: hsl(208, 56%, 75%);
+    color: #9cc2e3;
 }
 
 .artist {

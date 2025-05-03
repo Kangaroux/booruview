@@ -14,4 +14,13 @@ export default defineConfig({
             "~": fileURLToPath(new URL("./node_modules", import.meta.url)),
         },
     },
+    css: {
+        preprocessorOptions: {
+            scss: {
+                // I don't want to use your shitty verbose color API
+                // give me back my lighten and darken >:(
+                silenceDeprecations: ["color-functions"],
+            },
+        },
+    },
 });

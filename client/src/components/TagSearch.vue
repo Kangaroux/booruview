@@ -7,9 +7,9 @@ type SearchResponse = {
 };
 const debounceMs = 150;
 
-const emit = defineEmits<{ submit: [value: Tag] }>();
+const emit = defineEmits<{ onSearch: []; onSubmit: [value: Tag] }>();
 
-const {excludeTags = []} = defineProps<{excludeTags?: Tag[]}>();
+const { excludeTags = [] } = defineProps<{ excludeTags?: Tag[] }>();
 
 const forceRenderKey = ref(0);
 const query = ref("");
@@ -19,7 +19,7 @@ const timer = ref();
 const inputRef = useTemplateRef("input");
 
 // Convert excluded tags to a set for fast lookups
-const excludeSet = computed(() => new Set(excludeTags.map(t => t.name)));
+const excludeSet = computed(() => new Set(excludeTags.map((t) => t.name)));
 
 function doSearch(query: string) {
     // Encoding the query prevents trailing whitespace from being stripped
@@ -27,7 +27,9 @@ function doSearch(query: string) {
         .then((resp) =>
             resp.json().then((json: SearchResponse) => {
                 // Remove excluded tags from suggestions
-                suggestions.value = json.results.filter(x => !excludeSet.value.has(x.name));
+                suggestions.value = json.results.filter(
+                    (x) => !excludeSet.value.has(x.name),
+                );
             }),
         )
         .catch((err) => console.error(err));
@@ -57,7 +59,7 @@ function autoComplete() {
 function onSuggestionClick(index: number) {
     selectedIndex.value = index;
     autoComplete();
-    submit();
+    onSubmit();
 }
 
 function onInput(e: Event) {
@@ -79,8 +81,9 @@ function onInput(e: Event) {
 }
 
 // Emits an event to the parent with the tag info
-function submit() {
+function onSubmit() {
     if (query.value.length === 0) {
+        emit("onSearch");
         return;
     }
 
@@ -108,7 +111,7 @@ function submit() {
 
     query.value = "";
     selectedIndex.value = -1;
-    emit("submit", tag);
+    emit("onSubmit", tag);
 }
 
 // Setup a debounce to fetch search results shortly after the user stops typing
@@ -128,7 +131,7 @@ watch(query, (query, _, onCleanup) => {
 <template>
     <div
         class="search-container"
-        @keydown.enter.prevent="submit()"
+        @keydown.enter.prevent="onSubmit()"
         @keydown.tab.prevent="autoComplete()"
         @keydown.up.prevent="changeSelection(-1)"
         @keydown.down.prevent="changeSelection(1)"
@@ -140,6 +143,7 @@ watch(query, (query, _, onCleanup) => {
             class="search"
             type="text"
             ref="input"
+            placeholder="type a booru tag"
             :value="query"
             @input="onInput"
             @focus="selectedIndex = -1"

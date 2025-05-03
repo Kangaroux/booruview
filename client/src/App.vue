@@ -25,8 +25,14 @@ function doSearch() {
 <template>
     <header>
         <nav class="nav">
-            <TagSearch @submit="(t) => (tags = tags.concat(t))" :exclude-tags="tags" />
-            <button class="searchButton" type="submit" @click="doSearch">search</button>
+            <TagSearch
+                @on-search="doSearch"
+                @on-submit="(t) => (tags = tags.concat(t))"
+                :exclude-tags="tags"
+            />
+            <button class="searchButton" type="submit" @click="doSearch">
+                search
+            </button>
 
             <TagChip v-for="t in tags" :tag="t" />
         </nav>
@@ -39,22 +45,28 @@ function doSearch() {
 </template>
 
 <style scoped lang="scss">
-@use "sass:color";
-
 .nav {
     max-width: 350px;
 }
 
-$btnColor: #342b3a;
-
 .searchButton {
+    $btn-color: #342b3a;
+    $border-color: lighten($btn-color, 20%);
+
     display: block;
     width: 100%;
     margin-top: 8px;
-    background-color: $btnColor;
     border-radius: 4px;
-    border: 1px solid color.adjust($btnColor, $lightness: 20%);
     color: #fff;
     padding: 8px;
+    cursor: pointer;
+
+    background-color: $btn-color;
+    border: 1px solid $border-color;
+
+    &:hover {
+        background-color: lighten($btn-color, 2.5%);
+        border-color: lighten($border-color, 2.5%);
+    }
 }
 </style>
