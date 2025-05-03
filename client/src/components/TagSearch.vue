@@ -143,7 +143,7 @@ watch(query, (query, _, onCleanup) => {
             class="search"
             type="text"
             ref="input"
-            placeholder="type a booru tag"
+            placeholder="e.g: 1girl"
             :value="query"
             @input="onInput"
             @focus="selectedIndex = -1"
