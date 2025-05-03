@@ -4,7 +4,7 @@ import Post from "./components/Post.vue";
 import TagSearch from "./components/TagSearch.vue";
 import TagChip from "./components/TagChip.vue";
 
-const showHelp = ref(true);
+const showHelp = ref(localStorage.getItem("hide-help") === null);
 const posts = ref<Post[]>([]);
 const tags = ref<Tag[]>([]);
 
@@ -21,15 +21,20 @@ function doSearch() {
         })
         .catch((err) => console.error(err));
 }
+
+function onCloseHelp() {
+    showHelp.value = false;
+    localStorage.setItem("hide-help", "1")
+}
 </script>
 
 <template>
     <div class="app">
         <header>
             <nav class="nav">
-                <aside class="search-help" v-if="showHelp">
+                <aside class="search-help" v-if="showHelp && posts.length === 0">
                     <p>
-                        <button class="close-btn" @click="showHelp = false">Close</button>
+                        <button class="close-btn" @click="onCloseHelp">Close</button>
 
                         Enter one tag at a time.
                     </p>
