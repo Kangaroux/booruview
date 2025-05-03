@@ -135,6 +135,7 @@ watch(query, (query, _, onCleanup) => {
         <SearchSuggestions
             :tags="suggestions"
             :selected-index="selectedIndex"
+            @on-click="(i) => { selectedIndex = i; autoComplete(); submit() }"
         />
     </div>
 </template>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useTemplateRef, watchPostEffect } from "vue";
 
+const emit = defineEmits<{onClick: [index: number]}>();
+
 const props = defineProps<{
     selectedIndex: number;
     tags: Tag[];
@@ -31,6 +33,7 @@ watchPostEffect(() => {
                 :class="tag.type"
                 :title="tag.name"
                 tabindex="-1"
+                @click="$emit('onClick', i)"
             >
                 <span class="name">{{ tag.name }}</span>
                 <span class="count">{{ tag.count }}</span>
