@@ -33,13 +33,13 @@ function loadTags() {
 <template>
     <div class="post">
         <template v-if="content.url.endsWith('.mp4')">
-            <video class="content" :poster="post.thumbnail_url || post.lowres_url" :width="content.width" :height="content.height" controls>
+            <video class="content" :poster="post.thumbnail_url || post.lowres_url" :width="content.width" :height="content.height" controls preload="none">
                 <source :src="content.url" type="video/mp4">
             </video>
         </template>
 
         <template v-else-if="content.url.endsWith('.webm')">
-            <video class="content" :poster="post.thumbnail_url || post.lowres_url" :width="content.width" :height="content.height" controls>
+            <video class="content" :poster="post.thumbnail_url || post.lowres_url" :width="content.width" :height="content.height" controls preload="none">
                 <source :src="content.url" type="video/webm">
             </video>
         </template>
@@ -51,7 +51,6 @@ function loadTags() {
             :width="content.width"
             :height="content.height"
             loading="lazy"
-            referrerpolicy="no-referrer"
         />
         </template>
 
