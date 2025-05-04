@@ -36,7 +36,9 @@ watchPostEffect(() => {
                 @click="$emit('onClick', i)"
             >
                 <span class="name">{{ tag.name }}</span>
-                <span class="count" v-if="tag.type !== 'unknown'">{{ tag.count }}</span>
+                <span class="count" v-if="tag.type !== 'unknown'">
+                    {{ tag.count }}
+                </span>
             </li>
         </template>
     </ul>

@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import Post from "./components/Post.vue";
 import TagSearch from "./components/TagSearch.vue";
-import TagChip from "./components/TagChip.vue";
+import TagList from "./components/TagList.vue";
 
 const showHelp = ref(localStorage.getItem("hide-help") === null);
 const posts = ref<Post[]>([]);
@@ -76,7 +76,7 @@ function onCloseHelp() {
                     search
                 </button>
 
-                <TagChip v-for="t in tags" :tag="t" :jiggle="true" />
+                <TagList :tags="tags" />
             </nav>
         </header>
         <main class="post-container">
