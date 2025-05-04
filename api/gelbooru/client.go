@@ -112,7 +112,7 @@ func SearchTags(query string) ([]api.TagResponse, error) {
 	for _, v := range suggestions {
 		data := api.TagResponse{
 			Name: v,
-			Type: api.Metadata,
+			Type: api.Unknown,
 		}
 		tags = append(tags, data)
 	}

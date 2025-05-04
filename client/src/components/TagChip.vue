@@ -41,7 +41,7 @@ const { tag } = defineProps<{ tag: Tag }>();
 
 .deprecated,
 .unknown {
-    background-color: #ddd;
-    color: #000;
+    background-color: #6275ae;
+    color: #0b1227;
 }
 </style>

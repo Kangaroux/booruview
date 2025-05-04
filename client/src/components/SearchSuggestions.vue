@@ -36,7 +36,7 @@ watchPostEffect(() => {
                 @click="$emit('onClick', i)"
             >
                 <span class="name">{{ tag.name }}</span>
-                <span class="count">{{ tag.count }}</span>
+                <span class="count" v-if="tag.type !== 'unknown'">{{ tag.count }}</span>
             </li>
         </template>
     </ul>
@@ -97,6 +97,6 @@ watchPostEffect(() => {
 
 .deprecated,
 .unknown {
-    color: #666;
+    color: #6275ae;
 }
 </style>
