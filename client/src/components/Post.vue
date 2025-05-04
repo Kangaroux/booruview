@@ -25,6 +25,13 @@ const content = computed<{ url: string; width: number; height: number }>(() => {
     };
 });
 
+const isVideo = computed(() => {
+    return (
+        content.value.url.endsWith(".mp4") ||
+        content.value.url.endsWith(".webm")
+    );
+});
+
 function loadTags() {
     store.loadTags(post.tags);
 }
@@ -32,28 +39,35 @@ function loadTags() {
 
 <template>
     <div class="post">
-        <template v-if="content.url.endsWith('.mp4')">
-            <video class="content" :poster="post.thumbnail_url || post.lowres_url" :width="content.width" :height="content.height" controls preload="none">
-                <source :src="content.url" type="video/mp4">
-            </video>
-        </template>
+        <video
+            class="content"
+            :poster="post.thumbnail_url || post.lowres_url"
+            :width="content.width"
+            :height="content.height"
+            preload="none"
+            controls
+            v-if="isVideo"
+        >
+            <source
+                :src="content.url"
+                type="video/mp4"
+                v-if="content.url.endsWith('.mp4')"
+            />
+            <source
+                :src="content.url"
+                type="video/webm"
+                v-if="content.url.endsWith('.webm')"
+            />
+        </video>
 
-        <template v-else-if="content.url.endsWith('.webm')">
-            <video class="content" :poster="post.thumbnail_url || post.lowres_url" :width="content.width" :height="content.height" controls preload="none">
-                <source :src="content.url" type="video/webm">
-            </video>
-        </template>
-
-        <template v-else>
-            <img
+        <img
             class="content"
             :src="content.url"
             :width="content.width"
             :height="content.height"
             loading="lazy"
+            v-if="!isVideo"
         />
-        </template>
-
 
         <button @click="showTags = !showTags" @click.once="loadTags">
             toggle tags
