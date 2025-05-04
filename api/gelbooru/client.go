@@ -57,7 +57,8 @@ func ParseTagNumericType(raw int) api.TagType {
 	return api.Unknown
 }
 
-func SearchTags(query string) ([]api.TagResponse, error) {
+func doApiTagSearch(query string) ([]api.TagResponse, error) {
+	var resp []TagSearchResponse
 	params := url.Values{}
 	params.Add("page", "autocomplete2")
 	params.Add("term", query)
@@ -72,14 +73,12 @@ func SearchTags(query string) ([]api.TagResponse, error) {
 		return nil, err
 	}
 
-	// Search API returns up to 10 results
-	resp := make([]TagSearchResponse, 10)
 	if err := json.Unmarshal(body, &resp); err != nil {
 		return nil, err
 	}
 
-	tags := make([]api.TagResponse, len(resp))
-	for i, t := range resp {
+	tags := make([]api.TagResponse, 0, len(resp))
+	for _, t := range resp {
 		data := api.TagResponse{
 			Name: t.Label,
 			Type: ParseTagType(t.Category),
@@ -95,7 +94,27 @@ func SearchTags(query string) ([]api.TagResponse, error) {
 		}
 
 		data.Count = count
-		tags[i] = data
+		tags = append(tags, data)
+	}
+
+	return tags, nil
+}
+
+func SearchTags(query string) ([]api.TagResponse, error) {
+	isFilter, suggestions := SuggestedSearchFilters(query)
+
+	if !isFilter {
+		return doApiTagSearch(query)
+	}
+
+	tags := make([]api.TagResponse, 0, len(suggestions))
+
+	for _, v := range suggestions {
+		data := api.TagResponse{
+			Name: v,
+			Type: api.Metadata,
+		}
+		tags = append(tags, data)
 	}
 
 	return tags, nil

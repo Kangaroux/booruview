@@ -6,26 +6,60 @@ import (
 
 var (
 	// Special search filters that are not actual tags and shouldn't be used for lookups.
+	// Some filters have preset values that can be recommended.
 	// https://gelbooru.com/index.php?page=wiki&s=&s=view&id=26263
-	searchFilters = map[string]bool{
-		"fav":     true,
-		"height":  true,
-		"id":      true,
-		"pool":    true,
-		"rating":  true,
-		"score":   true,
-		"sort":    true,
-		"source":  true,
-		"updated": true,
-		"user":    true,
-		"width":   true,
+	searchFilters = map[string][]string{
+		"fav":     nil,
+		"height":  nil,
+		"id":      nil,
+		"pool":    nil,
+		"rating":  {"general", "sensitive", "questionable", "explicit"},
+		"score":   nil,
+		"sort":    {"random", "score", "id", "rating", "user", "height", "width", "source", "updated"},
+		"source":  nil,
+		"updated": nil,
+		"user":    nil,
+		"width":   nil,
 	}
 )
 
 func IsSearchFilter(tag string) bool {
-	// Filters always have a colon, e.g. score:>5
-	filter := strings.SplitN(tag, ":", 2)[0]
-	filter = strings.TrimPrefix(filter, "-")
-	_, match := searchFilters[filter]
-	return match
+	parts := strings.SplitN(strings.TrimPrefix(tag, "-"), ":", 2)
+	if len(parts) == 1 {
+		return false
+	}
+	_, ok := searchFilters[parts[0]]
+	return ok
+}
+
+func SuggestedSearchFilters(tag string) (isFilter bool, resp []string) {
+	if len(tag) == 0 {
+		return
+	}
+
+	parts := strings.SplitN(strings.TrimPrefix(tag, "-"), ":", 2)
+	if len(parts) == 1 {
+		return
+	}
+	isFilter = true
+
+	suffixes, ok := searchFilters[parts[0]]
+	if !ok || len(suffixes) == 0 {
+		return
+	}
+
+	var prefix string
+	if tag[0] == '-' {
+		prefix = "-" + parts[0] + ":"
+	} else {
+		prefix = parts[0] + ":"
+	}
+
+	for _, s := range suffixes {
+		if strings.HasPrefix(s, parts[1]) {
+			resp = append(resp, prefix+s)
+		}
+	}
+
+	return
 }

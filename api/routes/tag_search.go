@@ -31,17 +31,6 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Search filters are not tags and will always be an empty response
-	if gelbooru.IsSearchFilter(query) {
-		respBody, err := json.Marshal(resp)
-		if err != nil {
-			handleError(w, err)
-			return
-		}
-		w.Write(respBody)
-		return
-	}
-
 	cached, err := getCachedTagSearch(query)
 	if err != nil {
 		handleError(w, err)
