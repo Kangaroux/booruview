@@ -11,11 +11,11 @@ const { jiggle, tag } = defineProps<{ jiggle?: boolean; tag: Tag }>();
 <style scoped>
 .chip {
     padding: 8px;
+    margin-right: 4px;
     border: none;
     border-radius: 8px;
     display: inline-block;
     font-size: 16px;
-    color: #000;
 }
 
 @keyframes jiggle-anim {
