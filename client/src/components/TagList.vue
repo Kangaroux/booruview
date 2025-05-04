@@ -49,7 +49,7 @@ const categories = computed(() => {
 
 <template>
     <div class="tag-list">
-        <h3>artist</h3>
+        <h3 v-if="categories.artist.length > 0">artist</h3>
         <TagChip
             v-for="t in categories.artist"
             :tag="t"
@@ -57,7 +57,7 @@ const categories = computed(() => {
             :jiggle="true"
         />
 
-        <h3>character</h3>
+        <h3 v-if="categories.character.length > 0">character</h3>
         <TagChip
             v-for="t in categories.character"
             :tag="t"
@@ -65,14 +65,14 @@ const categories = computed(() => {
             :jiggle="true"
         />
 
-        <h3>copyright</h3>
+        <h3 v-if="categories.copyright.length > 0">copyright</h3>
         <TagChip
             v-for="t in categories.copyright"
             :tag="t"
             :key="t.name"
             :jiggle="true"
         />
-        <h3>tags</h3>
+        <h3 v-if="categories.tag.length > 0">tags</h3>
         <TagChip
             v-for="t in categories.tag"
             :tag="t"
@@ -80,7 +80,7 @@ const categories = computed(() => {
             :jiggle="true"
         />
 
-        <h3>metadata</h3>
+        <h3 v-if="categories.metadata.length > 0">metadata</h3>
         <TagChip
             v-for="t in categories.metadata"
             :tag="t"
