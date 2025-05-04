@@ -1,9 +1,9 @@
 <script setup lang="ts">
-const { tag } = defineProps<{ tag: Tag }>();
+const { jiggle, tag } = defineProps<{ jiggle?: boolean, tag: Tag }>();
 </script>
 
 <template>
-    <div class="chip" :class="tag.type">{{ tag.name }}</div>
+    <div class="chip" :class="{[tag.type]: true, 'jiggle': jiggle}">{{ tag.name }}</div>
 </template>
 
 <style scoped>
@@ -14,6 +14,28 @@ const { tag } = defineProps<{ tag: Tag }>();
     display: inline-block;
     font-size: 16px;
     color: #000;
+}
+
+@keyframes jiggle-anim {
+    0% {
+        transform: scale(0.9)
+    }
+
+    33% {
+        transform: scale(1.1);
+    }
+
+    66% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(1.0);
+    }
+}
+
+.jiggle {
+    animation: 300ms linear 0s jiggle-anim;
 }
 
 .tag {

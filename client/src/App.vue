@@ -76,7 +76,7 @@ function onCloseHelp() {
                     search
                 </button>
 
-                <TagChip v-for="t in tags" :tag="t" />
+                <TagChip v-for="t in tags" :tag="t" :jiggle="true" />
             </nav>
         </header>
         <main class="post-container">
