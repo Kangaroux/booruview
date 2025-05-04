@@ -2,10 +2,10 @@ services:
   api:
     build:
       context: api
-    #command: gow run cmd/main.go
-    command: dlv debug --headless --listen=:12345 --continue --accept-multiclient cmd/main.go
-    security_opt: # IMPORTANT: only use when debugging
-      - seccomp:unconfined
+    command: gow run cmd/main.go
+    #command: dlv debug --headless --listen=:12345 --continue --accept-multiclient cmd/main.go
+    # security_opt: # IMPORTANT: only use when debugging
+    #   - seccomp:unconfined
     ports:
       - "8000:8000"
       - "12345:12345"
