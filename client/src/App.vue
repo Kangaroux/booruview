@@ -7,8 +7,15 @@ import TagList from "./components/TagList.vue";
 const showHelp = ref(localStorage.getItem("hide-help") === null);
 const posts = ref<Post[]>([]);
 const tags = ref<Tag[]>([]);
+const fetching = ref(false);
 
 function doSearch() {
+    if (fetching.value) {
+        return;
+    }
+
+    fetching.value = true;
+
     fetch(
         "/api/posts?q=" +
             encodeURIComponent(tags.value.map((t) => t.name).join(" ")),
@@ -19,7 +26,8 @@ function doSearch() {
                 console.log(json);
             });
         })
-        .catch((err) => console.error(err));
+        .catch((err) => console.error(err))
+        .finally(() => (fetching.value = false));
 }
 
 function onCloseHelp() {
@@ -72,8 +80,14 @@ function onCloseHelp() {
                     @on-submit="(t) => (tags = tags.concat(t))"
                     :exclude-tags="tags"
                 />
-                <button class="search-btn" type="submit" @click="doSearch">
-                    search
+                <button
+                    class="search-btn"
+                    type="submit"
+                    @click="doSearch"
+                    :disabled="fetching"
+                >
+                    <span v-if="!fetching">search</span>
+                    <span v-else class="spinner"></span>
                 </button>
 
                 <TagList :tags="tags" />
@@ -109,6 +123,8 @@ function onCloseHelp() {
     break-inside: avoid-column;
 }
 
+$spinner-size: 20px;
+
 .search-btn {
     $btn-color: #342b3a;
     $border-color: lighten($btn-color, 20%);
@@ -120,6 +136,8 @@ function onCloseHelp() {
     color: #fff;
     padding: 8px;
     cursor: pointer;
+    font-size: 16px;
+    line-height: $spinner-size;
 
     background-color: $btn-color;
     border: 1px solid $border-color;
@@ -127,6 +145,36 @@ function onCloseHelp() {
     &:hover {
         background-color: lighten($btn-color, 2.5%);
         border-color: lighten($border-color, 2.5%);
+    }
+
+    &:disabled {
+        cursor: default;
+        background-color: darken($btn-color, 2.5%);
+        border-color: darken($border-color, 2.5%);
+    }
+
+    span {
+        display: block;
+        margin: 0 auto;
+    }
+
+    .spinner {
+        width: $spinner-size;
+        height: $spinner-size;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        border-bottom-color: transparent;
+        animation: linear 1s spin-anim infinite;
+        display: block;
+
+        @keyframes spin-anim {
+            from {
+                rotate: 0;
+            }
+            to {
+                rotate: 360deg;
+            }
+        }
     }
 }
 

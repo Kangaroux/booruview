@@ -80,6 +80,8 @@ function loadTags() {
 
 <style scoped>
 .content {
+    /* placeholder color */
+    background-color: #444;
     width: 100%;
     height: auto;
 }
