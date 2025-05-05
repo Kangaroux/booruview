@@ -79,6 +79,10 @@ function loadTags() {
 </template>
 
 <style scoped>
+.post {
+    break-inside: avoid;
+}
+
 .content {
     /* placeholder color */
     background-color: #444;

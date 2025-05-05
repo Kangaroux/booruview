@@ -1,11 +1,13 @@
 import { reactive } from "vue";
 
 type Store = {
+    posts: Post[];
     tags: { [key: string]: Tag };
     loadTags(tags: string[]): Promise<void>;
 };
 
 const store = reactive<Store>({
+    posts: [],
     tags: {},
     loadTags(tags: string[]): Promise<void> {
         return new Promise((resolve, reject) => {

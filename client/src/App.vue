@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import Post from "./components/Post.vue";
+import store from "@/store";
+import PostContainer from "./components/PostContainer.vue";
 import TagSearch from "./components/TagSearch.vue";
 import TagList from "./components/TagList.vue";
 
 const showHelp = ref(localStorage.getItem("hide-help") === null);
-const posts = ref<Post[]>([]);
 const tags = ref<Tag[]>([]);
 const fetching = ref(false);
 
@@ -22,7 +22,7 @@ function doSearch() {
     )
         .then((resp) => {
             resp.json().then((json) => {
-                posts.value = json.results;
+                store.posts = json.results;
                 console.log(json);
             });
         })
@@ -42,7 +42,7 @@ function onCloseHelp() {
             <nav class="nav">
                 <aside
                     class="search-help"
-                    v-if="showHelp && posts.length === 0"
+                    v-if="showHelp && store.posts.length === 0"
                 >
                     <p>
                         <button class="close-btn" @click="onCloseHelp">
@@ -93,8 +93,8 @@ function onCloseHelp() {
                 <TagList :tags="tags" />
             </nav>
         </header>
-        <main class="post-container">
-            <Post :post="p" v-for="p in posts" :key="p.id" />
+        <main>
+            <PostContainer :posts="store.posts" />
         </main>
     </div>
 </template>
@@ -110,17 +110,9 @@ function onCloseHelp() {
     position: relative;
 }
 
-.post-container {
+main {
     flex: 1;
-
     padding: 0 10px;
-
-    column-width: 600px;
-    column-gap: 10px;
-}
-
-.post {
-    break-inside: avoid-column;
 }
 
 $spinner-size: 20px;
