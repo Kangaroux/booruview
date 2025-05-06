@@ -7,9 +7,10 @@ const { post } = defineProps<{
     post: Post;
 }>();
 
+const fetchingTags = ref(false);
 const showTags = ref(false);
 const tags = computed(() => {
-    if(store.fetchingTags) {
+    if(fetchingTags.value) {
         return [];
     }
 
@@ -39,7 +40,8 @@ const isVideo = computed(() => {
 });
 
 function loadTags() {
-    store.loadTags(post.tags);
+    fetchingTags.value = true;
+    store.loadTags(post.tags).finally(() => fetchingTags.value = false);
 }
 </script>
 
