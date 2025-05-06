@@ -40,10 +40,30 @@ function onCloseHelp() {
     <div class="app">
         <header>
             <nav class="nav">
-                <aside
+                <TagSearch
+                    @on-search="doSearch"
+                    @on-submit="(t) => (tags = tags.concat(t))"
+                    :exclude-tags="tags"
+                />
+                <button
+                    class="search-btn"
+                    type="submit"
+                    @click="doSearch"
+                    :disabled="fetching"
+                >
+                    <span v-if="!fetching">search</span>
+                    <span v-else class="spinner"></span>
+                </button>
+
+                <TagList :tags="tags" />
+            </nav>
+        </header>
+        <main>
+            <div
                     class="search-help"
                     v-if="showHelp && store.posts.length === 0"
                 >
+                <div class="help-content">
                     <p>
                         <button class="close-btn" @click="onCloseHelp">
                             Close
@@ -73,28 +93,9 @@ function onCloseHelp() {
                             Gelbooru Search Help
                         </a>
                     </p>
-                </aside>
-
-                <TagSearch
-                    @on-search="doSearch"
-                    @on-submit="(t) => (tags = tags.concat(t))"
-                    :exclude-tags="tags"
-                />
-                <button
-                    class="search-btn"
-                    type="submit"
-                    @click="doSearch"
-                    :disabled="fetching"
-                >
-                    <span v-if="!fetching">search</span>
-                    <span v-else class="spinner"></span>
-                </button>
-
-                <TagList :tags="tags" />
-            </nav>
-        </header>
-        <main>
-            <PostContainer :posts="store.posts" />
+                </div>
+                </div>
+            <PostContainer v-if="store.posts.length > 0" :posts="store.posts" />
         </main>
     </div>
 </template>
@@ -103,6 +104,10 @@ function onCloseHelp() {
 .app {
     display: flex;
     flex-direction: row;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    gap: 10px;
 }
 
 .nav {
@@ -112,7 +117,6 @@ function onCloseHelp() {
 
 main {
     flex: 1;
-    padding: 0 10px;
 }
 
 $spinner-size: 20px;
@@ -171,15 +175,18 @@ $spinner-size: 20px;
 }
 
 .search-help {
-    position: absolute;
     background-color: #2c3932;
-    left: calc(100% + 10px);
     width: 300px;
     font-size: 14px;
+    padding: 12px;
 
     p,
     ul {
-        margin: 12px;
+        margin: 0;
+
+        &:not(:last-child) {
+            margin-bottom: 1.2em;
+        }
     }
 
     ul {
