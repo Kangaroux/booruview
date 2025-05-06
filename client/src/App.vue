@@ -38,24 +38,25 @@ function onCloseHelp() {
 
 <template>
     <div class="app">
-        <header>
-            <nav class="nav">
-                <TagSearch
-                    @on-search="doSearch"
-                    @on-submit="(t) => (tags = tags.concat(t))"
-                    :exclude-tags="tags"
-                />
-                <button
-                    class="search-btn"
-                    type="submit"
-                    @click="doSearch"
-                    :disabled="fetching"
-                >
-                    <span v-if="!fetching">search</span>
-                    <span v-else class="spinner"></span>
-                </button>
+        <header class="sidebar-container">
+            <button class="sidebar-close"></button>
+            <nav class="sidebar">
+                    <TagSearch
+                        @on-search="doSearch"
+                        @on-submit="(t) => (tags = tags.concat(t))"
+                        :exclude-tags="tags"
+                    />
+                    <button
+                        class="search-btn"
+                        type="submit"
+                        @click="doSearch"
+                        :disabled="fetching"
+                    >
+                        <span v-if="!fetching">search</span>
+                        <span v-else class="spinner"></span>
+                    </button>
 
-                <TagList :tags="tags" />
+                    <TagList :tags="tags" />
             </nav>
         </header>
         <main>
@@ -106,17 +107,20 @@ function onCloseHelp() {
     flex-direction: row;
     width: 100%;
     height: 100%;
-    padding: 10px;
-    gap: 10px;
 }
 
-.nav {
+.sidebar-container {
     width: 350px;
     position: relative;
 }
 
+.sidebar {
+    padding: 10px;
+}
+
 main {
     flex: 1;
+    overflow-y: scroll;
 }
 
 $spinner-size: 20px;
