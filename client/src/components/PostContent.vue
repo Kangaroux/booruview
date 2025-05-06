@@ -8,7 +8,13 @@ const { post } = defineProps<{
 }>();
 
 const showTags = ref(false);
-const tags = computed(() => post.tags.map((t) => store.tags[t]));
+const tags = computed(() => {
+    if(store.fetchingTags) {
+        return [];
+    }
+
+    return post.tags.map((t) => store.tags[t]).filter(t => t != null);
+});
 const content = computed<{ url: string; width: number; height: number }>(() => {
     if (post.lowres_url.length > 0) {
         return {
@@ -69,7 +75,7 @@ function loadTags() {
             v-if="!isVideo"
         />
 
-        <button @click="showTags = !showTags" @click.once="loadTags">
+        <button @click.once="loadTags" @click="showTags = !showTags">
             toggle tags
         </button>
         <div v-if="showTags">

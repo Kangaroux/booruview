@@ -27,6 +27,9 @@ services:
     build:
       context: client
     command: yarn build --watch --sourcemap
+    environment:
+      - NODE_ENV=development
+      - VITE_DEV=1
     volumes:
       - ./client:/app
 
