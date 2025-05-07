@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, useTemplateRef, watch } from "vue";
-import SearchSuggestions from "./SearchSuggestions.vue";
+import SearchSuggestions from "./Suggestions.vue";
 
 type SearchResponse = {
     results: Tag[];
@@ -130,7 +130,7 @@ watch(query, (query, _, onCleanup) => {
 
 <template>
     <div
-        class="search-container"
+        class="container"
         @keydown.enter.prevent="onSubmit()"
         @keydown.tab.prevent="autoComplete()"
         @keydown.up.prevent="changeSelection(-1)"
@@ -140,7 +140,7 @@ watch(query, (query, _, onCleanup) => {
         <template :key="forceRenderKey" />
 
         <input
-            class="search"
+            class="input"
             type="text"
             ref="input"
             placeholder="e.g: 1girl"
@@ -155,10 +155,19 @@ watch(query, (query, _, onCleanup) => {
             @on-click="onSuggestionClick"
         />
     </div>
+    <button
+        class="submit-btn"
+        type="submit"
+        @click="doSearch"
+        :disabled="fetching"
+    >
+        <span v-if="!fetching">search</span>
+        <span v-else class="spinner"></span>
+    </button>
 </template>
 
-<style scoped>
-.search {
+<style lang="scss" scoped>
+.input {
     background-color: #252525;
     border: 1px solid #555;
     color: #ddd;
@@ -168,12 +177,66 @@ watch(query, (query, _, onCleanup) => {
     height: 40px;
 }
 
-.search-container {
+.container {
     position: relative;
 }
 
 .suggestions {
     position: absolute;
     width: 100%;
+}
+
+.submit-btn {
+    $btn-color: #342b3a;
+    $border-color: lighten($btn-color, 20%);
+    $spinner-size: 20px;
+
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    border-radius: 4px;
+    color: #bb9fce;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: $spinner-size;
+
+    background-color: $btn-color;
+    border: 1px solid $border-color;
+
+    &:hover {
+        background-color: lighten($btn-color, 2.5%);
+        border-color: lighten($border-color, 2.5%);
+    }
+
+    &:disabled {
+        cursor: default;
+        background-color: darken($btn-color, 2.5%);
+        border-color: darken($border-color, 2.5%);
+    }
+
+    span {
+        display: block;
+        margin: 0 auto;
+    }
+
+    .spinner {
+        width: $spinner-size;
+        height: $spinner-size;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        border-bottom-color: transparent;
+        animation: linear 1s spin-anim infinite;
+        display: block;
+
+        @keyframes spin-anim {
+            from {
+                rotate: 0;
+            }
+            to {
+                rotate: 360deg;
+            }
+        }
+    }
 }
 </style>

@@ -2,7 +2,7 @@
 import store from "@/store";
 import { ref } from "vue";
 import TagList from "./TagList.vue";
-import TagSearch from "./search/TagSearch.vue";
+import SearchForm from "./search/SearchForm.vue";
 
 const tags = ref<Tag[]>([]);
 const sidebarClosed = ref(false);
@@ -36,20 +36,11 @@ function doSearch() {
         <i v-else class="bi bi-chevron-left"></i>
     </button>
     <nav class="sidebar" v-if="!sidebarClosed">
-        <TagSearch
+        <SearchForm
             @on-search="doSearch"
             @on-submit="(t) => (tags = tags.concat(t))"
             :exclude-tags="tags"
         />
-        <button
-            class="search-btn"
-            type="submit"
-            @click="doSearch"
-            :disabled="fetching"
-        >
-            <span v-if="!fetching">search</span>
-            <span v-else class="spinner"></span>
-        </button>
 
         <TagList :tags="tags" />
     </nav>
