@@ -19,7 +19,7 @@ export default defineConfig({
             scss: {
                 // I don't want to use your shitty verbose color API
                 // give me back my lighten and darken >:(
-                silenceDeprecations: ["color-functions", "global-builtin"],
+                silenceDeprecations: ["color-functions", "global-builtin", "import"],
             },
         },
     },

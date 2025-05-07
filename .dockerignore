@@ -1,5 +1,5 @@
 .git
 .vscode
 .env
-node_modules
+client/node_modules
 api/__debug_bin*

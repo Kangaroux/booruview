@@ -39,7 +39,7 @@ function onCloseHelp() {
 <template>
     <div class="app">
         <header class="sidebar-container">
-            <button class="sidebar-close"></button>
+            <button class="sidebar-close-btn bi bi-chevron-left"></button>
             <nav class="sidebar">
                     <TagSearch
                         @on-search="doSearch"
@@ -102,11 +102,24 @@ function onCloseHelp() {
 </template>
 
 <style scoped lang="scss">
+@import "assets/colors";
+
 .app {
     display: flex;
     flex-direction: row;
     width: 100%;
     height: 100%;
+}
+
+.sidebar-close-btn {
+    background-color: $bg-color;
+    border: 1px solid white;
+    color: white;
+
+    font-size: 24px;
+    padding: 8px;
+    border-left: none;
+    border-radius: 0 4px 4px 0;
 }
 
 .sidebar-container {
