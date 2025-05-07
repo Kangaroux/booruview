@@ -8,6 +8,7 @@ import TagList from "./components/TagList.vue";
 const showHelp = ref(localStorage.getItem("hide-help") === null);
 const tags = ref<Tag[]>([]);
 const fetching = ref(false);
+const sidebarClosed = ref(false);
 
 function doSearch() {
     if (fetching.value) {
@@ -34,36 +35,46 @@ function onCloseHelp() {
     showHelp.value = false;
     localStorage.setItem("hide-help", "1");
 }
+
+function onSidebarToggle() {
+    sidebarClosed.value = !sidebarClosed.value;
+}
 </script>
 
 <template>
     <div class="app">
-        <header class="sidebar-container">
-            <button class="sidebar-close-btn bi bi-chevron-left"></button>
+        <header
+            class="sidebar-container"
+            :class="{ 'sidebar-closed': sidebarClosed }"
+        >
+            <button class="sidebar-close-btn" @click="onSidebarToggle">
+                <i v-if="sidebarClosed" class="bi bi-chevron-right"></i>
+                <i v-else class="bi bi-chevron-left"></i>
+            </button>
             <nav class="sidebar">
-                    <TagSearch
-                        @on-search="doSearch"
-                        @on-submit="(t) => (tags = tags.concat(t))"
-                        :exclude-tags="tags"
-                    />
-                    <button
-                        class="search-btn"
-                        type="submit"
-                        @click="doSearch"
-                        :disabled="fetching"
-                    >
-                        <span v-if="!fetching">search</span>
-                        <span v-else class="spinner"></span>
-                    </button>
+                <TagSearch
+                    @on-search="doSearch"
+                    @on-submit="(t) => (tags = tags.concat(t))"
+                    :exclude-tags="tags"
+                />
+                <button
+                    class="search-btn"
+                    type="submit"
+                    @click="doSearch"
+                    :disabled="fetching"
+                >
+                    <span v-if="!fetching">search</span>
+                    <span v-else class="spinner"></span>
+                </button>
 
-                    <TagList :tags="tags" />
+                <TagList :tags="tags" />
             </nav>
         </header>
         <main>
             <div
-                    class="search-help"
-                    v-if="showHelp && store.posts.length === 0"
-                >
+                class="search-help"
+                v-if="showHelp && store.posts.length === 0"
+            >
                 <div class="help-content">
                     <p>
                         <button class="close-btn" @click="onCloseHelp">
@@ -95,7 +106,7 @@ function onCloseHelp() {
                         </a>
                     </p>
                 </div>
-                </div>
+            </div>
             <PostContainer v-if="store.posts.length > 0" :posts="store.posts" />
         </main>
     </div>
@@ -109,22 +120,44 @@ function onCloseHelp() {
     flex-direction: row;
     width: 100%;
     height: 100%;
+    gap: 10px;
 }
 
+$sidebar-bg-color: darken($bg-color, 2.5%);
+
 .sidebar-close-btn {
-    background-color: $bg-color;
-    border: 1px solid white;
-    color: white;
+    $btn-color: #342b3a;
+    $border-color: lighten($btn-color, 20%);
+    $btn-height: 70px;
+
+    background-color: $btn-color;
+    border: 1px solid $border-color;
+    color: #bb9fce;
 
     font-size: 24px;
-    padding: 8px;
+    height: $btn-height;
+    padding: 0 8px;
     border-left: none;
     border-radius: 0 4px 4px 0;
+
+    position: absolute;
+    left: 100%;
+    top: calc(50% - $btn-height / 2);
+
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
 }
 
 .sidebar-container {
+    $sidebar-width: 350px;
     width: 350px;
     position: relative;
+    background-color: $sidebar-bg-color;
+
+    &.sidebar-closed {
+        margin-right: -$sidebar-width;
+        right: $sidebar-width;
+    }
 }
 
 .sidebar {
@@ -136,17 +169,16 @@ main {
     overflow-y: scroll;
 }
 
-$spinner-size: 20px;
-
 .search-btn {
     $btn-color: #342b3a;
     $border-color: lighten($btn-color, 20%);
+    $spinner-size: 20px;
 
     display: block;
     width: 100%;
     margin-top: 8px;
     border-radius: 4px;
-    color: #fff;
+    color: #bb9fce;
     padding: 8px;
     cursor: pointer;
     font-size: 16px;
