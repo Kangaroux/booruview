@@ -10,11 +10,11 @@ const { post } = defineProps<{
 const fetchingTags = ref(false);
 const showTags = ref(false);
 const tags = computed(() => {
-    if(fetchingTags.value) {
+    if (fetchingTags.value) {
         return [];
     }
 
-    return post.tags.map((t) => store.tags[t]).filter(t => t != null);
+    return post.tags.map((t) => store.tags[t]).filter((t) => t != null);
 });
 const content = computed<{ url: string; width: number; height: number }>(() => {
     if (post.lowres_url.length > 0) {
@@ -41,7 +41,7 @@ const isVideo = computed(() => {
 
 function loadTags() {
     fetchingTags.value = true;
-    store.loadTags(post.tags).finally(() => fetchingTags.value = false);
+    store.loadTags(post.tags).finally(() => (fetchingTags.value = false));
 }
 </script>
 

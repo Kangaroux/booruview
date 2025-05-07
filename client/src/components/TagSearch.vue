@@ -164,7 +164,8 @@ watch(query, (query, _, onCleanup) => {
     color: #ddd;
     display: block;
     width: 100%;
-    padding: 8px;
+    padding-left: 8px;
+    height: 40px;
 }
 
 .search-container {

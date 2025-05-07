@@ -27,22 +27,22 @@ function onResize() {
 }
 
 const orderedPosts = computed(() => {
-    if(columnCount.value <= 1) {
+    if (columnCount.value <= 1) {
         return [posts];
     }
 
     let ordered: Post[][] = [];
     let colHeight: number[] = [];
-    for(let i = 0; i < columnCount.value; i++) {
+    for (let i = 0; i < columnCount.value; i++) {
         ordered = ordered.concat([[]]);
         colHeight = colHeight.concat(0);
     }
 
-    for(const j in posts) {
+    for (const j in posts) {
         let shortestCol = 0;
 
-        for(let i = 1; i < columnCount.value; i++) {
-            if(colHeight[i] < colHeight[shortestCol]) {
+        for (let i = 1; i < columnCount.value; i++) {
+            if (colHeight[i] < colHeight[shortestCol]) {
                 shortestCol = i;
             }
         }
@@ -52,7 +52,7 @@ const orderedPosts = computed(() => {
     }
 
     return ordered;
-})
+});
 
 onMounted(() => {
     new ResizeObserver(onResize).observe(container.value!);
@@ -61,7 +61,7 @@ onMounted(() => {
 
 <template>
     <div class="post-container" ref="container">
-        <div class="post-column" v-for="col, i in orderedPosts" :key="i">
+        <div class="post-column" v-for="(col, i) in orderedPosts" :key="i">
             <PostContent :post="post" v-for="post in col" :key="post.id" />
         </div>
     </div>

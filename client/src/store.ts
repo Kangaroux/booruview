@@ -25,9 +25,9 @@ const store = reactive<Store>({
             fetch("/api/tags?q=" + encodeURIComponent(missing.join(" ")))
                 .then((resp) => {
                     resp.json().then((json: TagResponse) => {
-                        const newTags: {[key: string]: Tag} = {};
+                        const newTags: { [key: string]: Tag } = {};
                         json.results.forEach((t) => (newTags[t.name] = t));
-                        this.tags = {...this.tags, ...newTags};
+                        this.tags = { ...this.tags, ...newTags };
                         resolve();
                     });
                 })
