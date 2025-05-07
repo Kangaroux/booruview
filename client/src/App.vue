@@ -2,73 +2,22 @@
 import { ref } from "vue";
 import store from "@/store";
 import PostContainer from "./components/PostContainer.vue";
-import TagSearch from "./components/TagSearch.vue";
+import TagSearch from "./components/search/TagSearch.vue";
 import TagList from "./components/TagList.vue";
+import Sidebar from "./components/Sidebar.vue";
 
 const showHelp = ref(localStorage.getItem("hide-help") === null);
-const tags = ref<Tag[]>([]);
-const fetching = ref(false);
-const sidebarClosed = ref(false);
-
-function doSearch() {
-    if (fetching.value) {
-        return;
-    }
-
-    fetching.value = true;
-
-    fetch(
-        "/api/posts?q=" +
-            encodeURIComponent(tags.value.map((t) => t.name).join(" ")),
-    )
-        .then((resp) => {
-            resp.json().then((json) => {
-                store.posts = json.results;
-                console.log(json);
-            });
-        })
-        .catch((err) => console.error(err))
-        .finally(() => (fetching.value = false));
-}
 
 function onCloseHelp() {
     showHelp.value = false;
     localStorage.setItem("hide-help", "1");
 }
-
-function onSidebarToggle() {
-    sidebarClosed.value = !sidebarClosed.value;
-}
 </script>
 
 <template>
     <div class="app">
-        <header
-            class="sidebar-container"
-            :class="{ 'sidebar-closed': sidebarClosed }"
-        >
-            <button class="sidebar-close-btn" @click="onSidebarToggle">
-                <i v-if="sidebarClosed" class="bi bi-chevron-right"></i>
-                <i v-else class="bi bi-chevron-left"></i>
-            </button>
-            <nav class="sidebar">
-                <TagSearch
-                    @on-search="doSearch"
-                    @on-submit="(t) => (tags = tags.concat(t))"
-                    :exclude-tags="tags"
-                />
-                <button
-                    class="search-btn"
-                    type="submit"
-                    @click="doSearch"
-                    :disabled="fetching"
-                >
-                    <span v-if="!fetching">search</span>
-                    <span v-else class="spinner"></span>
-                </button>
-
-                <TagList :tags="tags" />
-            </nav>
+        <header class="sidebar-container">
+            <Sidebar />
         </header>
         <main>
             <div
@@ -123,45 +72,8 @@ function onSidebarToggle() {
     gap: 10px;
 }
 
-$sidebar-bg-color: darken($bg-color, 2.5%);
-
-.sidebar-close-btn {
-    $btn-color: #342b3a;
-    $border-color: lighten($btn-color, 20%);
-    $btn-height: 70px;
-
-    background-color: $btn-color;
-    border: 1px solid $border-color;
-    color: #bb9fce;
-
-    font-size: 24px;
-    height: $btn-height;
-    padding: 0 8px;
-    border-left: none;
-    border-radius: 0 4px 4px 0;
-
-    position: absolute;
-    left: 100%;
-    top: calc(50% - $btn-height / 2);
-
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
-}
-
-.sidebar-container {
-    $sidebar-width: 350px;
-    width: 350px;
+header {
     position: relative;
-    background-color: $sidebar-bg-color;
-
-    &.sidebar-closed {
-        margin-right: -$sidebar-width;
-        right: $sidebar-width;
-    }
-}
-
-.sidebar {
-    padding: 10px;
 }
 
 main {
