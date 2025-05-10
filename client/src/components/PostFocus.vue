@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import store from "@/store";
-import { computed } from "vue";
+import { computed, onMounted, onUnmounted } from "vue";
 
 const content = computed<{ url: string; width: number; height: number }>(() => {
     const post = store.postFocus;
@@ -23,11 +23,30 @@ const content = computed<{ url: string; width: number; height: number }>(() => {
         height: post.height,
     };
 });
+
+function close() {
+    store.postFocus = null;
+}
+
+function onKeyDown(e: KeyboardEvent) {
+    if (e.key === "Esc" || e.key === "Escape") {
+        e.preventDefault();
+        close();
+    }
+}
+
+onMounted(() => {
+    document.addEventListener("keydown", onKeyDown);
+});
+
+onUnmounted(() => {
+    document.removeEventListener("keydown", onKeyDown);
+});
 </script>
 
 <template>
     <div class="post-focus">
-        <div class="screen-cover" @click="store.postFocus = null"></div>
+        <div class="screen-cover" @click="close()"></div>
         <div class="content-container">
             <img
                 class="content"
