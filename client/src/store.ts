@@ -18,7 +18,7 @@ type Store = {
 };
 
 const store = reactive<Store>({
-    currentPage: 0,
+    currentPage: 1,
     pagesFetched: 0,
     totalPostCount: 0,
     resultsPerPage: 0,
@@ -27,14 +27,20 @@ const store = reactive<Store>({
     tags: {},
 
     searchPosts(tags: Tag[]): Promise<void> {
+        type PostListResponse = {
+            count_per_page: number;
+            total_count: number;
+            results: Post[];
+        };
+
         return new Promise((resolve, reject) => {
-            fetch(
-                "/api/posts?q=" +
-                    encodeURIComponent(tags.map((t) => t.name).join(" ")),
-            )
+            const query = `q=${encodeURIComponent(tags.map((t) => t.name).join(" "))}&page=${this.currentPage}`;
+            fetch("/api/posts?" + query)
                 .then((resp) => {
-                    resp.json().then((json) => {
+                    resp.json().then((json: PostListResponse) => {
                         store.posts = json.results;
+                        store.resultsPerPage = json.count_per_page;
+                        store.totalPostCount = json.total_count;
                         resolve();
                     });
                 })
@@ -46,13 +52,14 @@ const store = reactive<Store>({
     },
 
     maxPage(): number {
-        const lastPage = Math.ceil(this.totalPostCount * this.resultsPerPage);
-
-        // Pages are 0-indexed
-        return lastPage - 1;
+        return Math.ceil(this.totalPostCount / this.resultsPerPage);
     },
 
     loadTags(tags: string[]): Promise<void> {
+        type TagResponse = {
+            results: Tag[];
+        };
+
         return new Promise((resolve, reject) => {
             const missing = tags.filter((t) => !(t in this.tags));
 
@@ -60,10 +67,6 @@ const store = reactive<Store>({
                 resolve();
                 return;
             }
-
-            type TagResponse = {
-                results: Tag[];
-            };
 
             fetch("/api/tags?q=" + encodeURIComponent(missing.join(" ")))
                 .then((resp) => {

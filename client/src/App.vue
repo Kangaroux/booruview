@@ -24,6 +24,11 @@ function onCloseHelp() {
             <template v-if="store.posts.length > 0">
                 <PostContainer :posts="store.posts" />
                 <footer>
+                    <p>
+                        page {{ store.currentPage }} of
+                        {{ store.maxPage() }} ({{ store.totalPostCount }}
+                        results)
+                    </p>
                     <button>&lt;&lt; prev page</button>
                     <button>next page &gt;&gt;</button>
                 </footer>
