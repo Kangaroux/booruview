@@ -14,19 +14,7 @@ function doPostSearch() {
     }
 
     fetching.value = true;
-
-    fetch(
-        "/api/posts?q=" +
-            encodeURIComponent(tags.value.map((t) => t.name).join(" ")),
-    )
-        .then((resp) => {
-            resp.json().then((json) => {
-                store.posts = json.results;
-                console.log(json);
-            });
-        })
-        .catch((err) => console.error(err))
-        .finally(() => (fetching.value = false));
+    store.searchPosts(tags.value).finally(() => (fetching.value = false));
 }
 </script>
 

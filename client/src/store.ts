@@ -14,6 +14,7 @@ type Store = {
     postsForCurrentPage(): Post[];
     prevPage(): void;
     maxPage(): number;
+    searchPosts(tags: Tag[]): Promise<void>;
 };
 
 const store = reactive<Store>({
@@ -24,6 +25,25 @@ const store = reactive<Store>({
 
     posts: [],
     tags: {},
+
+    searchPosts(tags: Tag[]): Promise<void> {
+        return new Promise((resolve, reject) => {
+            fetch(
+                "/api/posts?q=" +
+                    encodeURIComponent(tags.map((t) => t.name).join(" ")),
+            )
+                .then((resp) => {
+                    resp.json().then((json) => {
+                        store.posts = json.results;
+                        resolve();
+                    });
+                })
+                .catch((err) => {
+                    console.error(err);
+                    reject(err);
+                });
+        });
+    },
 
     maxPage(): number {
         const lastPage = Math.ceil(this.totalPostCount * this.resultsPerPage);
