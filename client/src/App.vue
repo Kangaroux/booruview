@@ -15,9 +15,7 @@ function onCloseHelp() {
 
 <template>
     <div class="app">
-        <header class="sidebar-container">
-            <Sidebar />
-        </header>
+        <Sidebar />
         <main>
             <SearchHelp
                 v-if="showHelp && store.posts.length === 0"
@@ -37,10 +35,6 @@ function onCloseHelp() {
     width: 100%;
     height: 100%;
     gap: 10px;
-}
-
-header {
-    position: relative;
 }
 
 main {

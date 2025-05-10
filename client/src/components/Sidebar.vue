@@ -31,26 +31,35 @@ function doPostSearch() {
 </script>
 
 <template>
-    <button class="toggle-btn" @click="sidebarClosed = !sidebarClosed">
-        <i v-if="sidebarClosed" class="bi bi-chevron-right"></i>
-        <i v-else class="bi bi-chevron-left"></i>
-    </button>
-    <nav class="sidebar" v-if="!sidebarClosed">
-        <SearchForm
-            @on-search="doPostSearch"
-            @on-tag-select="(t) => (tags = tags.concat(t))"
-            :exclude-tags="tags"
-            :show-spinner="fetching"
-        />
+    <header
+        class="sidebar-container"
+        :class="{ 'sidebar-closed': sidebarClosed }"
+    >
+        <button class="toggle-btn" @click="sidebarClosed = !sidebarClosed">
+            <i v-if="sidebarClosed" class="bi bi-chevron-right"></i>
+            <i v-else class="bi bi-chevron-left"></i>
+        </button>
+        <nav class="sidebar-content" v-if="!sidebarClosed">
+            <SearchForm
+                @on-search="doPostSearch"
+                @on-tag-select="(t) => (tags = tags.concat(t))"
+                :exclude-tags="tags"
+                :show-spinner="fetching"
+            />
 
-        <TagList :tags="tags" />
-    </nav>
+            <TagList :tags="tags" />
+        </nav>
+    </header>
 </template>
 
 <style lang="scss" scoped>
 @import "../assets/colors";
 
-.sidebar {
+.sidebar-container {
+    position: relative;
+}
+
+.sidebar-content {
     background-color: darken($bg-color, 2.5%);
     width: 350px;
     height: 100%;
@@ -79,5 +88,13 @@ function doPostSearch() {
 
     cursor: pointer;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+
+    .sidebar-closed & {
+        opacity: 0.5;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
 }
 </style>
