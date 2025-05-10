@@ -159,7 +159,7 @@ var (
 	postLimitStr = strconv.Itoa(postLimit)
 )
 
-func ListPosts(tags string) ([]api.PostResponse, error) {
+func ListPosts(tags string, page int) ([]api.PostResponse, error) {
 	params := url.Values{}
 	params.Add("page", "dapi")
 	params.Add("s", "post")
@@ -167,6 +167,7 @@ func ListPosts(tags string) ([]api.PostResponse, error) {
 	params.Add("json", "1")
 	params.Add("limit", postLimitStr)
 	params.Add("tags", tags)
+	params.Add("pid", strconv.Itoa(page))
 
 	rawResp, err := api.HttpGet(ApiUrl + "?" + params.Encode())
 	if err != nil {

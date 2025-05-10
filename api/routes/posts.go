@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 	"slices"
+	"strconv"
 	"strings"
 
 	api "github.com/kangaroux/booru-viewer"
@@ -23,6 +23,17 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		Results: []api.PostResponse{},
 	}
 
+	pageVal := r.FormValue("page")
+	if pageVal == "" {
+		pageVal = "0"
+	}
+
+	page, err := strconv.Atoi(pageVal)
+	if err != nil || page < 0 {
+		handle400Error(w, "invalid page number")
+		return
+	}
+
 	// Clean up the query so we're left with a sorted list of unique tags
 	normalized := slices.DeleteFunc(
 		strings.Split(r.FormValue("q"), " "),
@@ -33,7 +44,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 	slices.Sort(normalized)
 
 	query := strings.Join(normalized, " ")
-	cached, err := getCachedPosts(query)
+	cached, err := getCachedPosts(query, page)
 	if err != nil {
 		handleError(w, err)
 		return
@@ -45,30 +56,29 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	results, err := gelbooru.ListPosts(query)
+	results, err := gelbooru.ListPosts(query, page)
 	if err != nil {
 		handleError(w, err)
 		return
 	}
 
 	resp.Results = results
-
 	respBody, err := json.Marshal(resp)
 	if err != nil {
 		handleError(w, err)
 		return
 	}
 
-	writePostsToCache(query, respBody)
+	writePostsToCache(query, page, respBody)
 	w.Write(respBody)
 }
 
-func getCachedPosts(tags string) ([]byte, error) {
+func getCachedPosts(tags string, page int) ([]byte, error) {
 	vc := api.Valkey()
 	cached := vc.Do(context.Background(),
 		vc.B().
 			Get().
-			Key(gelbooru.PostCacheKey(tags)).
+			Key(gelbooru.PostCacheKey(tags, page)).
 			Build(),
 	)
 
@@ -88,19 +98,17 @@ func getCachedPosts(tags string) ([]byte, error) {
 	return data, nil
 }
 
-func writePostsToCache(query string, data []byte) error {
+func writePostsToCache(query string, afterId int, data []byte) error {
 	vc := api.Valkey()
 	buf := bytes.Buffer{}
 	if err := api.CompressData(&buf, data); err != nil {
 		return err
 	}
 
-	log.Printf("compression ratio: %.2f\n", float32(buf.Len())/float32(len(data)))
-
 	return vc.Do(context.Background(),
 		vc.B().
 			Setex().
-			Key(gelbooru.PostCacheKey(query)).
+			Key(gelbooru.PostCacheKey(query, afterId)).
 			Seconds(api.PostTtl).
 			Value(buf.String()).
 			Build(),

@@ -1,5 +1,7 @@
 package gelbooru
 
+import "fmt"
+
 var (
 	prefix          = "gb:"
 	postPrefix      = prefix + "post:"
@@ -7,8 +9,8 @@ var (
 	tagSearchPrefix = prefix + "tagsearch:"
 )
 
-func PostCacheKey(key string) string {
-	return postPrefix + key
+func PostCacheKey(key string, page int) string {
+	return fmt.Sprintf("%s%d:%s", postPrefix, page, key)
 }
 
 func TagCacheKey(key string) string {
