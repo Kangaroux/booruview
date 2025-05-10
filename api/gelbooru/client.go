@@ -157,11 +157,11 @@ type PostList struct {
 }
 
 const (
-	postLimit = 50
+	PostsPerPage = 50
 )
 
 var (
-	postLimitStr = strconv.Itoa(postLimit)
+	postLimitStr = strconv.Itoa(PostsPerPage)
 )
 
 func ListPosts(tags string, page int) (*PostList, error) {
@@ -185,7 +185,7 @@ func ListPosts(tags string, page int) (*PostList, error) {
 	}
 
 	resp := FullPostResponse{
-		Post: make([]PostResponse, postLimit),
+		Post: make([]PostResponse, PostsPerPage),
 	}
 
 	if err := json.Unmarshal(body, &resp); err != nil {

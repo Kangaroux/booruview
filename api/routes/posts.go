@@ -15,8 +15,9 @@ import (
 )
 
 type PostsResponse struct {
-	TotalCount int                `json:"total_count"`
-	Results    []api.PostResponse `json:"results"`
+	CountPerPage int                `json:"count_per_page"`
+	TotalCount   int                `json:"total_count"`
+	Results      []api.PostResponse `json:"results"`
 }
 
 func PostsHandler(w http.ResponseWriter, r *http.Request) {
@@ -63,6 +64,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	resp.CountPerPage = gelbooru.PostsPerPage
 	resp.TotalCount = results.TotalCount
 	resp.Results = results.Posts
 	respBody, err := json.Marshal(resp)
