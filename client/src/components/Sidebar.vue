@@ -8,7 +8,7 @@ const tags = ref<Tag[]>([]);
 const sidebarClosed = ref(false);
 const fetching = ref(false);
 
-function doSearch() {
+function doPostSearch() {
     if (fetching.value) {
         return;
     }
@@ -37,9 +37,10 @@ function doSearch() {
     </button>
     <nav class="sidebar" v-if="!sidebarClosed">
         <SearchForm
-            @on-search="doSearch"
-            @on-submit="(t) => (tags = tags.concat(t))"
+            @on-search="doPostSearch"
+            @on-tag-select="(t) => (tags = tags.concat(t))"
             :exclude-tags="tags"
+            :show-spinner="fetching"
         />
 
         <TagList :tags="tags" />

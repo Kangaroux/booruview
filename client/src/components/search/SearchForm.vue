@@ -7,9 +7,12 @@ type SearchResponse = {
 };
 const debounceMs = 150;
 
-const emit = defineEmits<{ onSearch: []; onSubmit: [value: Tag] }>();
+const emit = defineEmits<{ onSearch: []; onTagSelect: [value: Tag] }>();
 
-const { excludeTags = [] } = defineProps<{ excludeTags?: Tag[] }>();
+const { showSpinner = false, excludeTags = [] } = defineProps<{
+    excludeTags?: Tag[];
+    showSpinner?: boolean;
+}>();
 
 const forceRenderKey = ref(0);
 const query = ref("");
@@ -21,7 +24,7 @@ const inputRef = useTemplateRef("input");
 // Convert excluded tags to a set for fast lookups
 const excludeSet = computed(() => new Set(excludeTags.map((t) => t.name)));
 
-function doSearch(query: string) {
+function doTagSearch(query: string) {
     // Encoding the query prevents trailing whitespace from being stripped
     fetch("/api/tagsearch?q=" + encodeURIComponent(query))
         .then((resp) =>
@@ -80,7 +83,7 @@ function onInput(e: Event) {
     }
 }
 
-// Emits an event to the parent with the tag info
+// Emits an event with a selected tag or to trigger a post search
 function onSubmit() {
     if (query.value.length === 0) {
         emit("onSearch");
@@ -111,7 +114,7 @@ function onSubmit() {
 
     query.value = "";
     selectedIndex.value = -1;
-    emit("onSubmit", tag);
+    emit("onTagSelect", tag);
 }
 
 // Setup a debounce to fetch search results shortly after the user stops typing
@@ -121,7 +124,7 @@ watch(query, (query, _, onCleanup) => {
     selectedIndex.value = -1;
 
     if (query.length) {
-        timer.value = setTimeout(() => doSearch(query), debounceMs);
+        timer.value = setTimeout(() => doTagSearch(query), debounceMs);
     } else {
         suggestions.value = [];
     }
@@ -158,10 +161,10 @@ watch(query, (query, _, onCleanup) => {
     <button
         class="submit-btn"
         type="submit"
-        @click="doSearch"
-        :disabled="fetching"
+        @click="onSubmit"
+        :disabled="showSpinner"
     >
-        <span v-if="!fetching">search</span>
+        <span v-if="!showSpinner">search</span>
         <span v-else class="spinner"></span>
     </button>
 </template>
