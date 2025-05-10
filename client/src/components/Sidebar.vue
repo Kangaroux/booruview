@@ -39,7 +39,7 @@ function doPostSearch() {
             <i v-if="sidebarClosed" class="bi bi-chevron-right"></i>
             <i v-else class="bi bi-chevron-left"></i>
         </button>
-        <nav class="sidebar-content" v-if="!sidebarClosed">
+        <nav class="sidebar-content" v-show="!sidebarClosed">
             <SearchForm
                 @on-search="doPostSearch"
                 @on-tag-select="(t) => (tags = tags.concat(t))"

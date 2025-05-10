@@ -1,9 +1,23 @@
 <script setup lang="ts">
+import { onMounted, ref } from "vue";
+
 const { jiggle, tag } = defineProps<{ jiggle?: boolean; tag: Tag }>();
+const hasJiggled = ref(false);
+
+onMounted(() => {
+    if (jiggle) {
+        // Prevents the jiggle animation from playing when the sidebar
+        // is opened (display:none triggers animations)
+        setTimeout(() => (hasJiggled.value = true), 1000);
+    }
+});
 </script>
 
 <template>
-    <div class="chip" :class="{ [tag.type]: true, jiggle: jiggle }">
+    <div
+        class="chip"
+        :class="{ [tag.type]: true, jiggle: jiggle && !hasJiggled }"
+    >
         {{ tag.name }}
     </div>
 </template>
