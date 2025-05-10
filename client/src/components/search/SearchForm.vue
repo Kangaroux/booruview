@@ -150,6 +150,7 @@ watch(query, (query, _, onCleanup) => {
             :value="query"
             @input="onInput"
             @focus="selectedIndex = -1"
+            autofocus
         />
         <SearchSuggestions
             class="suggestions"
