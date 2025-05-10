@@ -30,7 +30,6 @@ function doPostSearch() {
             <SearchForm
                 @on-search="doPostSearch"
                 @on-tag-select="(t) => store.addSearchTag(t)"
-                :exclude-tags="store.searchTags()"
                 :show-spinner="fetching"
             />
 

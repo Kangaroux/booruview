@@ -82,7 +82,7 @@ const store = reactive<Store>({
                         store.posts.set(this.currentPage, json.results);
                         store.resultsPerPage = json.count_per_page;
                         store.totalPostCount = json.total_count;
-                        store.lastSearchTags = this.searchTagsSet;
+                        store.lastSearchTags = new Set(this.searchTagsSet);
 
                         resolve();
                     });
