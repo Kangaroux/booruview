@@ -1,30 +1,36 @@
 import { reactive } from "vue";
+import { isSetEqual } from "./set";
 
 type Store = {
     currentPage: number;
-    pagesFetched: number;
     totalPostCount: number;
     resultsPerPage: number;
 
-    posts: Post[];
+    lastSearch: Set<Tag>;
+    posts: Map<number, Post[]>;
     tags: { [key: string]: Tag };
 
+    hasResults(): boolean;
     loadTags(tags: string[]): Promise<void>;
-    nextPage(): void;
-    postsForCurrentPage(): Post[];
-    prevPage(): void;
     maxPage(): number;
+    nextPage(): void;
+    postsForCurrentPage(): Post[] | undefined;
+    prevPage(): void;
     searchPosts(tags: Tag[]): Promise<void>;
 };
 
 const store = reactive<Store>({
     currentPage: 1,
-    pagesFetched: 0,
     totalPostCount: 0,
     resultsPerPage: 0,
 
-    posts: [],
+    lastSearch: new Set(),
+    posts: new Map(),
     tags: {},
+
+    hasResults(): boolean {
+        return this.totalPostCount > 0;
+    },
 
     searchPosts(tags: Tag[]): Promise<void> {
         type PostListResponse = {
@@ -34,13 +40,27 @@ const store = reactive<Store>({
         };
 
         return new Promise((resolve, reject) => {
+            const searchTags = new Set(tags);
+            const searchChanged = !isSetEqual(this.lastSearch, searchTags);
+            const hasPage = this.posts.has(this.currentPage);
+
+            if (!searchChanged && hasPage) {
+                resolve();
+                return;
+            }
+
             const query = `q=${encodeURIComponent(tags.map((t) => t.name).join(" "))}&page=${this.currentPage}`;
             fetch("/api/posts?" + query)
                 .then((resp) => {
                     resp.json().then((json: PostListResponse) => {
-                        store.posts = json.results;
+                        if (searchChanged) {
+                            this.posts.clear();
+                        }
+
+                        store.posts.set(this.currentPage, json.results);
                         store.resultsPerPage = json.count_per_page;
                         store.totalPostCount = json.total_count;
+                        store.lastSearch = searchTags;
                         resolve();
                     });
                 })
@@ -84,10 +104,8 @@ const store = reactive<Store>({
         });
     },
 
-    postsForCurrentPage(): Post[] {
-        const start = (this.currentPage - 1) * this.resultsPerPage;
-        const end = this.currentPage * this.resultsPerPage;
-        return this.posts.slice(start, end);
+    postsForCurrentPage(): Post[] | undefined {
+        return this.posts.get(this.currentPage);
     },
 
     nextPage() {

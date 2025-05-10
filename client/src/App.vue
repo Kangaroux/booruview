@@ -18,19 +18,29 @@ function onCloseHelp() {
         <Sidebar />
         <main>
             <SearchHelp
-                v-if="showHelp && store.posts.length === 0"
+                v-if="showHelp && store.hasResults()"
                 @on-close="onCloseHelp"
             />
-            <template v-if="store.posts.length > 0">
-                <PostContainer :posts="store.posts" />
+            <template v-if="store.hasResults()">
+                <PostContainer :posts="store.postsForCurrentPage() || []" />
                 <footer>
                     <p>
                         page {{ store.currentPage }} of
                         {{ store.maxPage() }} ({{ store.totalPostCount }}
                         results)
                     </p>
-                    <button>&lt;&lt; prev page</button>
-                    <button>next page &gt;&gt;</button>
+                    <button
+                        @click="store.prevPage()"
+                        v-if="store.currentPage > 1"
+                    >
+                        &lt;&lt; prev page
+                    </button>
+                    <button
+                        @click="store.nextPage()"
+                        v-if="store.currentPage < store.maxPage()"
+                    >
+                        next page &gt;&gt;
+                    </button>
                 </footer>
             </template>
         </main>
