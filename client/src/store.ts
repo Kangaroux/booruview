@@ -1,14 +1,37 @@
 import { reactive } from "vue";
 
 type Store = {
+    currentPage: number;
+    pagesFetched: number;
+    totalPostCount: number;
+    resultsPerPage: number;
+
     posts: Post[];
     tags: { [key: string]: Tag };
+
     loadTags(tags: string[]): Promise<void>;
+    nextPage(): void;
+    postsForCurrentPage(): Post[];
+    prevPage(): void;
+    maxPage(): number;
 };
 
 const store = reactive<Store>({
+    currentPage: 0,
+    pagesFetched: 0,
+    totalPostCount: 0,
+    resultsPerPage: 0,
+
     posts: [],
     tags: {},
+
+    maxPage(): number {
+        const lastPage = Math.ceil(this.totalPostCount * this.resultsPerPage);
+
+        // Pages are 0-indexed
+        return lastPage - 1;
+    },
+
     loadTags(tags: string[]): Promise<void> {
         return new Promise((resolve, reject) => {
             const missing = tags.filter((t) => !(t in this.tags));
@@ -36,6 +59,24 @@ const store = reactive<Store>({
                     reject();
                 });
         });
+    },
+
+    postsForCurrentPage(): Post[] {
+        const start = (this.currentPage - 1) * this.resultsPerPage;
+        const end = this.currentPage * this.resultsPerPage;
+        return this.posts.slice(start, end);
+    },
+
+    nextPage() {
+        if (this.currentPage < this.maxPage()) {
+            this.currentPage++;
+        }
+    },
+
+    prevPage() {
+        if (this.currentPage > 0) {
+            this.currentPage--;
+        }
     },
 });
 

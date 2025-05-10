@@ -21,7 +21,13 @@ function onCloseHelp() {
                 v-if="showHelp && store.posts.length === 0"
                 @on-close="onCloseHelp"
             />
-            <PostContainer v-if="store.posts.length > 0" :posts="store.posts" />
+            <template v-if="store.posts.length > 0">
+                <PostContainer :posts="store.posts" />
+                <footer>
+                    <button>&lt;&lt; prev page</button>
+                    <button>next page &gt;&gt;</button>
+                </footer>
+            </template>
         </main>
     </div>
 </template>
