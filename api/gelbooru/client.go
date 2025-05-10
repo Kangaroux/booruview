@@ -172,7 +172,7 @@ func ListPosts(tags string, page int) (*PostList, error) {
 	params.Add("json", "1")
 	params.Add("limit", postLimitStr)
 	params.Add("tags", tags)
-	params.Add("pid", strconv.Itoa(page))
+	params.Add("pid", strconv.Itoa(page-1)) // Pages are 0-indexed
 
 	rawResp, err := api.HttpGet(ApiUrl + "?" + params.Encode())
 	if err != nil {

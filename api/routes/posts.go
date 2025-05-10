@@ -27,11 +27,11 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	pageVal := r.FormValue("page")
 	if pageVal == "" {
-		pageVal = "0"
+		pageVal = "1"
 	}
 
 	page, err := strconv.Atoi(pageVal)
-	if err != nil || page < 0 {
+	if err != nil || page < 1 {
 		handle400Error(w, "invalid page number")
 		return
 	}
