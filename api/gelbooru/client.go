@@ -80,7 +80,7 @@ func doApiTagSearch(query string) ([]api.TagResponse, error) {
 	tags := make([]api.TagResponse, 0, len(resp))
 	for _, t := range resp {
 		data := api.TagResponse{
-			Name: t.Label,
+			Name: t.Value,
 			Type: ParseTagType(t.Category),
 		}
 
