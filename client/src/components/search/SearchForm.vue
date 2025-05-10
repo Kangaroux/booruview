@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, useTemplateRef, watch } from "vue";
 import SearchSuggestions from "./Suggestions.vue";
+import store from "@/store";
 
 type SearchResponse = {
     results: Tag[];
@@ -9,8 +10,7 @@ const debounceMs = 150;
 
 const emit = defineEmits<{ onSearch: []; onTagSelect: [value: Tag] }>();
 
-const { showSpinner = false, excludeTags = [] } = defineProps<{
-    excludeTags?: Tag[];
+const { showSpinner = false } = defineProps<{
     showSpinner?: boolean;
 }>();
 
@@ -21,17 +21,14 @@ const suggestions = ref<Tag[]>([]);
 const timer = ref();
 const inputRef = useTemplateRef("input");
 
-// Convert excluded tags to a set for fast lookups
-const excludeSet = computed(() => new Set(excludeTags.map((t) => t.name)));
-
 function doTagSearch(query: string) {
     // Encoding the query prevents trailing whitespace from being stripped
     fetch("/api/tagsearch?q=" + encodeURIComponent(query))
         .then((resp) =>
             resp.json().then((json: SearchResponse) => {
-                // Remove excluded tags from suggestions
                 suggestions.value = json.results.filter(
-                    (x) => !excludeSet.value.has(x.name),
+                    // Don't suggest tags already added to the search
+                    (x) => !store.searchTagsSet.has(x),
                 );
             }),
         )

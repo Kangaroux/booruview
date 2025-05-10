@@ -4,7 +4,6 @@ import { ref } from "vue";
 import TagList from "./TagList.vue";
 import SearchForm from "./search/SearchForm.vue";
 
-const tags = ref<Tag[]>([]);
 const sidebarClosed = ref(false);
 const fetching = ref(false);
 
@@ -14,7 +13,7 @@ function doPostSearch() {
     }
 
     fetching.value = true;
-    store.searchPosts(tags.value).finally(() => (fetching.value = false));
+    store.searchPosts().finally(() => (fetching.value = false));
 }
 </script>
 
@@ -30,12 +29,12 @@ function doPostSearch() {
         <nav class="sidebar-content" v-show="!sidebarClosed">
             <SearchForm
                 @on-search="doPostSearch"
-                @on-tag-select="(t) => (tags = tags.concat(t))"
-                :exclude-tags="tags"
+                @on-tag-select="(t) => store.addSearchTag(t)"
+                :exclude-tags="store.searchTags()"
                 :show-spinner="fetching"
             />
 
-            <TagList :tags="tags" />
+            <TagList :tags="store.searchTags()" />
         </nav>
     </header>
 </template>

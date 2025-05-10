@@ -6,9 +6,14 @@ type Store = {
     totalPostCount: number;
     resultsPerPage: number;
 
-    lastSearch: Set<Tag>;
+    searchTagsSet: Set<Tag>;
+    lastSearchTags: Set<Tag>;
     posts: Map<number, Post[]>;
     cachedTags: { [key: string]: Tag };
+
+    addSearchTag(tag: Tag): void;
+    removeSearchTag(tag: Tag): void;
+    searchTags(): Tag[];
 
     hasResults(): boolean;
     loadTags(tags: string[]): Promise<void>;
@@ -16,7 +21,7 @@ type Store = {
     nextPage(): void;
     postsForCurrentPage(): Post[] | undefined;
     prevPage(): void;
-    searchPosts(tags: Tag[]): Promise<void>;
+    searchPosts(): Promise<void>;
 };
 
 const store = reactive<Store>({
@@ -24,15 +29,28 @@ const store = reactive<Store>({
     totalPostCount: 0,
     resultsPerPage: 0,
 
-    lastSearch: new Set(),
+    searchTagsSet: new Set(),
+    lastSearchTags: new Set(),
     posts: new Map(),
     cachedTags: {},
+
+    searchTags(): Tag[] {
+        return Array.from(this.searchTagsSet.keys());
+    },
+
+    addSearchTag(tag: Tag) {
+        this.searchTagsSet.add(tag);
+    },
+
+    removeSearchTag(tag: Tag) {
+        this.searchTagsSet.delete(tag);
+    },
 
     hasResults(): boolean {
         return this.totalPostCount > 0;
     },
 
-    searchPosts(tags: Tag[]): Promise<void> {
+    searchPosts(): Promise<void> {
         type PostListResponse = {
             count_per_page: number;
             total_count: number;
@@ -40,8 +58,10 @@ const store = reactive<Store>({
         };
 
         return new Promise((resolve, reject) => {
-            const searchTags = new Set(tags);
-            const searchChanged = !isSetEqual(this.lastSearch, searchTags);
+            const searchChanged = !isSetEqual(
+                this.lastSearchTags,
+                this.searchTagsSet,
+            );
             const hasPage = this.posts.has(this.currentPage);
 
             if (!searchChanged && hasPage) {
@@ -49,7 +69,9 @@ const store = reactive<Store>({
                 return;
             }
 
-            const query = `q=${encodeURIComponent(tags.map((t) => t.name).join(" "))}&page=${this.currentPage}`;
+            const tags = this.searchTags().map((t) => t.name);
+            const query = `q=${encodeURIComponent(tags.join(" "))}&page=${this.currentPage}`;
+
             fetch("/api/posts?" + query)
                 .then((resp) => {
                     resp.json().then((json: PostListResponse) => {
@@ -60,7 +82,8 @@ const store = reactive<Store>({
                         store.posts.set(this.currentPage, json.results);
                         store.resultsPerPage = json.count_per_page;
                         store.totalPostCount = json.total_count;
-                        store.lastSearch = searchTags;
+                        store.lastSearchTags = this.searchTagsSet;
+
                         resolve();
                     });
                 })
@@ -111,12 +134,14 @@ const store = reactive<Store>({
     nextPage() {
         if (this.currentPage < this.maxPage()) {
             this.currentPage++;
+            this.searchPosts();
         }
     },
 
     prevPage() {
         if (this.currentPage > 0) {
             this.currentPage--;
+            this.searchPosts();
         }
     },
 });
