@@ -8,7 +8,7 @@ type Store = {
 
     lastSearch: Set<Tag>;
     posts: Map<number, Post[]>;
-    tags: { [key: string]: Tag };
+    cachedTags: { [key: string]: Tag };
 
     hasResults(): boolean;
     loadTags(tags: string[]): Promise<void>;
@@ -26,7 +26,7 @@ const store = reactive<Store>({
 
     lastSearch: new Set(),
     posts: new Map(),
-    tags: {},
+    cachedTags: {},
 
     hasResults(): boolean {
         return this.totalPostCount > 0;
@@ -81,7 +81,7 @@ const store = reactive<Store>({
         };
 
         return new Promise((resolve, reject) => {
-            const missing = tags.filter((t) => !(t in this.tags));
+            const missing = tags.filter((t) => !(t in this.cachedTags));
 
             if (missing.length === 0) {
                 resolve();
@@ -93,7 +93,7 @@ const store = reactive<Store>({
                     resp.json().then((json: TagResponse) => {
                         const newTags: { [key: string]: Tag } = {};
                         json.results.forEach((t) => (newTags[t.name] = t));
-                        this.tags = { ...this.tags, ...newTags };
+                        this.cachedTags = { ...this.cachedTags, ...newTags };
                         resolve();
                     });
                 })

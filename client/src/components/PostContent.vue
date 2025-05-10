@@ -14,7 +14,7 @@ const tags = computed(() => {
         return [];
     }
 
-    return post.tags.map((t) => store.tags[t]).filter((t) => t != null);
+    return post.tags.map((t) => store.cachedTags[t]).filter((t) => t != null);
 });
 const content = computed<{ url: string; width: number; height: number }>(() => {
     if (post.lowres_url.length > 0) {
