@@ -74,15 +74,16 @@ function loadTags() {
             :width="content.width"
             :height="content.height"
             loading="lazy"
+            @click="store.postFocus = post"
             v-if="!isVideo"
         />
 
-        <button @click.once="loadTags" @click="showTags = !showTags">
+        <!-- <button @click.once="loadTags" @click="showTags = !showTags">
             toggle tags
         </button>
         <div v-if="showTags">
             <TagChip :tag="tag" v-for="tag in tags" />
-        </div>
+        </div> -->
     </div>
 </template>
 

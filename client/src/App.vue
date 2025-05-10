@@ -4,6 +4,7 @@ import store from "@/store";
 import PostContainer from "./components/PostContainer.vue";
 import Sidebar from "./components/Sidebar.vue";
 import SearchHelp from "./components/SearchHelp.vue";
+import PostFocus from "./components/PostFocus.vue";
 
 const showHelp = ref(localStorage.getItem("hide-help") === null);
 
@@ -21,7 +22,8 @@ function onCloseHelp() {
                 v-if="showHelp && store.hasResults()"
                 @on-close="onCloseHelp"
             />
-            <template v-if="store.hasResults()">
+            <PostFocus v-if="store.postFocus !== null" />
+            <div class="main-content" v-if="store.hasResults()">
                 <PostContainer :posts="store.postsForCurrentPage() || []" />
                 <footer>
                     <p>
@@ -42,7 +44,7 @@ function onCloseHelp() {
                         next page &gt;&gt;
                     </button>
                 </footer>
-            </template>
+            </div>
         </main>
     </div>
 </template>
@@ -60,6 +62,10 @@ function onCloseHelp() {
 
 main {
     flex: 1;
+}
+
+.main-content {
     overflow-y: scroll;
+    height: 100%;
 }
 </style>
