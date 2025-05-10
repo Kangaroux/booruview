@@ -15,7 +15,8 @@ import (
 )
 
 type PostsResponse struct {
-	Results []api.PostResponse `json:"results"`
+	TotalCount int                `json:"total_count"`
+	Results    []api.PostResponse `json:"results"`
 }
 
 func PostsHandler(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +63,8 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp.Results = results
+	resp.TotalCount = results.TotalCount
+	resp.Results = results.Posts
 	respBody, err := json.Marshal(resp)
 	if err != nil {
 		handleError(w, err)

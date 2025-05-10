@@ -151,6 +151,11 @@ type FullPostResponse struct {
 	Post []PostResponse
 }
 
+type PostList struct {
+	TotalCount int
+	Posts      []api.PostResponse
+}
+
 const (
 	postLimit = 50
 )
@@ -159,7 +164,7 @@ var (
 	postLimitStr = strconv.Itoa(postLimit)
 )
 
-func ListPosts(tags string, page int) ([]api.PostResponse, error) {
+func ListPosts(tags string, page int) (*PostList, error) {
 	params := url.Values{}
 	params.Add("page", "dapi")
 	params.Add("s", "post")
@@ -218,7 +223,10 @@ func ListPosts(tags string, page int) ([]api.PostResponse, error) {
 		posts[i] = data
 	}
 
-	return posts, nil
+	return &PostList{
+		TotalCount: resp.Attributes.Count,
+		Posts:      posts,
+	}, nil
 }
 
 type TagInfo struct {
