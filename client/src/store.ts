@@ -103,6 +103,27 @@ const store = reactive<Store>({
             results: Tag[];
         };
 
+        const maxTagsPerRequest = 100;
+
+        // Fetch tags in parallel if there are too many for one request
+        if (tags.length > maxTagsPerRequest) {
+            let requests: Promise<void>[] = [];
+
+            for (let i = 0; i < tags.length; i += maxTagsPerRequest) {
+                const start = i;
+                const end = i + maxTagsPerRequest;
+                requests = requests.concat(
+                    this.loadTags(tags.slice(start, end)),
+                );
+            }
+
+            return new Promise((resolve, reject) =>
+                Promise.all(requests)
+                    .then(() => resolve())
+                    .catch(() => reject()),
+            );
+        }
+
         return new Promise((resolve, reject) => {
             const missing = tags.filter((t) => !(t in this.cachedTags));
 
