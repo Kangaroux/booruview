@@ -3,10 +3,11 @@ import { computed } from "vue";
 
 defineEmits(["click"]);
 
-const { tag } = defineProps<{ tag: StatefulTag }>();
+const props = defineProps<{ tag: StatefulTag }>();
+const { tag, state } = props.tag;
 
 const cls = computed(() => ({
-    [`state-${tag.state}`]: true,
+    [`state-${state}`]: true,
     [tag.type]: true,
 }));
 </script>
@@ -14,7 +15,7 @@ const cls = computed(() => ({
 <template>
     <div class="chip" :class="cls" @click="$emit('click')">
         {{ tag.name }}
-        <i class="bi bi-check-lg" v-if="tag.state == 'include'"></i>
+        <i class="bi bi-check-lg" v-if="state == 'include'"></i>
     </div>
 </template>
 

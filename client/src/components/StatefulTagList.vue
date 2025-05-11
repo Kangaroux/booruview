@@ -21,10 +21,12 @@ const categories = computed(() => {
         metadata: [],
     };
 
-    const sorted = [...tags].sort((a, b) => a.name.localeCompare(b.name));
+    const sorted = [...tags].sort((a, b) =>
+        a.tag.name.localeCompare(b.tag.name),
+    );
 
     for (const t of sorted) {
-        switch (t.type) {
+        switch (t.tag.type) {
             case "artist":
                 ret.artist = ret.artist.concat(t);
                 break;
@@ -63,7 +65,7 @@ function cycleState(tag: StatefulTag) {
     <StatefulTagChip
         v-for="t in categories.artist"
         :tag="t"
-        :key="t.name"
+        :key="t.tag.name"
         @click="cycleState(t)"
     />
 
@@ -71,7 +73,7 @@ function cycleState(tag: StatefulTag) {
     <StatefulTagChip
         v-for="t in categories.character"
         :tag="t"
-        :key="t.name"
+        :key="t.tag.name"
         @click="cycleState(t)"
     />
 
@@ -79,7 +81,7 @@ function cycleState(tag: StatefulTag) {
     <StatefulTagChip
         v-for="t in categories.copyright"
         :tag="t"
-        :key="t.name"
+        :key="t.tag.name"
         @click="cycleState(t)"
     />
 
@@ -87,7 +89,7 @@ function cycleState(tag: StatefulTag) {
     <StatefulTagChip
         v-for="t in categories.tag"
         :tag="t"
-        :key="t.name"
+        :key="t.tag.name"
         @click="cycleState(t)"
     />
 
@@ -95,7 +97,7 @@ function cycleState(tag: StatefulTag) {
     <StatefulTagChip
         v-for="t in categories.metadata"
         :tag="t"
-        :key="t.name"
+        :key="t.tag.name"
         @click="cycleState(t)"
     />
 </template>

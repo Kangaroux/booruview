@@ -14,7 +14,8 @@ type Tag = {
     count: number;
 };
 
-type StatefulTag = Tag & {
+type StatefulTag = {
+    tag: Tag;
     state: TagState;
 };
 
