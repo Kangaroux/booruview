@@ -10,8 +10,10 @@ type Store = {
 
     searchTagsSet: Set<Tag>;
     lastSearchTags: Set<Tag>;
+
+    /** mapping of page number to posts */
     posts: Map<number, Post[]>;
-    cachedTags: { [key: string]: Tag };
+    cachedTags: Map<string, Tag>;
 
     addSearchTag(tag: Tag): void;
     removeSearchTag(tag: Tag): void;
@@ -37,13 +39,19 @@ const store = reactive<Store>({
     searchTagsSet: new Set(),
     lastSearchTags: new Set(),
     posts: new Map(),
-    cachedTags: {},
+    cachedTags: new Map(),
 
     tagsForPost(post: Post): Promise<Tag[]> {
         return new Promise<Tag[]>((resolve, reject) => {
             store
                 .loadTags(post.tags)
-                .then(() => resolve(post.tags.map((t) => store.cachedTags[t])))
+                .then(() =>
+                    resolve(
+                        post.tags
+                            .map((t) => store.cachedTags.get(t))
+                            .filter((t) => t != null),
+                    ),
+                )
                 .catch(reject);
         });
     },
@@ -139,7 +147,7 @@ const store = reactive<Store>({
         }
 
         return new Promise((resolve, reject) => {
-            const missing = tags.filter((t) => !(t in this.cachedTags));
+            const missing = tags.filter((t) => !this.cachedTags.has(t));
 
             if (missing.length === 0) {
                 resolve();
@@ -149,9 +157,9 @@ const store = reactive<Store>({
             fetch("/api/tags?q=" + encodeURIComponent(missing.join(" ")))
                 .then((resp) => {
                     resp.json().then((json: TagResponse) => {
-                        const newTags: { [key: string]: Tag } = {};
-                        json.results.forEach((t) => (newTags[t.name] = t));
-                        this.cachedTags = { ...this.cachedTags, ...newTags };
+                        json.results.forEach((t) =>
+                            this.cachedTags.set(t.name, t),
+                        );
                         resolve();
                     });
                 })

@@ -1,21 +1,12 @@
 <script setup lang="ts">
 import store from "@/store";
 import { computed, ref } from "vue";
-import TagChip from "./TagChip.vue";
 
 const { post } = defineProps<{
     post: Post;
 }>();
 
 const fetchingTags = ref(false);
-const showTags = ref(false);
-const tags = computed(() => {
-    if (fetchingTags.value) {
-        return [];
-    }
-
-    return post.tags.map((t) => store.cachedTags[t]).filter((t) => t != null);
-});
 const content = computed<{ url: string; width: number; height: number }>(() => {
     if (post.lowres_url.length > 0) {
         return {
@@ -38,11 +29,6 @@ const isVideo = computed(() => {
         content.value.url.endsWith(".webm")
     );
 });
-
-function loadTags() {
-    fetchingTags.value = true;
-    store.loadTags(post.tags).finally(() => (fetchingTags.value = false));
-}
 </script>
 
 <template>
@@ -77,13 +63,6 @@ function loadTags() {
             @click="store.fullscreenPost = post"
             v-if="!isVideo"
         />
-
-        <!-- <button @click.once="loadTags" @click="showTags = !showTags">
-            toggle tags
-        </button>
-        <div v-if="showTags">
-            <TagChip :tag="tag" v-for="tag in tags" />
-        </div> -->
     </div>
 </template>
 
