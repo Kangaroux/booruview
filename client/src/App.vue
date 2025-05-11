@@ -19,7 +19,7 @@ function onCloseHelp() {
         <Sidebar />
         <main>
             <SearchHelp
-                v-if="showHelp && store.hasResults()"
+                v-if="showHelp && !store.hasResults()"
                 @on-close="onCloseHelp"
             />
             <FullscreenView v-if="store.fullscreenPost !== null" />
