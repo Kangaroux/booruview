@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 
-const { jiggle, tag } = defineProps<{ jiggle?: boolean; tag: Tag }>();
+const {
+    active = false,
+    jiggle = false,
+    tag,
+} = defineProps<{ active?: boolean; jiggle?: boolean; tag: Tag }>();
 const hasJiggled = ref(false);
 
 onMounted(() => {
@@ -16,16 +20,17 @@ onMounted(() => {
 <template>
     <div
         class="chip"
-        :class="{ [tag.type]: true, jiggle: jiggle && !hasJiggled }"
+        :class="{ active, [tag.type]: true, jiggle: jiggle && !hasJiggled }"
     >
         {{ tag.name }}
+        <i class="bi bi-check-lg" v-if="active"></i>
     </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .chip {
     padding: 8px;
-    margin-right: 4px;
+    margin: 0 4px 4px 0;
     border: none;
     border-radius: 8px;
     display: inline-block;
@@ -57,6 +62,11 @@ onMounted(() => {
 .tag {
     background-color: #303030;
     color: hsl(208, 56%, 75%);
+
+    &.active {
+        background-color: hsl(208, 56%, 75%);
+        color: #303030;
+    }
 }
 
 .artist {

@@ -16,7 +16,11 @@ watchEffect(() => {
 
 <template>
     <div class="tag-list">
-        <TagList :jiggle="false" :tags="tags" />
+        <TagList
+            :active-tags="store.searchTags()"
+            :jiggle="false"
+            :tags="tags"
+        />
     </div>
 </template>
 

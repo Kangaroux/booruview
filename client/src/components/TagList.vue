@@ -10,7 +10,13 @@ type listCategories = {
     metadata: Tag[];
 };
 
-const { jiggle, tags } = defineProps<{ jiggle: boolean; tags: Tag[] }>();
+const {
+    jiggle,
+    activeTags = [],
+    tags,
+} = defineProps<{ jiggle: boolean; activeTags?: Tag[]; tags: Tag[] }>();
+const activeSet = computed(() => new Set(activeTags.map((t) => t.name)));
+
 const categories = computed(() => {
     const ret: listCategories = {
         artist: [],
@@ -54,6 +60,7 @@ const categories = computed(() => {
         :tag="t"
         :key="t.name"
         :jiggle="jiggle"
+        :active="activeSet.has(t.name)"
     />
 
     <h3 v-if="categories.character.length > 0">character</h3>
@@ -62,6 +69,7 @@ const categories = computed(() => {
         :tag="t"
         :key="t.name"
         :jiggle="jiggle"
+        :active="activeSet.has(t.name)"
     />
 
     <h3 v-if="categories.copyright.length > 0">copyright</h3>
@@ -70,6 +78,7 @@ const categories = computed(() => {
         :tag="t"
         :key="t.name"
         :jiggle="jiggle"
+        :active="activeSet.has(t.name)"
     />
     <h3 v-if="categories.tag.length > 0">tags</h3>
     <TagChip
@@ -77,6 +86,7 @@ const categories = computed(() => {
         :tag="t"
         :key="t.name"
         :jiggle="jiggle"
+        :active="activeSet.has(t.name)"
     />
 
     <h3 v-if="categories.metadata.length > 0">metadata</h3>
@@ -85,5 +95,13 @@ const categories = computed(() => {
         :tag="t"
         :key="t.name"
         :jiggle="jiggle"
+        :active="activeSet.has(t.name)"
     />
 </template>
+
+<style lang="scss" scoped>
+h3 {
+    margin: 15px 0 10px;
+    font-size: 18px;
+}
+</style>
