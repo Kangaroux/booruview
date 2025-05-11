@@ -5,13 +5,11 @@ defineEmits(["click"]);
 
 const {
     jiggle = false,
-    state = "default",
     tag,
-} = defineProps<{ jiggle?: boolean; state?: TagState; tag: Tag }>();
+} = defineProps<{ jiggle?: boolean; tag: Tag }>();
 const hasJiggled = ref(false);
 
 const cls = computed(() => ({
-    [`state-${state}`]: true,
     [tag.type]: true,
     jiggle: jiggle && !hasJiggled,
 }));
@@ -28,7 +26,6 @@ onMounted(() => {
 <template>
     <div class="chip" :class="cls" @click="$emit('click')">
         {{ tag.name }}
-        <i class="bi bi-check-lg" v-if="state == 'include'"></i>
     </div>
 </template>
 
@@ -73,11 +70,6 @@ onMounted(() => {
 .tag {
     background-color: #303030;
     color: hsl(208, 56%, 75%);
-
-    &.active {
-        background-color: hsl(208, 56%, 75%);
-        color: #303030;
-    }
 }
 
 .artist {

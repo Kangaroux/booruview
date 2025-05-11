@@ -9,17 +9,15 @@ type TagType =
     | "unknown";
 
 type Tag = {
+    count: number;
     name: string;
     type: TagType;
-    count: number;
 };
 
-type StatefulTag = {
-    tag: Tag;
-    state: TagState;
+type SearchQuery = {
+    include: Tag[];
+    exclude: Tag[];
 };
-
-type TagState = "default" | "include" | "exclude";
 
 type Rating = "general" | "sensitive" | "questionable" | "explicit";
 
