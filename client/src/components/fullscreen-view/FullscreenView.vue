@@ -44,6 +44,7 @@ onUnmounted(() => {
                     class="menu-btn"
                     :class="{ active: currentTab == 'image' }"
                     @click="currentTab = 'image'"
+                    title="view image"
                 >
                     <i class="bi bi-image"></i>
                 </button>
@@ -51,8 +52,19 @@ onUnmounted(() => {
                     class="menu-btn"
                     :class="{ active: currentTab == 'info' }"
                     @click="currentTab = 'info'"
+                    title="view tags"
                 >
                     <i class="bi bi-info-circle"></i>
+                </button>
+                <button
+                    class="menu-btn"
+                    @click="close()"
+                    title="previous image"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                </button>
+                <button class="menu-btn" @click="close()" title="next image">
+                    <i class="bi bi-arrow-right"></i>
                 </button>
             </footer>
         </div>
@@ -95,23 +107,22 @@ onUnmounted(() => {
 .tab-menu {
     display: flex;
     z-index: 2;
-    padding: 10px 0;
+}
 
-    & .menu-btn {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 30px;
-        text-shadow: 0 0 5px white;
-        opacity: 0.5;
-        transition: opacity 200ms;
-        cursor: pointer;
-        padding: 20px;
+.menu-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 30px;
+    text-shadow: 0 0 5px white;
+    opacity: 0.5;
+    transition: opacity 150ms;
+    cursor: pointer;
+    padding: 15px;
 
-        &:hover,
-        &.active {
-            opacity: 1;
-        }
+    &:hover,
+    &.active {
+        opacity: 1;
     }
 }
 </style>
