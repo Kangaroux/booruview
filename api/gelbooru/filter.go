@@ -48,13 +48,7 @@ func SuggestedSearchFilters(tag string) (isFilter bool, resp []string) {
 		return
 	}
 
-	var prefix string
-	if tag[0] == '-' {
-		prefix = "-" + parts[0] + ":"
-	} else {
-		prefix = parts[0] + ":"
-	}
-
+	prefix := parts[0] + ":"
 	for _, s := range suffixes {
 		if strings.HasPrefix(s, parts[1]) {
 			resp = append(resp, prefix+s)

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, useTemplateRef, watch } from "vue";
+import { ref, useTemplateRef, watch } from "vue";
 import SearchSuggestions from "./Suggestions.vue";
 import store from "@/store";
 
@@ -53,7 +53,14 @@ function autoComplete() {
     }
 
     const index = selectedIndex.value === -1 ? 0 : selectedIndex.value;
-    query.value = suggestions.value[index].name;
+    let val = suggestions.value[index].name;
+
+    // Preserve the NOT op
+    if(query.value.startsWith("-")) {
+        val = "-" + val;
+    }
+
+    query.value = val;
 }
 
 function onSuggestionClick(index: number) {
@@ -153,7 +160,7 @@ watch(query, (query, _, onCleanup) => {
             class="suggestions"
             :tags="suggestions"
             :selected-index="selectedIndex"
-            @on-click="onSuggestionClick"
+            @click="onSuggestionClick"
         />
     </div>
     <button
