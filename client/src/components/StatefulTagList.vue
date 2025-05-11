@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import TagChip from "./TagChip.vue";
+import StatefulTagChip from "./StatefulTagChip.vue";
 
 type listCategories = {
-    artist: Tag[];
-    character: Tag[];
-    copyright: Tag[];
-    tag: Tag[];
-    metadata: Tag[];
+    artist: StatefulTag[];
+    character: StatefulTag[];
+    copyright: StatefulTag[];
+    tag: StatefulTag[];
+    metadata: StatefulTag[];
 };
 
-const { jiggle, tags } = defineProps<{ jiggle: boolean; tags: Tag[] }>();
+const { tags } = defineProps<{ tags: StatefulTag[] }>();
 
 const categories = computed(() => {
     const ret: listCategories = {
@@ -46,46 +46,57 @@ const categories = computed(() => {
 
     return ret;
 });
+
+function cycleState(tag: StatefulTag) {
+    if (tag.state === "default") {
+        tag.state = "include";
+    } else if (tag.state === "include") {
+        tag.state = "exclude";
+    } else {
+        tag.state = "default";
+    }
+}
 </script>
 
 <template>
     <h3 v-if="categories.artist.length > 0">artist</h3>
-    <TagChip
+    <StatefulTagChip
         v-for="t in categories.artist"
         :tag="t"
         :key="t.name"
-        :jiggle="jiggle"
+        @click="cycleState(t)"
     />
 
     <h3 v-if="categories.character.length > 0">character</h3>
-    <TagChip
+    <StatefulTagChip
         v-for="t in categories.character"
         :tag="t"
         :key="t.name"
-        :jiggle="jiggle"
+        @click="cycleState(t)"
     />
 
     <h3 v-if="categories.copyright.length > 0">copyright</h3>
-    <TagChip
+    <StatefulTagChip
         v-for="t in categories.copyright"
         :tag="t"
         :key="t.name"
-        :jiggle="jiggle"
+        @click="cycleState(t)"
     />
+
     <h3 v-if="categories.tag.length > 0">tags</h3>
-    <TagChip
+    <StatefulTagChip
         v-for="t in categories.tag"
         :tag="t"
         :key="t.name"
-        :jiggle="jiggle"
+        @click="cycleState(t)"
     />
 
     <h3 v-if="categories.metadata.length > 0">metadata</h3>
-    <TagChip
+    <StatefulTagChip
         v-for="t in categories.metadata"
         :tag="t"
         :key="t.name"
-        :jiggle="jiggle"
+        @click="cycleState(t)"
     />
 </template>
 

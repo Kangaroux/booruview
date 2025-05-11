@@ -14,6 +14,12 @@ type Tag = {
     count: number;
 };
 
+type StatefulTag = Tag & {
+    state: TagState;
+};
+
+type TagState = "default" | "include" | "exclude";
+
 type Rating = "general" | "sensitive" | "questionable" | "explicit";
 
 type Post = {
