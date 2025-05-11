@@ -6,7 +6,7 @@ type Store = {
     totalPostCount: number;
     resultsPerPage: number;
 
-    postFocus: Post | null;
+    fullscreenPost: Post | null;
 
     searchTagsSet: Set<Tag>;
     lastSearchTags: Set<Tag>;
@@ -32,7 +32,7 @@ const store = reactive<Store>({
     totalPostCount: 0,
     resultsPerPage: 0,
 
-    postFocus: null,
+    fullscreenPost: null,
 
     searchTagsSet: new Set(),
     lastSearchTags: new Set(),

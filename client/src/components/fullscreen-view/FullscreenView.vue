@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import store from "@/store";
 import { computed, onMounted, onUnmounted, ref, watchEffect } from "vue";
-import TagList from "./TagList.vue";
+import TagList from "../TagList.vue";
 
 const drawerOpen = ref(false);
 const fitHeight = ref(true);
 const tags = ref<Tag[]>([]);
 
 const url = computed(() => {
-    if (store.postFocus === null) {
+    if (store.fullscreenPost === null) {
         return "";
     }
 
-    return store.postFocus.image_url;
+    return store.fullscreenPost.image_url;
 });
 
 function close() {
-    store.postFocus = null;
+    store.fullscreenPost = null;
 }
 
 function onKeyDown(e: KeyboardEvent) {
@@ -27,11 +27,11 @@ function onKeyDown(e: KeyboardEvent) {
 }
 
 watchEffect(() => {
-    if (store.postFocus === null) {
+    if (store.fullscreenPost === null) {
         return;
     }
 
-    store.tagsForPost(store.postFocus).then((val) => (tags.value = val));
+    store.tagsForPost(store.fullscreenPost).then((val) => (tags.value = val));
 });
 
 onMounted(() => {
@@ -44,9 +44,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="post-focus">
+    <div class="fullscreen-viewer">
         <div class="screen-cover" @click="close()"></div>
-        <div class="focus-container">
+        <div class="outer-container">
             <div class="content-container">
                 <img
                     class="content"
@@ -69,7 +69,7 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.post-focus {
+.fullscreen-viewer {
     position: absolute;
     top: 0;
     left: 0;
@@ -85,7 +85,7 @@ onUnmounted(() => {
     height: 100%;
 }
 
-.focus-container {
+.outer-container {
     height: 100%;
     margin: 0 100px;
     display: flex;

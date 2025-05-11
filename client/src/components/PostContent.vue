@@ -74,7 +74,7 @@ function loadTags() {
             :width="content.width"
             :height="content.height"
             loading="lazy"
-            @click="store.postFocus = post"
+            @click="store.fullscreenPost = post"
             v-if="!isVideo"
         />
 
