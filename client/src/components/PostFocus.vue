@@ -1,27 +1,15 @@
 <script setup lang="ts">
 import store from "@/store";
-import { computed, onMounted, onUnmounted } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 
-const content = computed<{ url: string; width: number; height: number }>(() => {
-    const post = store.postFocus;
+const fitHeight = ref(true);
 
-    if (post === null) {
-        return { url: "", width: 0, height: 0 };
+const url = computed(() => {
+    if (store.postFocus === null) {
+        return "";
     }
 
-    if (post.lowres_url.length > 0) {
-        return {
-            url: post.lowres_url,
-            width: post.lowres_width,
-            height: post.lowres_height,
-        };
-    }
-
-    return {
-        url: post.image_url,
-        width: post.width,
-        height: post.height,
-    };
+    return store.postFocus.image_url;
 });
 
 function close() {
@@ -50,16 +38,15 @@ onUnmounted(() => {
         <div class="content-container">
             <img
                 class="content"
-                :src="content.url"
-                :width="content.width"
-                :height="content.height"
-                loading="lazy"
+                :class="{ 'fit-height': fitHeight, 'fit-width': !fitHeight }"
+                :src="url"
+                @click="fitHeight = !fitHeight"
             />
         </div>
     </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .post-focus {
     position: absolute;
     top: 0;
@@ -78,14 +65,28 @@ onUnmounted(() => {
 
 .content-container {
     height: 100%;
+    overflow-y: scroll;
+    padding: 0 100px;
 }
 
 .content {
     position: relative;
     z-index: 2;
-    height: 100%;
-    width: auto;
     display: block;
     margin: 0 auto;
+
+    &.fit-height {
+        max-height: 100%;
+        width: auto;
+
+        cursor: zoom-in;
+    }
+
+    &.fit-width {
+        max-width: 100%;
+        height: auto;
+
+        cursor: zoom-out;
+    }
 }
 </style>
