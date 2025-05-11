@@ -27,6 +27,7 @@ type Store = {
     postsForCurrentPage(): Post[] | undefined;
     prevPage(): void;
     searchPosts(): Promise<void>;
+    setQueryParams(): void;
 };
 
 const store = reactive<Store>({
@@ -72,6 +73,13 @@ const store = reactive<Store>({
         return this.totalPostCount > 0;
     },
 
+    setQueryParams() {
+        const url = new URL(window.location.href);
+        url.searchParams.set("page", this.currentPage.toString());
+        url.searchParams.set("tags", this.searchTags().map(t => t.name).join(","));
+        window.history.pushState(null, "", url.toString());
+    },
+
     searchPosts(): Promise<void> {
         type PostListResponse = {
             count_per_page: number;
@@ -101,11 +109,12 @@ const store = reactive<Store>({
                             this.posts.clear();
                         }
 
-                        store.posts.set(this.currentPage, json.results);
-                        store.resultsPerPage = json.count_per_page;
-                        store.totalPostCount = json.total_count;
-                        store.lastSearchTags = new Set(this.searchTagsSet);
+                        this.posts.set(this.currentPage, json.results);
+                        this.resultsPerPage = json.count_per_page;
+                        this.totalPostCount = json.total_count;
+                        this.lastSearchTags = new Set(this.searchTagsSet);
 
+                        this.setQueryParams();
                         resolve();
                     });
                 })
