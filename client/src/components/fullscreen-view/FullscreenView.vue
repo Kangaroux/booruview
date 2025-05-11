@@ -1,19 +1,11 @@
 <script setup lang="ts">
 import store from "@/store";
-import { computed, onMounted, onUnmounted, ref, watchEffect } from "vue";
+import { onMounted, onUnmounted, ref, watchEffect } from "vue";
 import TagList from "../TagList.vue";
+import ImageTab from "./ImageTab.vue";
 
 const drawerOpen = ref(false);
-const fitHeight = ref(true);
 const tags = ref<Tag[]>([]);
-
-const url = computed(() => {
-    if (store.fullscreenPost === null) {
-        return "";
-    }
-
-    return store.fullscreenPost.image_url;
-});
 
 function close() {
     store.fullscreenPost = null;
@@ -47,17 +39,9 @@ onUnmounted(() => {
     <div class="fullscreen-viewer">
         <div class="screen-cover" @click="close()"></div>
         <div class="outer-container">
-            <div class="content-container">
-                <img
-                    class="content"
-                    :class="{
-                        'fit-height': fitHeight,
-                        'fit-width': !fitHeight,
-                    }"
-                    :src="url"
-                    @click="fitHeight = !fitHeight"
-                />
-            </div>
+            <KeepAlive>
+                <ImageTab />
+            </KeepAlive>
             <div class="info-drawer" :class="{ 'drawer-open': drawerOpen }">
                 <div class="drawer-btn" @click="drawerOpen = !drawerOpen">
                     <i class="bi bi-info-circle"></i>
@@ -92,36 +76,6 @@ onUnmounted(() => {
     flex-direction: column;
     align-items: center;
     gap: 10px;
-}
-
-.content-container {
-    z-index: 2;
-    height: 100%;
-    overflow-y: scroll;
-    line-height: 0;
-
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
-}
-
-.content {
-    max-width: 100%;
-
-    &.fit-height {
-        max-height: 100%;
-        width: auto;
-
-        cursor: zoom-in;
-    }
-
-    &.fit-width {
-        height: auto;
-
-        cursor: zoom-out;
-    }
 }
 
 .info-drawer {
