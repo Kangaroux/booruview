@@ -35,13 +35,23 @@ onUnmounted(() => {
 <template>
     <div class="post-focus">
         <div class="screen-cover" @click="close()"></div>
-        <div class="content-container">
-            <img
-                class="content"
-                :class="{ 'fit-height': fitHeight, 'fit-width': !fitHeight }"
-                :src="url"
-                @click="fitHeight = !fitHeight"
-            />
+        <div class="focus-container">
+            <div class="content-container">
+                <img
+                    class="content"
+                    :class="{
+                        'fit-height': fitHeight,
+                        'fit-width': !fitHeight,
+                    }"
+                    :src="url"
+                    @click="fitHeight = !fitHeight"
+                />
+            </div>
+            <div class="info-drawer">
+                <div class="drawer-btn">
+                    <i class="bi bi-info-circle"></i>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -63,18 +73,28 @@ onUnmounted(() => {
     height: 100%;
 }
 
+.focus-container {
+    margin: 0 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
 .content-container {
+    z-index: 2;
     height: 100%;
     overflow-y: scroll;
-    padding: 0 100px;
+    line-height: 0;
+
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 .content {
-    position: relative;
-    z-index: 2;
-    display: block;
-    margin: 0 auto;
-
     &.fit-height {
         max-height: 100%;
         width: auto;
@@ -87,6 +107,23 @@ onUnmounted(() => {
         height: auto;
 
         cursor: zoom-out;
+    }
+}
+
+.info-drawer {
+    z-index: 3;
+
+    & .drawer-btn {
+        font-size: 30px;
+        padding: 10px 30px;
+        text-shadow: 0 0 5px white;
+        opacity: 0.6;
+        transition: opacity 200ms;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 1;
+        }
     }
 }
 </style>
