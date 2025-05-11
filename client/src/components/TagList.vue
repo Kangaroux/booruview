@@ -10,7 +10,7 @@ type listCategories = {
     metadata: Tag[];
 };
 
-const { tags } = defineProps<{ tags: Tag[] }>();
+const { jiggle, tags } = defineProps<{ jiggle: boolean; tags: Tag[] }>();
 const categories = computed(() => {
     const ret: listCategories = {
         artist: [],
@@ -54,7 +54,7 @@ const categories = computed(() => {
             v-for="t in categories.artist"
             :tag="t"
             :key="t.name"
-            :jiggle="true"
+            :jiggle="jiggle"
         />
 
         <h3 v-if="categories.character.length > 0">character</h3>
@@ -62,7 +62,7 @@ const categories = computed(() => {
             v-for="t in categories.character"
             :tag="t"
             :key="t.name"
-            :jiggle="true"
+            :jiggle="jiggle"
         />
 
         <h3 v-if="categories.copyright.length > 0">copyright</h3>
@@ -70,14 +70,14 @@ const categories = computed(() => {
             v-for="t in categories.copyright"
             :tag="t"
             :key="t.name"
-            :jiggle="true"
+            :jiggle="jiggle"
         />
         <h3 v-if="categories.tag.length > 0">tags</h3>
         <TagChip
             v-for="t in categories.tag"
             :tag="t"
             :key="t.name"
-            :jiggle="true"
+            :jiggle="jiggle"
         />
 
         <h3 v-if="categories.metadata.length > 0">metadata</h3>
@@ -85,7 +85,7 @@ const categories = computed(() => {
             v-for="t in categories.metadata"
             :tag="t"
             :key="t.name"
-            :jiggle="true"
+            :jiggle="jiggle"
         />
     </div>
 </template>

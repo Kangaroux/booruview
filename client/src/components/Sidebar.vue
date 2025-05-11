@@ -33,7 +33,7 @@ function doPostSearch() {
                 :show-spinner="fetching"
             />
 
-            <TagList :tags="store.searchTags()" />
+            <TagList :jiggle="true" :tags="store.searchTags()" />
         </nav>
     </header>
 </template>

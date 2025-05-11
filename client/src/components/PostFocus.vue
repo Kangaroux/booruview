@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import store from "@/store";
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, watchEffect } from "vue";
+import TagList from "./TagList.vue";
 
+const drawerOpen = ref(false);
 const fitHeight = ref(true);
+const tags = ref<Tag[]>([]);
 
 const url = computed(() => {
     if (store.postFocus === null) {
@@ -22,6 +25,14 @@ function onKeyDown(e: KeyboardEvent) {
         close();
     }
 }
+
+watchEffect(() => {
+    if (store.postFocus === null) {
+        return;
+    }
+
+    store.tagsForPost(store.postFocus).then((val) => (tags.value = val));
+});
 
 onMounted(() => {
     document.addEventListener("keydown", onKeyDown);
@@ -47,10 +58,11 @@ onUnmounted(() => {
                     @click="fitHeight = !fitHeight"
                 />
             </div>
-            <div class="info-drawer">
-                <div class="drawer-btn">
+            <div class="info-drawer" :class="{ 'drawer-open': drawerOpen }">
+                <div class="drawer-btn" @click="drawerOpen = !drawerOpen">
                     <i class="bi bi-info-circle"></i>
                 </div>
+                <TagList v-if="drawerOpen" :jiggle="false" :tags="tags" />
             </div>
         </div>
     </div>
@@ -74,11 +86,12 @@ onUnmounted(() => {
 }
 
 .focus-container {
+    height: 100%;
     margin: 0 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100%;
+    gap: 10px;
 }
 
 .content-container {
@@ -95,6 +108,8 @@ onUnmounted(() => {
 }
 
 .content {
+    max-width: 100%;
+
     &.fit-height {
         max-height: 100%;
         width: auto;
@@ -103,7 +118,6 @@ onUnmounted(() => {
     }
 
     &.fit-width {
-        max-width: 100%;
         height: auto;
 
         cursor: zoom-out;
@@ -112,6 +126,11 @@ onUnmounted(() => {
 
 .info-drawer {
     z-index: 3;
+    position: relative;
+
+    &.drawer-open {
+        bottom: 0;
+    }
 
     & .drawer-btn {
         font-size: 30px;

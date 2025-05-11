@@ -16,6 +16,7 @@ type Store = {
     addSearchTag(tag: Tag): void;
     removeSearchTag(tag: Tag): void;
     searchTags(): Tag[];
+    tagsForPost(post: Post): Promise<Tag[]>;
 
     hasResults(): boolean;
     loadTags(tags: string[]): Promise<void>;
@@ -37,6 +38,15 @@ const store = reactive<Store>({
     lastSearchTags: new Set(),
     posts: new Map(),
     cachedTags: {},
+
+    tagsForPost(post: Post): Promise<Tag[]> {
+        return new Promise<Tag[]>((resolve, reject) => {
+            store
+                .loadTags(post.tags)
+                .then(() => resolve(post.tags.map((t) => store.cachedTags[t])))
+                .catch(reject);
+        });
+    },
 
     searchTags(): Tag[] {
         return Array.from(this.searchTagsSet.keys());
