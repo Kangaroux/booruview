@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import store from "@/store";
-import { onMounted, onUnmounted, ref, watchEffect } from "vue";
-import TagList from "../TagList.vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import ImageTab from "./ImageTab.vue";
+import InfoTab from "./InfoTab.vue";
+
+type Tab = "image" | "info";
 
 const drawerOpen = ref(false);
-const tags = ref<Tag[]>([]);
+const currentTab = ref<Tab>("image");
 
 function close() {
     store.fullscreenPost = null;
@@ -17,14 +19,6 @@ function onKeyDown(e: KeyboardEvent) {
         close();
     }
 }
-
-watchEffect(() => {
-    if (store.fullscreenPost === null) {
-        return;
-    }
-
-    store.tagsForPost(store.fullscreenPost).then((val) => (tags.value = val));
-});
 
 onMounted(() => {
     document.addEventListener("keydown", onKeyDown);
@@ -38,16 +32,29 @@ onUnmounted(() => {
 <template>
     <div class="fullscreen-viewer">
         <div class="screen-cover" @click="close()"></div>
-        <div class="outer-container">
-            <KeepAlive>
-                <ImageTab />
-            </KeepAlive>
-            <div class="info-drawer" :class="{ 'drawer-open': drawerOpen }">
-                <div class="drawer-btn" @click="drawerOpen = !drawerOpen">
-                    <i class="bi bi-info-circle"></i>
-                </div>
-                <TagList v-if="drawerOpen" :jiggle="false" :tags="tags" />
+        <div class="viewer-container">
+            <div class="tab">
+                <KeepAlive>
+                    <ImageTab v-if="currentTab == 'image'" />
+                    <InfoTab v-else-if="currentTab == 'info'" />
+                </KeepAlive>
             </div>
+            <footer class="tab-menu">
+                <button
+                    class="menu-btn"
+                    :class="{ active: currentTab == 'image' }"
+                    @click="currentTab = 'image'"
+                >
+                    <i class="bi bi-image"></i>
+                </button>
+                <button
+                    class="menu-btn"
+                    :class="{ active: currentTab == 'info' }"
+                    @click="currentTab = 'info'"
+                >
+                    <i class="bi bi-info-circle"></i>
+                </button>
+            </footer>
         </div>
     </div>
 </template>
@@ -69,32 +76,40 @@ onUnmounted(() => {
     height: 100%;
 }
 
-.outer-container {
+.viewer-container {
+    width: 100%;
     height: 100%;
-    margin: 0 100px;
+    padding: 0 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
 }
 
-.info-drawer {
-    z-index: 3;
-    position: relative;
+.tab {
+    z-index: 2;
+    min-height: 0;
+    flex: 1;
+    overflow-y: scroll;
+}
 
-    &.drawer-open {
-        bottom: 0;
-    }
+.tab-menu {
+    display: flex;
+    z-index: 2;
+    padding: 10px 0;
 
-    & .drawer-btn {
+    & .menu-btn {
+        background: none;
+        border: none;
+        color: white;
         font-size: 30px;
-        padding: 10px 30px;
         text-shadow: 0 0 5px white;
-        opacity: 0.6;
+        opacity: 0.5;
         transition: opacity 200ms;
         cursor: pointer;
+        padding: 20px;
 
-        &:hover {
+        &:hover,
+        &.active {
             opacity: 1;
         }
     }

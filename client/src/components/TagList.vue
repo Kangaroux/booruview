@@ -48,44 +48,42 @@ const categories = computed(() => {
 </script>
 
 <template>
-    <div class="tag-list">
-        <h3 v-if="categories.artist.length > 0">artist</h3>
-        <TagChip
-            v-for="t in categories.artist"
-            :tag="t"
-            :key="t.name"
-            :jiggle="jiggle"
-        />
+    <h3 v-if="categories.artist.length > 0">artist</h3>
+    <TagChip
+        v-for="t in categories.artist"
+        :tag="t"
+        :key="t.name"
+        :jiggle="jiggle"
+    />
 
-        <h3 v-if="categories.character.length > 0">character</h3>
-        <TagChip
-            v-for="t in categories.character"
-            :tag="t"
-            :key="t.name"
-            :jiggle="jiggle"
-        />
+    <h3 v-if="categories.character.length > 0">character</h3>
+    <TagChip
+        v-for="t in categories.character"
+        :tag="t"
+        :key="t.name"
+        :jiggle="jiggle"
+    />
 
-        <h3 v-if="categories.copyright.length > 0">copyright</h3>
-        <TagChip
-            v-for="t in categories.copyright"
-            :tag="t"
-            :key="t.name"
-            :jiggle="jiggle"
-        />
-        <h3 v-if="categories.tag.length > 0">tags</h3>
-        <TagChip
-            v-for="t in categories.tag"
-            :tag="t"
-            :key="t.name"
-            :jiggle="jiggle"
-        />
+    <h3 v-if="categories.copyright.length > 0">copyright</h3>
+    <TagChip
+        v-for="t in categories.copyright"
+        :tag="t"
+        :key="t.name"
+        :jiggle="jiggle"
+    />
+    <h3 v-if="categories.tag.length > 0">tags</h3>
+    <TagChip
+        v-for="t in categories.tag"
+        :tag="t"
+        :key="t.name"
+        :jiggle="jiggle"
+    />
 
-        <h3 v-if="categories.metadata.length > 0">metadata</h3>
-        <TagChip
-            v-for="t in categories.metadata"
-            :tag="t"
-            :key="t.name"
-            :jiggle="jiggle"
-        />
-    </div>
+    <h3 v-if="categories.metadata.length > 0">metadata</h3>
+    <TagChip
+        v-for="t in categories.metadata"
+        :tag="t"
+        :key="t.name"
+        :jiggle="jiggle"
+    />
 </template>

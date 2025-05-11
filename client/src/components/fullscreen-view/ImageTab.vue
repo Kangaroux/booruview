@@ -28,7 +28,6 @@ const url = computed(() => {
 
 <style lang="scss" scoped>
 .content-container {
-    z-index: 2;
     height: 100%;
     overflow-y: scroll;
     line-height: 0;
