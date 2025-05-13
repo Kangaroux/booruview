@@ -7,14 +7,19 @@ COMMIT=$(git rev-parse --short master)
 DATE=$(date +%Y.%m.%d)
 TAG=$COMMIT-$DATE
 
-docker build -t $PREFIX/booruview-api:$TAG -f api/Dockerfile.prod api/
-docker build -t $PREFIX/booruview-valkey:$TAG valkey/
-docker build -t $PREFIX/booruview-client client/
+API_IMG=$PREFIX/booruview-api:$TAG
+CADDY_IMG=$PREFIX/booruview-caddy:$TAG
+CLIENT_IMG=$PREFIX/booruview-client:$TAG
+VALKEY_IMG=$PREFIX/booruview-valkey:$TAG
+
+docker build -t $API_IMG -f api/Dockerfile.prod api/
+docker build -t $VALKEY_IMG valkey/
+docker build -t $CLIENT_IMG client/
 
 OWNER=$(id -u):$(id -g)
-docker run --rm -e OWNER=$OWNER -v ./client/dist:/app/dist booruview-client ash -c 'yarn build && chown -R $OWNER dist/'
-docker build -t $PREFIX/booruview-caddy:$TAG -f caddy/Dockerfile .
+docker run --rm -e OWNER=$OWNER -v ./client/dist:/app/dist $CLIENT_IMG ash -c 'yarn build && chown -R $OWNER dist/'
+docker build -t $CADDY_IMG -f caddy/Dockerfile .
 
-docker push $PREFIX/booruview-api:$TAG
-docker push $PREFIX/booruview-caddy:$TAG
-docker push $PREFIX/booruview-valkey:$TAG
+docker push $API_IMG
+docker push $CADDY_IMG
+docker push $VALKEY_IMG
