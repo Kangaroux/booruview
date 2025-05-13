@@ -81,12 +81,11 @@ const urlOriginal = computed(() => {
     &.fit-height {
         max-height: 100%;
         width: auto;
+        cursor: zoom-in;
 
         @media (max-width: 600px) {
             max-width: 100%;
         }
-
-        cursor: zoom-in;
     }
 
     &.fit-width {

@@ -1,17 +1,32 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, useTemplateRef, watch } from "vue";
 import store from "@/store";
 import PostContainer from "./components/PostContainer.vue";
 import Sidebar from "./components/Sidebar.vue";
 import SearchHelp from "./components/SearchHelp.vue";
 import FullscreenView from "./components/fullscreen-view/FullscreenView.vue";
 
+const mainContentContainer = useTemplateRef("main-content");
 const showHelp = ref(localStorage.getItem("hide-help") === null);
 
 function onCloseHelp() {
     showHelp.value = false;
     localStorage.setItem("hide-help", "1");
 }
+
+watch(
+    () => [mainContentContainer, store.posts],
+    () => {
+        if (!mainContentContainer.value) {
+            return;
+        }
+        mainContentContainer.value.scrollTop = 0;
+    },
+    {
+        flush: "post",
+        deep: true,
+    },
+);
 </script>
 
 <template>
@@ -32,7 +47,11 @@ function onCloseHelp() {
                 @on-close="onCloseHelp"
             />
             <FullscreenView v-if="store.fullscreenPost !== null" />
-            <div class="main-content" v-if="store.hasResults()">
+            <div
+                class="main-content"
+                ref="main-content"
+                v-if="store.hasResults()"
+            >
                 <PostContainer :posts="store.postsForCurrentPage() || []" />
                 <footer>
                     <p>
@@ -80,5 +99,6 @@ main {
 
 .main-content {
     height: 100%;
+    overflow-y: scroll;
 }
 </style>
