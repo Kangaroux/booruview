@@ -5,27 +5,21 @@ const emit = defineEmits(["on-close"]);
 <template>
     <div class="help-container">
         <div class="help-content">
-            <p>
-                <button class="close-btn" @click="emit('on-close')">
-                    Close
-                </button>
+            <button class="close-btn" @click="emit('on-close')">
+                Close
+            </button>
 
-                Enter one tag at a time.
+            <h3>Quickstart</h3>
+            <p>
+                Booruview lets you search and browse <a href="https://gelbooru.com" target="_blank">Gelbooru</a> posts.
             </p>
-            <ul>
-                <li>
-                    <kbd>Tab</kbd>
-                    will auto-complete.
-                </li>
-                <li>
-                    <kbd>Up/Down</kbd>
-                    selects a tag.
-                </li>
-                <li>
-                    <kbd>Enter</kbd>
-                    adds the tag to your search.
-                </li>
-            </ul>
+            <p>
+                Add tags to your search one at a time. To exclude a tag, use <code>-tag</code>. Results must match every tag in your search (AND).
+            </p>
+            <p>
+                SFW Example:
+            </p>
+            <p>Type <code>rating:general</code> and confirm the tag. Type <code>blue_sky</code> and confirm. Click search.</p>
             <p>
                 <a
                     href="https://gelbooru.com/index.php?page=wiki&s=&s=view&id=26263"
@@ -41,10 +35,13 @@ const emit = defineEmits(["on-close"]);
 <style lang="scss" scoped>
 .help-container {
     background-color: #2c3932;
-    width: 300px;
     font-size: 14px;
     padding: 12px;
-    margin-top: 10px;
+    margin-bottom: 10px;
+
+    h3 {
+        margin-top: 0;
+    }
 
     p,
     ul {
@@ -60,8 +57,10 @@ const emit = defineEmits(["on-close"]);
         padding-left: 24px;
     }
 
-    kbd {
+    code {
         font-family: "Courier New", Courier, monospace;
+        background-color: rgba(0,0,0,0.2);
+        padding: 1px 3px;
     }
 
     a {

@@ -3,10 +3,18 @@ import store from "@/store";
 import { ref } from "vue";
 import TagList from "./TagList.vue";
 import SearchForm from "./search/SearchForm.vue";
+import SearchHelp from "./SearchHelp.vue";
 
 defineEmits(["toggle"]);
+
 const { closed } = defineProps<{ closed: boolean }>();
 const fetching = ref(false);
+const showHelp = ref(localStorage.getItem("hide-help") === null);
+
+function onCloseHelp() {
+    showHelp.value = false;
+    localStorage.setItem("hide-help", "1");
+}
 
 function doPostSearch() {
     if (fetching.value) {
@@ -41,6 +49,10 @@ function onTagSelect(tag: Tag, negated: boolean) {
             <i v-else class="bi bi-chevron-left"></i>
         </button>
         <nav class="sidebar-content" v-show="!closed">
+            <SearchHelp
+                v-if="showHelp"
+                @on-close="onCloseHelp"
+            />
             <SearchForm
                 @on-search="doPostSearch"
                 @on-tag-select="onTagSelect"

@@ -3,16 +3,9 @@ import { ref, useTemplateRef, watch } from "vue";
 import store from "@/store";
 import PostContainer from "./components/PostContainer.vue";
 import Sidebar from "./components/Sidebar.vue";
-import SearchHelp from "./components/SearchHelp.vue";
 import FullscreenView from "./components/fullscreen-view/FullscreenView.vue";
 
 const mainContentContainer = useTemplateRef("main-content");
-const showHelp = ref(localStorage.getItem("hide-help") === null);
-
-function onCloseHelp() {
-    showHelp.value = false;
-    localStorage.setItem("hide-help", "1");
-}
 
 watch(
     () => [mainContentContainer, store.posts],
@@ -42,10 +35,6 @@ watch(
             @toggle="store.sidebarClosed = !store.sidebarClosed"
         />
         <main>
-            <SearchHelp
-                v-if="showHelp && !store.hasResults()"
-                @on-close="onCloseHelp"
-            />
             <FullscreenView v-if="store.fullscreenPost !== null" />
             <div
                 class="main-content"
