@@ -1,0 +1,21 @@
+services:
+  api:
+    image: ghcr.io/kangaroux/booruview-api
+    environment:
+      - "VALKEY_ADDR=db:6379"
+
+  caddy:
+    image: ghcr.io/kangaroux/booruview-caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    # environment:
+      # - "CADDY_HOST=booruview.com"
+
+  db:
+    image: ghcr.io/kangaroux/booruview-valkey
+    volumes:
+      - valkey-data:/data
+
+volumes:
+  valkey-data:
