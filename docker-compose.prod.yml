@@ -1,11 +1,13 @@
 services:
   api:
     image: ghcr.io/kangaroux/booruview-api
+    restart: unless-stopped
     environment:
       - "VALKEY_ADDR=db:6379"
 
   caddy:
     image: ghcr.io/kangaroux/booruview-caddy
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -14,6 +16,7 @@ services:
 
   db:
     image: ghcr.io/kangaroux/booruview-valkey
+    restart: unless-stopped
     volumes:
       - valkey-data:/data
 
