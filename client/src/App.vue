@@ -79,7 +79,6 @@ main {
 }
 
 .main-content {
-    overflow-y: scroll;
     height: 100%;
 }
 </style>

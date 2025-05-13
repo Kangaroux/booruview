@@ -1,10 +1,31 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, useTemplateRef } from "vue";
+import {
+    computed,
+    onMounted,
+    ref,
+    useTemplateRef,
+    watch,
+    watchPostEffect,
+} from "vue";
 import PostContent from "./PostContent.vue";
+import store from "@/store";
 
 const { posts } = defineProps<{ posts: Post[] }>();
 const container = useTemplateRef("container");
 const columnCount = ref(0);
+
+watch(
+    [posts, container, store.currentPage],
+    () => {
+        if (!container.value) {
+            return;
+        }
+        container.value.scrollTop = 0;
+    },
+    {
+        flush: "post",
+    },
+);
 
 function onResize() {
     if (!container.value) {
@@ -72,6 +93,7 @@ onMounted(() => {
     display: flex;
     flex-direction: row;
     gap: 10px;
+    overflow-y: scroll;
 
     @media not (max-width: 600px) {
         padding-left: 10px;
