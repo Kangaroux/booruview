@@ -11,7 +11,7 @@ type listCategories = {
     metadata: tagWithState[];
 };
 
-defineEmits<{click: [tag: Tag]}>();
+defineEmits<{ click: [tag: Tag] }>();
 
 const { jiggle, excludeTags, includeTags } = defineProps<{
     jiggle: boolean;

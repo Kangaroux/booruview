@@ -5,21 +5,27 @@ const emit = defineEmits(["on-close"]);
 <template>
     <div class="help-container">
         <div class="help-content">
-            <button class="close-btn" @click="emit('on-close')">
-                Close
-            </button>
+            <button class="close-btn" @click="emit('on-close')">Close</button>
 
             <h3>Quickstart</h3>
             <p>
-                Booruview lets you search and browse <a href="https://gelbooru.com" target="_blank">Gelbooru</a> posts.
+                Booruview lets you search and browse
+                <a href="https://gelbooru.com" target="_blank">Gelbooru</a>
+                posts.
             </p>
             <p>
-                Add tags to your search one at a time. To exclude a tag, use <code>-tag</code>. Results must match every tag in your search (AND).
+                Add tags to your search one at a time. To exclude a tag, use
+                <code>-tag</code>
+                . Results must match every tag in your search (AND).
             </p>
+            <p>SFW Example:</p>
             <p>
-                SFW Example:
+                Type
+                <code>rating:general</code>
+                and confirm the tag. Type
+                <code>blue_sky</code>
+                and confirm. Click search.
             </p>
-            <p>Type <code>rating:general</code> and confirm the tag. Type <code>blue_sky</code> and confirm. Click search.</p>
             <p>
                 <a
                     href="https://gelbooru.com/index.php?page=wiki&s=&s=view&id=26263"
@@ -59,7 +65,7 @@ const emit = defineEmits(["on-close"]);
 
     code {
         font-family: "Courier New", Courier, monospace;
-        background-color: rgba(0,0,0,0.2);
+        background-color: rgba(0, 0, 0, 0.2);
         padding: 1px 3px;
     }
 
