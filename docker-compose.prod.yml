@@ -9,8 +9,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    # environment:
-      # - "CADDY_HOST=booruview.com"
+    environment:
+      - "CADDY_HOST=booruview.com"
 
   db:
     image: ghcr.io/kangaroux/booruview-valkey
