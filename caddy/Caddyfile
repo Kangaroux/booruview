@@ -3,7 +3,7 @@
 encode
 file_server
 log {
-	level ERROR
+	level {$CADDY_LOGLEVEL:ERROR}
 }
 
 @longUrl expression {path}.size() > 2000
