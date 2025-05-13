@@ -1,5 +1,5 @@
 import { reactive } from "vue";
-import { isSetEqual } from "./set";
+import SearchQuery from "./search";
 
 type Store = {
     currentPage: number;
@@ -8,16 +8,15 @@ type Store = {
 
     fullscreenPost: Post | null;
 
-    searchQuery: Set<Tag>;
-    lastSearchQuery: Set<Tag>;
+    search: {
+        query: SearchQuery;
+        previousQuery: SearchQuery;
+    };
 
     /** mapping of page number to posts */
     posts: Map<number, Post[]>;
     cachedTags: Map<string, Tag>;
 
-    addSearchTag(tag: Tag): void;
-    removeSearchTag(tag: Tag): void;
-    searchTags(): Tag[];
     tagsForPost(post: Post): Promise<Tag[]>;
 
     hasResults(): boolean;
@@ -37,8 +36,11 @@ const store = reactive<Store>({
 
     fullscreenPost: null,
 
-    searchQuery: new Set(),
-    lastSearchQuery: new Set(),
+    search: {
+        query: new SearchQuery(),
+        previousQuery: new SearchQuery(),
+    },
+
     posts: new Map(),
     cachedTags: new Map(),
 
@@ -57,18 +59,6 @@ const store = reactive<Store>({
         });
     },
 
-    searchTags(): Tag[] {
-        return Array.from(this.searchQuery.keys());
-    },
-
-    addSearchTag(tag: Tag) {
-        this.searchQuery.add(tag);
-    },
-
-    removeSearchTag(tag: Tag) {
-        this.searchQuery.delete(tag);
-    },
-
     hasResults(): boolean {
         return this.totalPostCount > 0;
     },
@@ -76,7 +66,7 @@ const store = reactive<Store>({
     setQueryParams() {
         const url = new URL(window.location.href);
         url.searchParams.set("page", this.currentPage.toString());
-        url.searchParams.set("tags", this.searchTags().map(t => t.name).join(","));
+        url.searchParams.set("q", this.search.query.serialize());
         window.history.pushState(null, "", url.toString());
     },
 
@@ -88,31 +78,24 @@ const store = reactive<Store>({
         };
 
         return new Promise((resolve, reject) => {
-            const searchChanged = !isSetEqual(
-                this.lastSearchQuery,
-                this.searchQuery,
+            const searchHasntChanged = this.search.query.equals(
+                this.search.previousQuery,
             );
-            const hasPage = this.posts.has(this.currentPage);
-
-            if (!searchChanged && hasPage) {
-                resolve();
-                return;
-            }
-
-            const tags = this.searchTags().map((t) => t.name);
-            const query = `q=${encodeURIComponent(tags.join(" "))}&page=${this.currentPage}`;
+            const query =
+                `q=${encodeURIComponent(this.search.query.serialize())}` +
+                `&page=${this.currentPage}`;
 
             fetch("/api/posts?" + query)
                 .then((resp) => {
                     resp.json().then((json: PostListResponse) => {
-                        if (searchChanged) {
+                        if (searchHasntChanged) {
                             this.posts.clear();
                         }
 
                         this.posts.set(this.currentPage, json.results);
                         this.resultsPerPage = json.count_per_page;
                         this.totalPostCount = json.total_count;
-                        this.lastSearchQuery = new Set(this.searchQuery);
+                        this.search.previousQuery = this.search.query.copy();
 
                         this.setQueryParams();
                         resolve();

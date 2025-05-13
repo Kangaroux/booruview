@@ -3,10 +3,7 @@ import { computed, onMounted, ref } from "vue";
 
 defineEmits(["click"]);
 
-const {
-    jiggle = false,
-    tag,
-} = defineProps<{ jiggle?: boolean; tag: Tag }>();
+const { jiggle = false, tag } = defineProps<{ jiggle?: boolean; tag: Tag }>();
 const hasJiggled = ref(false);
 
 const cls = computed(() => ({

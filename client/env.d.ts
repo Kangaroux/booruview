@@ -14,11 +14,6 @@ type Tag = {
     type: TagType;
 };
 
-type SearchQuery = {
-    include: Tag[];
-    exclude: Tag[];
-};
-
 type Rating = "general" | "sensitive" | "questionable" | "explicit";
 
 type Post = {

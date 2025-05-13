@@ -56,7 +56,7 @@ function autoComplete() {
     let val = suggestions.value[index].name;
 
     // Preserve the NOT op
-    if(query.value.startsWith("-")) {
+    if (query.value.startsWith("-")) {
         val = "-" + val;
     }
 
