@@ -3,7 +3,14 @@ import store from "@/store";
 import { computed, ref } from "vue";
 
 const fitHeight = ref(true);
-const url = computed(() => {
+const urlLowRes = computed(() => {
+    if (store.fullscreenPost === null) {
+        return "";
+    }
+
+    return store.fullscreenPost.lowres_url || store.fullscreenPost.image_url;
+});
+const urlOriginal = computed(() => {
     if (store.fullscreenPost === null) {
         return "";
     }
@@ -15,13 +22,24 @@ const url = computed(() => {
 <template>
     <div class="content-container">
         <img
-            class="content"
+            class="content high-res"
             :class="{
                 'fit-height': fitHeight,
                 'fit-width': !fitHeight,
             }"
-            :src="url"
+            :src="urlOriginal"
             @click="fitHeight = !fitHeight"
+            loading="lazy"
+        />
+        <img
+            class="content low-res"
+            :class="{
+                'fit-height': fitHeight,
+                'fit-width': !fitHeight,
+            }"
+            :src="urlLowRes"
+            @click="fitHeight = !fitHeight"
+            loading="lazy"
         />
     </div>
 </template>
@@ -37,14 +55,36 @@ const url = computed(() => {
     &::-webkit-scrollbar {
         display: none;
     }
+
+    @media (max-width: 600px) {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .high-res {
+        display: none;
+    }
+}
+
+@media not (max-width: 600px) {
+    .low-res {
+        display: none;
+    }
 }
 
 .content {
-    max-width: 100%;
+    @media not (max-width: 600px) {
+        max-width: 100%;
+    }
 
     &.fit-height {
         max-height: 100%;
         width: auto;
+
+        @media (max-width: 600px) {
+            max-width: 100%;
+        }
 
         cursor: zoom-in;
     }

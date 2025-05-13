@@ -6,7 +6,6 @@ import InfoTab from "./InfoTab.vue";
 
 type Tab = "image" | "info";
 
-const drawerOpen = ref(false);
 const currentTab = ref<Tab>("image");
 
 function close() {
@@ -66,6 +65,13 @@ onUnmounted(() => {
                 <button class="menu-btn" @click="close()" title="next image">
                     <i class="bi bi-arrow-right"></i>
                 </button>
+                <button
+                    class="menu-btn close-btn"
+                    @click="close()"
+                    title="close"
+                >
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </footer>
         </div>
     </div>
@@ -102,6 +108,11 @@ onUnmounted(() => {
     min-height: 0;
     flex: 1;
     overflow-y: scroll;
+
+    @media (max-width: 600px) {
+        overflow: scroll;
+        width: 100%;
+    }
 }
 
 .tab-menu {
@@ -124,5 +135,10 @@ onUnmounted(() => {
     &.active {
         opacity: 1;
     }
+}
+
+.close-btn {
+    color: #bb9fce;
+    text-shadow: 0 0 5px #bb9fce;
 }
 </style>
