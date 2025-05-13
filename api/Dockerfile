@@ -13,8 +13,6 @@ RUN go mod download
 
 COPY . .
 
-# RUN go build -v -o /dist/server .
-
 
 # FROM scratch
 

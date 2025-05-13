@@ -34,7 +34,8 @@ services:
       - ./client:/app
 
   db:
-    image: valkey/valkey:8.1-alpine
+    build:
+      context: valkey
     volumes:
       - dbdata:/data
 
