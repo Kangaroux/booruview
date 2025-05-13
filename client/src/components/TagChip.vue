@@ -40,6 +40,7 @@ onMounted(() => {
     display: inline-block;
     font-size: 16px;
     word-break: break-all;
+    cursor: pointer;
 
     &.state-exclude {
         filter: brightness(0.8);

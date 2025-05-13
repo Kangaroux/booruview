@@ -20,6 +20,7 @@ services:
       dockerfile: caddy/Dockerfile
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./client/dist:/srv:ro   # Live client updates
 

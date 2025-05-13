@@ -17,6 +17,14 @@ function doPostSearch() {
     store.searchPosts().finally(() => (fetching.value = false));
 }
 
+function onTagClick(tag: Tag) {
+    if(store.search.query.include.has(tag.name)) {
+        store.search.query.excludeTag(tag);
+    } else {
+        store.search.query.removeTag(tag);
+    }
+}
+
 function onTagSelect(tag: Tag, negated: boolean) {
     if (!negated) {
         store.search.query.includeTag(tag);
@@ -43,6 +51,7 @@ function onTagSelect(tag: Tag, negated: boolean) {
                 :jiggle="true"
                 :excludeTags="[...store.search.query.exclude.values()]"
                 :includeTags="[...store.search.query.include.values()]"
+                @click="onTagClick"
             />
         </nav>
     </header>

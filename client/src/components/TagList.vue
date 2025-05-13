@@ -11,6 +11,8 @@ type listCategories = {
     metadata: tagWithState[];
 };
 
+defineEmits<{click: [tag: Tag]}>();
+
 const { jiggle, excludeTags, includeTags } = defineProps<{
     jiggle: boolean;
     includeTags: Tag[];
@@ -104,6 +106,7 @@ const categories = computed(() => {
         :key="t.tag.name"
         :state="t.state"
         :jiggle="jiggle"
+        @click="$emit('click', t.tag)"
     />
 
     <h3 v-if="categories.character.length > 0">character</h3>
@@ -113,6 +116,7 @@ const categories = computed(() => {
         :key="t.tag.name"
         :state="t.state"
         :jiggle="jiggle"
+        @click="$emit('click', t.tag)"
     />
 
     <h3 v-if="categories.copyright.length > 0">copyright</h3>
@@ -122,6 +126,7 @@ const categories = computed(() => {
         :key="t.tag.name"
         :state="t.state"
         :jiggle="jiggle"
+        @click="$emit('click', t.tag)"
     />
     <h3 v-if="categories.tag.length > 0">tags</h3>
     <TagChip
@@ -130,6 +135,7 @@ const categories = computed(() => {
         :key="t.tag.name"
         :state="t.state"
         :jiggle="jiggle"
+        @click="$emit('click', t.tag)"
     />
 
     <h3 v-if="categories.metadata.length > 0">metadata</h3>
@@ -139,6 +145,7 @@ const categories = computed(() => {
         :key="t.tag.name"
         :state="t.state"
         :jiggle="jiggle"
+        @click="$emit('click', t.tag)"
     />
 </template>
 
