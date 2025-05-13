@@ -78,10 +78,8 @@ function onTagSelect(tag: Tag, negated: boolean) {
             <p>
                 Feedback and suggestions are welcome. You can use the Github
                 issue tracker or send me an
-                <a href="mailto:2302541+Kangaroux@users.noreply.github.com">
-                    email
-                </a>
-                .
+                <!-- prettier-ignore -->
+                <span><a href="mailto:2302541+Kangaroux@users.noreply.github.com">email</a>.</span>
             </p>
             <p>
                 This site does not use tracking or cookies. Searches are cached
