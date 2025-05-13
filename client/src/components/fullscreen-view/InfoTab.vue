@@ -23,5 +23,9 @@ watchEffect(() => {
 <style lang="scss" scoped>
 .tag-list {
     max-width: 800px;
+
+    @media (max-width: 600px) {
+        padding: 0 10px;
+    }
 }
 </style>

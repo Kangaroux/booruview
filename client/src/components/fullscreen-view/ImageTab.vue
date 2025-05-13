@@ -78,6 +78,12 @@ const urlOriginal = computed(() => {
         max-width: 100%;
     }
 
+    @media (max-width: 600px) {
+        position: relative;
+        transform: translateY(-50%);
+        top: 50%;
+    }
+
     &.fit-height {
         max-height: 100%;
         width: auto;
