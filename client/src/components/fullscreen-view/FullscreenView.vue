@@ -55,14 +55,10 @@ onUnmounted(() => {
                 >
                     <i class="bi bi-info-circle"></i>
                 </button>
-                <button
-                    class="menu-btn"
-                    @click="close()"
-                    title="previous image"
-                >
+                <button class="menu-btn" title="previous image">
                     <i class="bi bi-arrow-left"></i>
                 </button>
-                <button class="menu-btn" @click="close()" title="next image">
+                <button class="menu-btn" title="next image">
                     <i class="bi bi-arrow-right"></i>
                 </button>
                 <button
