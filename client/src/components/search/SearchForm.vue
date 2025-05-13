@@ -28,7 +28,7 @@ function doTagSearch(query: string) {
             resp.json().then((json: SearchResponse) => {
                 suggestions.value = json.results.filter(
                     // Don't suggest tags already added to the search
-                    (x) => !store.searchTagsSet.has(x),
+                    (x) => !store.searchQuery.has(x),
                 );
             }),
         )

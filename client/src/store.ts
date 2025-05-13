@@ -8,8 +8,8 @@ type Store = {
 
     fullscreenPost: Post | null;
 
-    searchTagsSet: Set<Tag>;
-    lastSearchTags: Set<Tag>;
+    searchQuery: Set<Tag>;
+    lastSearchQuery: Set<Tag>;
 
     /** mapping of page number to posts */
     posts: Map<number, Post[]>;
@@ -37,8 +37,8 @@ const store = reactive<Store>({
 
     fullscreenPost: null,
 
-    searchTagsSet: new Set(),
-    lastSearchTags: new Set(),
+    searchQuery: new Set(),
+    lastSearchQuery: new Set(),
     posts: new Map(),
     cachedTags: new Map(),
 
@@ -58,15 +58,15 @@ const store = reactive<Store>({
     },
 
     searchTags(): Tag[] {
-        return Array.from(this.searchTagsSet.keys());
+        return Array.from(this.searchQuery.keys());
     },
 
     addSearchTag(tag: Tag) {
-        this.searchTagsSet.add(tag);
+        this.searchQuery.add(tag);
     },
 
     removeSearchTag(tag: Tag) {
-        this.searchTagsSet.delete(tag);
+        this.searchQuery.delete(tag);
     },
 
     hasResults(): boolean {
@@ -89,8 +89,8 @@ const store = reactive<Store>({
 
         return new Promise((resolve, reject) => {
             const searchChanged = !isSetEqual(
-                this.lastSearchTags,
-                this.searchTagsSet,
+                this.lastSearchQuery,
+                this.searchQuery,
             );
             const hasPage = this.posts.has(this.currentPage);
 
@@ -112,7 +112,7 @@ const store = reactive<Store>({
                         this.posts.set(this.currentPage, json.results);
                         this.resultsPerPage = json.count_per_page;
                         this.totalPostCount = json.total_count;
-                        this.lastSearchTags = new Set(this.searchTagsSet);
+                        this.lastSearchQuery = new Set(this.searchQuery);
 
                         this.setQueryParams();
                         resolve();
