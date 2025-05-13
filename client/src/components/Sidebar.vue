@@ -90,8 +90,10 @@ function onTagSelect(tag: Tag, negated: boolean) {
     .sidebar-closed & {
         opacity: 0.5;
 
-        &:hover {
-            opacity: 1;
+        @media (any-hover: hover) {
+            &:hover {
+                opacity: 1;
+            }
         }
     }
 }
