@@ -22,25 +22,10 @@ class SearchQuery {
         this.exclude.delete(t.name);
     }
 
-    serialize(): string {
-        const include = this.include
-            .values()
-            .map((t) => t.name)
-            .join(",");
-        const exclude = this.exclude
-            .values()
-            .map((t) => "-" + t.name)
-            .join(",");
-        let ret = include;
-
-        if (exclude.length > 0) {
-            if (ret.length > 0) {
-                ret += ",";
-            }
-            ret += exclude;
-        }
-
-        return ret;
+    asList(): string[] {
+        const include = Array.from(this.include.values(), (t) => t.name);
+        const exclude = Array.from(this.exclude.values(), (t) => "-" + t.name);
+        return include.concat(exclude);
     }
 
     equals(o: SearchQuery): boolean {

@@ -15,6 +15,14 @@ function doPostSearch() {
     fetching.value = true;
     store.searchPosts().finally(() => (fetching.value = false));
 }
+
+function onTagSelect(tag: Tag, negated: boolean) {
+    if (!negated) {
+        store.search.query.includeTag(tag);
+    } else {
+        store.search.query.excludeTag(tag);
+    }
+}
 </script>
 
 <template>
@@ -29,11 +37,15 @@ function doPostSearch() {
         <nav class="sidebar-content" v-show="!sidebarClosed">
             <SearchForm
                 @on-search="doPostSearch"
-                @on-tag-select="(t) => store.addSearchTag(t)"
+                @on-tag-select="onTagSelect"
                 :show-spinner="fetching"
             />
 
-            <TagList :jiggle="true" :tags="store.searchTags()" />
+            <TagList
+                :jiggle="true"
+                :excludeTags="[...store.search.query.exclude.values()]"
+                :includeTags="[...store.search.query.include.values()]"
+            />
         </nav>
     </header>
 </template>

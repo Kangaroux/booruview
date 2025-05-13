@@ -8,7 +8,10 @@ type SearchResponse = {
 };
 const debounceMs = 150;
 
-const emit = defineEmits<{ onSearch: []; onTagSelect: [value: Tag] }>();
+const emit = defineEmits<{
+    onSearch: [];
+    onTagSelect: [value: Tag, negated: boolean];
+}>();
 
 const { showSpinner = false } = defineProps<{
     showSpinner?: boolean;
@@ -28,7 +31,9 @@ function doTagSearch(query: string) {
             resp.json().then((json: SearchResponse) => {
                 suggestions.value = json.results.filter(
                     // Don't suggest tags already added to the search
-                    (x) => !store.searchQuery.has(x),
+                    (t) =>
+                        !store.search.query.include.has(t.name) &&
+                        !store.search.query.exclude.has(t.name),
                 );
             }),
         )
@@ -95,6 +100,7 @@ function onSubmit() {
     }
 
     let tag: Tag;
+    const negated = query.value.startsWith("-");
 
     if (selectedIndex.value !== -1) {
         tag = suggestions.value[selectedIndex.value];
@@ -102,7 +108,8 @@ function onSubmit() {
         // Refocus the search input if the user was selecting a suggestion
         inputRef.value?.focus();
     } else {
-        const match = suggestions.value.find((t) => t.name === query.value);
+        const value = negated ? query.value.slice(1) : query.value;
+        const match = suggestions.value.find((t) => t.name === value);
 
         // User is submitting a raw tag that wasn't in the search suggestions
         if (match) {
@@ -110,7 +117,7 @@ function onSubmit() {
         } else {
             tag = {
                 count: 0,
-                name: query.value,
+                name: value,
                 type: "unknown",
             };
         }
@@ -118,7 +125,7 @@ function onSubmit() {
 
     query.value = "";
     selectedIndex.value = -1;
-    emit("onTagSelect", tag);
+    emit("onTagSelect", tag, negated);
 }
 
 // Setup a debounce to fetch search results shortly after the user stops typing

@@ -66,7 +66,7 @@ const store = reactive<Store>({
     setQueryParams() {
         const url = new URL(window.location.href);
         url.searchParams.set("page", this.currentPage.toString());
-        url.searchParams.set("q", this.search.query.serialize());
+        url.searchParams.set("q", this.search.query.asList().join(","));
         window.history.pushState(null, "", url.toString());
     },
 
@@ -82,7 +82,7 @@ const store = reactive<Store>({
                 this.search.previousQuery,
             );
             const query =
-                `q=${encodeURIComponent(this.search.query.serialize())}` +
+                `q=${encodeURIComponent(this.search.query.asList().join(" "))}` +
                 `&page=${this.currentPage}`;
 
             fetch("/api/posts?" + query)
