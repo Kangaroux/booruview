@@ -8,6 +8,8 @@ type Store = {
 
     fullscreenPost: Post | null;
 
+    sidebarClosed: boolean;
+
     search: {
         query: SearchQuery;
         previousQuery: SearchQuery;
@@ -35,6 +37,8 @@ const store = reactive<Store>({
     resultsPerPage: 0,
 
     fullscreenPost: null,
+
+    sidebarClosed: false,
 
     search: {
         query: new SearchQuery(),
@@ -96,6 +100,7 @@ const store = reactive<Store>({
                         this.resultsPerPage = json.count_per_page;
                         this.totalPostCount = json.total_count;
                         this.search.previousQuery = this.search.query.copy();
+                        this.sidebarClosed = true;
 
                         this.setQueryParams();
                         resolve();

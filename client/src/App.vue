@@ -15,8 +15,17 @@ function onCloseHelp() {
 </script>
 
 <template>
-    <div class="app">
-        <Sidebar />
+    <div
+        class="app"
+        :class="{
+            'sidebar-closed': store.sidebarClosed,
+            'sidebar-open': !store.sidebarClosed,
+        }"
+    >
+        <Sidebar
+            :closed="store.sidebarClosed"
+            @toggle="store.sidebarClosed = !store.sidebarClosed"
+        />
         <main>
             <SearchHelp
                 v-if="showHelp && !store.hasResults()"
@@ -57,11 +66,16 @@ function onCloseHelp() {
     flex-direction: row;
     width: 100%;
     height: 100%;
-    gap: 10px;
 }
 
 main {
     flex: 1;
+
+    @media (max-width: 600px) {
+        .sidebar-open & {
+            display: none;
+        }
+    }
 }
 
 .main-content {

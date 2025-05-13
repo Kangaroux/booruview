@@ -4,7 +4,8 @@ import { ref } from "vue";
 import TagList from "./TagList.vue";
 import SearchForm from "./search/SearchForm.vue";
 
-const sidebarClosed = ref(false);
+defineEmits(["toggle"]);
+const { closed } = defineProps<{ closed: boolean }>();
 const fetching = ref(false);
 
 function doPostSearch() {
@@ -26,15 +27,12 @@ function onTagSelect(tag: Tag, negated: boolean) {
 </script>
 
 <template>
-    <header
-        class="sidebar-container"
-        :class="{ 'sidebar-closed': sidebarClosed }"
-    >
-        <button class="toggle-btn" @click="sidebarClosed = !sidebarClosed">
-            <i v-if="sidebarClosed" class="bi bi-chevron-right"></i>
+    <header class="sidebar-container">
+        <button class="toggle-btn" @click="$emit('toggle')">
+            <i v-if="closed" class="bi bi-chevron-right"></i>
             <i v-else class="bi bi-chevron-left"></i>
         </button>
-        <nav class="sidebar-content" v-show="!sidebarClosed">
+        <nav class="sidebar-content" v-show="!closed">
             <SearchForm
                 @on-search="doPostSearch"
                 @on-tag-select="onTagSelect"
@@ -55,6 +53,12 @@ function onTagSelect(tag: Tag, negated: boolean) {
 
 .sidebar-container {
     position: relative;
+
+    @media (max-width: 600px) {
+        .sidebar-open & {
+            width: 100%;
+        }
+    }
 }
 
 .sidebar-content {
@@ -63,6 +67,12 @@ function onTagSelect(tag: Tag, negated: boolean) {
     height: 100%;
     position: relative;
     padding: 10px;
+
+    @media (max-width: 600px) {
+        .sidebar-open & {
+            width: 100%;
+        }
+    }
 }
 
 .toggle-btn {
@@ -83,6 +93,7 @@ function onTagSelect(tag: Tag, negated: boolean) {
     position: absolute;
     left: 100%;
     top: calc(50% - $btn-height / 2);
+    z-index: 1;
 
     cursor: pointer;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
@@ -90,10 +101,18 @@ function onTagSelect(tag: Tag, negated: boolean) {
     .sidebar-closed & {
         opacity: 0.5;
 
+        // Fixes the toggle btn not dimming when pressed on mobile
         @media (any-hover: hover) {
             &:hover {
                 opacity: 1;
             }
+        }
+    }
+
+    // Move the toggle btn to the left side of the screen on mobile
+    @media (max-width: 600px) {
+        .sidebar-open & {
+            left: 0;
         }
     }
 }

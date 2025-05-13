@@ -71,13 +71,17 @@ onMounted(() => {
 .post-container {
     display: flex;
     flex-direction: row;
+    gap: 10px;
+
+    @media not (max-width: 600px) {
+        padding-left: 10px;
+    }
 }
 
 .post-column {
     display: flex;
     flex-direction: column;
     flex: 1;
-    margin-right: 10px;
 
     &:last-of-type {
         margin-right: 0;
