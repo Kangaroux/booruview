@@ -22,7 +22,9 @@ function doPostSearch() {
     }
 
     fetching.value = true;
-    store.searchPosts().finally(() => (fetching.value = false));
+    store
+        .searchPosts({ closeSidebar: true })
+        .finally(() => (fetching.value = false));
 }
 
 function onTagClick(tag: Tag) {
