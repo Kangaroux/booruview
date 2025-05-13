@@ -108,6 +108,12 @@ onUnmounted(() => {
     flex: 1;
     overflow-y: scroll;
 
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
     @media (max-width: 600px) {
         overflow: scroll;
         width: 100%;
