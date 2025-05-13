@@ -6,7 +6,7 @@ import store from "@/store";
 type SearchResponse = {
     results: Tag[];
 };
-const debounceMs = 150;
+const debounceMs = 100;
 
 const emit = defineEmits<{
     onSearch: [];
