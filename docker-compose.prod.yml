@@ -22,6 +22,8 @@ services:
     environment:
       - "CADDY_HOST=booruview.com"
     logging: *logging
+    volumes:
+      - caddy-data:/data
 
   db:
     image: ghcr.io/kangaroux/booruview-valkey:latest
@@ -45,6 +47,7 @@ services:
       - loki-data:/loki
 
 volumes:
+  caddy-data:
   grafana-data:
   loki-data:
   valkey-data:

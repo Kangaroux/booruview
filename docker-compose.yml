@@ -33,6 +33,7 @@ services:
       - "443:443"
     volumes:
       - ./client/dist:/srv:ro   # Live client updates
+      - caddy-data:/data
     logging: *logging
 
   client:
@@ -67,6 +68,7 @@ services:
       - loki-data:/loki
 
 volumes:
+  caddy-data:
   dbdata:
   grafana-data:
   loki-data:
