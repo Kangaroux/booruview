@@ -69,6 +69,7 @@ const isVideo = computed(() => {
 <style scoped>
 .post {
     break-inside: avoid;
+    font-size: 0;
 }
 
 .content {
