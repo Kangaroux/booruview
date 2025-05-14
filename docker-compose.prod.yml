@@ -8,10 +8,10 @@ services:
     # docker plugin install grafana/loki-docker-driver:3.3.2-amd64 --alias loki --grant-all-permissions
     logging: &logging
       driver: loki
-        options:
-          loki-retries: 5
-          loki-batch-size: 400
-          loki-url: http://loki:3100/loki/api/v1/push
+      options:
+        loki-retries: 5
+        loki-batch-size: 400
+        loki-url: http://loki:3100/loki/api/v1/push
 
   caddy:
     image: ghcr.io/kangaroux/booruview-caddy:latest
