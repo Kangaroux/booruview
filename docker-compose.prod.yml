@@ -4,6 +4,14 @@ services:
     restart: unless-stopped
     environment:
       - "VALKEY_ADDR=db:6379"
+    # Requires loki plugin:
+    # docker plugin install grafana/loki-docker-driver:3.3.2-amd64 --alias loki --grant-all-permissions
+    logging: &logging
+      driver: loki
+        options:
+          loki-retries: 5
+          loki-batch-size: 400
+          loki-url: http://loki:3100/loki/api/v1/push
 
   caddy:
     image: ghcr.io/kangaroux/booruview-caddy:latest
@@ -13,13 +21,28 @@ services:
       - "443:443"
     environment:
       - "CADDY_HOST=booruview.com"
-      - "CADDY_LOGLEVEL=INFO"
+    logging: *logging
 
   db:
     image: ghcr.io/kangaroux/booruview-valkey:latest
     restart: unless-stopped
     volumes:
       - valkey-data:/data
+    logging: *logging
+
+  grafana:
+    image: grafana/grafana:11.6.0
+    environment:
+      - "GF_SERVER_ROOT_URL=https://grafana.booruview.com/"
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+  loki:
+    image: grafana/loki:3.5.0
+    volumes:
+      - loki-data:/loki
 
 volumes:
+  grafana-data:
+  loki-data:
   valkey-data:

@@ -1,18 +1,22 @@
-{$CADDY_HOST:localhost}
+{$CADDY_HOST:localhost} {
+	encode
+	file_server
+	log {
+		level INFO
+	}
 
-encode
-file_server
-log {
-	level {$CADDY_LOGLEVEL:ERROR}
+	@longUrl expression {path}.size() > 2000
+	error @longUrl "URI Too Long" 414
+
+	handle_path /api/* {
+		reverse_proxy http://api:8000
+	}
+
+	handle_errors 502 {
+		respond "{err.status_code} {err.status_text}"
+	}
 }
 
-@longUrl expression {path}.size() > 2000
-error @longUrl "URI Too Long" 414
-
-handle_path /api/* {
-	reverse_proxy http://api:8000
-}
-
-handle_errors 502 {
-	respond "{err.status_code} {err.status_text}"
+grafana.{$CADDY_HOST:localhost} {
+	reverse_proxy http://grafana:3000
 }
