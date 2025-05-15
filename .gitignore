@@ -3,3 +3,4 @@
 .vscode
 client/dist
 node_modules
+grafana.sh
