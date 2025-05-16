@@ -20,6 +20,10 @@
 	@longUrl expression {path}.size() > 2000
 	error @longUrl "URI Too Long" 414
 
+	# Bots running on workers.dev are scanning URLs
+	@botscan header "Cf-Worker" *
+	abort @botscan
+
 	handle_path /api/* {
 		reverse_proxy http://api:8000
 	}
