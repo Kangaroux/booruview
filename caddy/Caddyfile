@@ -10,7 +10,6 @@
 	# Used to expose a file log for fail2ban
 	log file-log {
 		level INFO
-		format transform "{common_log}"
 		output file /var/log/caddy.log {
 			roll_size 5MiB
 			roll_keep 0
