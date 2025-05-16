@@ -1,6 +1,7 @@
 {$CADDY_HOST:localhost}, www.{$CADDY_HOST:localhost} {
 	encode
 	file_server
+
 	log {
 		level INFO
 	}
@@ -12,7 +13,7 @@
 		reverse_proxy http://api:8000
 	}
 
-	handle_errors 502 {
+	handle_errors {
 		respond "{err.status_code} {err.status_text}"
 	}
 }
