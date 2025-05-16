@@ -24,6 +24,7 @@ services:
     logging: *logging
     volumes:
       - caddy-data:/data
+      - ./caddy.log:/var/log/caddy.log
 
   db:
     image: ghcr.io/kangaroux/booruview-valkey:latest
