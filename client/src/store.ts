@@ -25,6 +25,8 @@ type Store = {
     sidebarClosed: boolean;
 
     settings: {
+        columnSizing: "fixed" | "dynamic";
+        columnCount: number;
         columnWidth: number;
         helpClosed: boolean;
 
@@ -66,6 +68,8 @@ const store = reactive<Store>({
     sidebarClosed: false,
 
     settings: {
+        columnSizing: loadValue("columnSizing", "dynamic", (v) => v as any),
+        columnCount: loadValue("columnCount", 3, parseInt),
         columnWidth: loadValue("columnWidth", 400, parseInt),
         helpClosed: loadValue("helpClosed", false, JSON.parse),
 

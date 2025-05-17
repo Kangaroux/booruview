@@ -33,16 +33,21 @@ const columnDimensions = computed<ColumnDimensions | null>(() => {
     }
 
     const ret: ColumnDimensions = { count: 1, width: 0 };
-    const colWithGap = store.settings.columnWidth + colGap;
 
-    // prettier-ignore
-    ret.count =
-        1 +                                         // Always at least 1 column
-        Math.max(0,
-            Math.floor(
-                (containerWidth.value - store.settings.columnWidth) /    // First column is just the column width
-                colWithGap)                         // Remaining columns also have a gap
-            );
+    if (store.settings.columnSizing === "fixed") {
+        ret.count = store.settings.columnCount;
+    } else {
+        const colWithGap = store.settings.columnWidth + colGap;
+
+        // prettier-ignore
+        ret.count =
+            1 +                                         // Always at least 1 column
+            Math.max(0,
+                Math.floor(
+                    (containerWidth.value - store.settings.columnWidth) /    // First column is just the column width
+                    colWithGap)                         // Remaining columns also have a gap
+                );
+    }
 
     ret.width = (containerWidth.value - (ret.count - 1) * colGap) / ret.count;
 
