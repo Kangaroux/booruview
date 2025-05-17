@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import store from "@/store";
 import { ref } from "vue";
-import TagList from "./TagList.vue";
-import SearchForm from "./search/SearchForm.vue";
+import TagList from "../TagList.vue";
+import SearchForm from "../search/SearchForm.vue";
 import SearchHelp from "./SearchHelp.vue";
 
 defineEmits(["toggle"]);

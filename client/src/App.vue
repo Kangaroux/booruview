@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, useTemplateRef, watch } from "vue";
+import { useTemplateRef, watch } from "vue";
 import store from "@/store";
 import PostContainer from "./components/PostContainer.vue";
-import Sidebar from "./components/Sidebar.vue";
+import Sidebar from "./components/sidebar/Sidebar.vue";
 import FullscreenView from "./components/fullscreen-view/FullscreenView.vue";
 
 const mainContentContainer = useTemplateRef("main-content");
