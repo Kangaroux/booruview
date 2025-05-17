@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import store from "@/store";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 
-const { post } = defineProps<{
+const { cropped, maxHeight, post } = defineProps<{
+    cropped: boolean;
+    maxHeight: number;
     post: Post;
 }>();
 
-const fetchingTags = ref(false);
 const content = computed<{ url: string; width: number; height: number }>(() => {
     if (post.lowres_url.length > 0) {
         return {
@@ -32,7 +33,7 @@ const isVideo = computed(() => {
 </script>
 
 <template>
-    <div class="post">
+    <div class="post" :style="{maxHeight: maxHeight + 'px'}">
         <video
             class="content"
             :poster="post.thumbnail_url || post.lowres_url"
@@ -54,28 +55,60 @@ const isVideo = computed(() => {
             />
         </video>
 
-        <img
-            class="content"
-            :src="content.url"
-            :width="content.width"
-            :height="content.height"
-            loading="lazy"
-            @click="store.fullscreenPost = post"
-            v-if="!isVideo"
-        />
+        <div class="img-container"
+        @click="store.fullscreenPost = post"
+        >
+            <span class="crop-icon" title="post is cropped (too tall)" v-if="cropped"><i class="bi bi-crop"></i></span>
+            <img class="content"
+                :src="content.url"
+                :width="content.width"
+                :height="content.height"
+                loading="lazy"
+                v-if="!isVideo"
+            />
+        </div>
     </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .post {
     break-inside: avoid;
     font-size: 0;
+    position: relative;
 }
 
 .content {
     /* placeholder color */
     background-color: #444;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
+}
+
+.img-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.crop-icon {
+    font-size: 24px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background-color: black;
+    opacity: 0.2;
+    border-radius: 50%;
+    padding: 0.6em;
+    line-height: 0;
+
+    .bi {
+        display: block;
+        line-height: 0;
+        position: relative;
+        left: -0.06em;
+        top: -0.06em;
+    }
 }
 </style>
