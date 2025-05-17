@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import InfoTab from "./AboutTab.vue";
+import SettingsTab from "./SettingsTab.vue";
 
 type Tab = "about" | "settings";
 const currentTab = ref<Tab>("about");
@@ -28,6 +29,7 @@ const currentTab = ref<Tab>("about");
         <div class="tab-content">
             <KeepAlive>
                 <InfoTab v-if="currentTab === 'about'" />
+                <SettingsTab v-else-if="currentTab === 'settings'" />
             </KeepAlive>
         </div>
     </div>

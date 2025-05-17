@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, useTemplateRef } from "vue";
 import PostContent from "./PostContent.vue";
+import store from "@/store";
 
 type CroppedPost = {
     post: Post;
@@ -18,7 +19,6 @@ const container = useTemplateRef("container");
 const containerWidth = ref(0);
 
 const maxPostHeight = 600;
-const maxColWidth = 400;
 const colGap = 5;
 const postGap = 5;
 
@@ -33,14 +33,14 @@ const columnDimensions = computed<ColumnDimensions | null>(() => {
     }
 
     const ret: ColumnDimensions = { count: 1, width: 0 };
-    const colWithGap = maxColWidth + colGap;
+    const colWithGap = store.settings.columnWidth + colGap;
 
     // prettier-ignore
     ret.count =
         1 +                                         // Always at least 1 column
         Math.max(0,
             Math.floor(
-                (containerWidth.value - maxColWidth) /    // First column is just the column width
+                (containerWidth.value - store.settings.columnWidth) /    // First column is just the column width
                 colWithGap)                         // Remaining columns also have a gap
             );
 
