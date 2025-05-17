@@ -15,6 +15,13 @@ function onChangeColWidth(e: Event) {
     store.settings.columnWidth = parseInt((e.target as HTMLInputElement).value);
     store.settings.save();
 }
+
+function onChangeCloseSidebarOnSearch(e: Event) {
+    store.settings.closeSidebarOnSearch = (
+        e.target as HTMLInputElement
+    ).checked;
+    store.settings.save();
+}
 </script>
 
 <template>
@@ -62,6 +69,17 @@ function onChangeColWidth(e: Event) {
                 />
                 <span class="value">{{ store.settings.columnWidth }}</span>
             </div>
+        </div>
+
+        <div class="input-group">
+            <label>
+                <input
+                    type="checkbox"
+                    :checked="store.settings.closeSidebarOnSearch"
+                    @change="onChangeCloseSidebarOnSearch"
+                />
+                searching closes sidebar</label
+            >
         </div>
     </div>
 </template>

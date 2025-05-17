@@ -32,8 +32,8 @@ function doTagSearch(query: string) {
                 suggestions.value = json.results.filter(
                     // Don't suggest tags already added to the search
                     (t) =>
-                        !store.search.query.include.has(t.name) &&
-                        !store.search.query.exclude.has(t.name),
+                        !store.query.include.has(t.name) &&
+                        !store.query.exclude.has(t.name),
                 );
             }),
         )

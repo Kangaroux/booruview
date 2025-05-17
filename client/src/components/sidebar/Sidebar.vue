@@ -23,23 +23,28 @@ function doPostSearch() {
 
     fetching.value = true;
     store
-        .searchPosts({ closeSidebar: true })
+        .searchPosts({ reset: true })
+        .then(() => {
+            if (store.settings.closeSidebarOnSearch) {
+                store.sidebarClosed = true;
+            }
+        })
         .finally(() => (fetching.value = false));
 }
 
 function onTagClick(tag: Tag) {
-    if (store.search.query.include.has(tag.name)) {
-        store.search.query.excludeTag(tag);
+    if (store.query.include.has(tag.name)) {
+        store.query.excludeTag(tag);
     } else {
-        store.search.query.removeTag(tag);
+        store.query.removeTag(tag);
     }
 }
 
 function onTagSelect(tag: Tag, negated: boolean) {
     if (!negated) {
-        store.search.query.includeTag(tag);
+        store.query.includeTag(tag);
     } else {
-        store.search.query.excludeTag(tag);
+        store.query.excludeTag(tag);
     }
 }
 </script>
@@ -64,8 +69,8 @@ function onTagSelect(tag: Tag, negated: boolean) {
 
                 <TagList
                     :jiggle="true"
-                    :excludeTags="[...store.search.query.exclude.values()]"
-                    :includeTags="[...store.search.query.include.values()]"
+                    :excludeTags="[...store.query.exclude.values()]"
+                    :includeTags="[...store.query.include.values()]"
                     @click="onTagClick"
                 />
             </div>

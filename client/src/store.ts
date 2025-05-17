@@ -28,6 +28,9 @@ type Store = {
         columnSizing: "fixed" | "dynamic";
         columnCount: number;
         columnWidth: number;
+
+        closeSidebarOnSearch: boolean;
+
         helpClosed: boolean;
 
         save(): void;
@@ -37,10 +40,7 @@ type Store = {
         ): void;
     };
 
-    search: {
-        query: SearchQuery;
-        previousQuery: SearchQuery;
-    };
+    query: SearchQuery;
 
     /** mapping of page number to posts */
     posts: Map<number, Post[]>;
@@ -54,7 +54,7 @@ type Store = {
     nextPage(): void;
     postsForCurrentPage(): Post[] | undefined;
     prevPage(): void;
-    searchPosts({ closeSidebar }: { closeSidebar: boolean }): Promise<void>;
+    searchPosts({ reset }: { reset: boolean }): Promise<void>;
     setQueryParams(): void;
 };
 
@@ -71,10 +71,20 @@ const store = reactive<Store>({
         columnSizing: loadValue("columnSizing", "dynamic", (v) => v as any),
         columnCount: loadValue("columnCount", 3, parseInt),
         columnWidth: loadValue("columnWidth", 400, parseInt),
+
+        closeSidebarOnSearch: loadValue(
+            "closeSidebarOnSearch",
+            true,
+            JSON.parse,
+        ),
+
         helpClosed: loadValue("helpClosed", false, JSON.parse),
 
         save() {
+            this.write("columnSizing", (v) => v);
+            this.write("columnCount", (v) => v.toString());
             this.write("columnWidth", (v) => v.toString());
+            this.write("closeSidebarOnSearch", JSON.stringify);
             this.write("helpClosed", JSON.stringify);
         },
 
@@ -86,11 +96,7 @@ const store = reactive<Store>({
         },
     },
 
-    search: {
-        query: new SearchQuery(),
-        previousQuery: new SearchQuery(),
-    },
-
+    query: new SearchQuery(),
     posts: new Map(),
     cachedTags: new Map(),
 
@@ -116,11 +122,11 @@ const store = reactive<Store>({
     setQueryParams() {
         const url = new URL(window.location.href);
         url.searchParams.set("page", this.currentPage.toString());
-        url.searchParams.set("q", this.search.query.asList().join(","));
+        url.searchParams.set("q", this.query.asList().join(","));
         window.history.pushState(null, "", url.toString());
     },
 
-    searchPosts({ closeSidebar }: { closeSidebar: boolean }): Promise<void> {
+    searchPosts({ reset }: { reset: boolean }): Promise<void> {
         type PostListResponse = {
             count_per_page: number;
             total_count: number;
@@ -128,28 +134,22 @@ const store = reactive<Store>({
         };
 
         return new Promise((resolve, reject) => {
-            const searchHasChanged = !this.search.query.equals(
-                this.search.previousQuery,
-            );
+            const page = reset ? 1 : this.currentPage;
             const query =
-                `q=${encodeURIComponent(this.search.query.asList().join(" "))}` +
-                `&page=${this.currentPage}`;
+                `q=${encodeURIComponent(this.query.asList().join(" "))}` +
+                `&page=${page}`;
 
             fetch("/api/posts?" + query)
                 .then((resp) => {
                     resp.json().then((json: PostListResponse) => {
-                        if (searchHasChanged) {
+                        if (reset) {
                             this.posts.clear();
                         }
 
-                        this.posts.set(this.currentPage, json.results);
+                        this.posts.set(page, json.results);
                         this.resultsPerPage = json.count_per_page;
                         this.totalPostCount = json.total_count;
-                        this.search.previousQuery = this.search.query.copy();
-
-                        if (closeSidebar) {
-                            this.sidebarClosed = true;
-                        }
+                        this.currentPage = page;
 
                         this.setQueryParams();
                         resolve();
@@ -223,14 +223,14 @@ const store = reactive<Store>({
     nextPage() {
         if (this.currentPage < this.maxPage()) {
             this.currentPage++;
-            this.searchPosts({ closeSidebar: false });
+            this.searchPosts({ reset: false });
         }
     },
 
     prevPage() {
         if (this.currentPage > 0) {
             this.currentPage--;
-            this.searchPosts({ closeSidebar: false });
+            this.searchPosts({ reset: false });
         }
     },
 });
