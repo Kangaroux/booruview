@@ -1,22 +1,17 @@
 <script setup lang="ts">
-import {
-    computed,
-    onMounted,
-    ref,
-    useTemplateRef,
-} from "vue";
+import { computed, onMounted, ref, useTemplateRef } from "vue";
 import PostContent from "./PostContent.vue";
 
 type CroppedPost = {
     post: Post;
     cropped: boolean;
     renderHeight: number;
-}
+};
 
 type ColumnDimensions = {
     count: number;
     width: number;
-}
+};
 
 const { posts } = defineProps<{ posts: Post[] }>();
 const container = useTemplateRef("container");
@@ -29,7 +24,7 @@ const postGap = 5;
 
 const theme = {
     colGap: colGap + "px",
-    postGap: postGap + "px"
+    postGap: postGap + "px",
 };
 
 const columnDimensions = computed<ColumnDimensions | null>(() => {
@@ -37,7 +32,7 @@ const columnDimensions = computed<ColumnDimensions | null>(() => {
         return null;
     }
 
-    const ret: ColumnDimensions = {count: 1, width: 0};
+    const ret: ColumnDimensions = { count: 1, width: 0 };
     const colWithGap = maxColWidth + colGap;
 
     // prettier-ignore
@@ -52,7 +47,7 @@ const columnDimensions = computed<ColumnDimensions | null>(() => {
     ret.width = (containerWidth.value - (ret.count - 1) * colGap) / ret.count;
 
     return ret;
-})
+});
 
 function onResize() {
     if (!container.value) {
@@ -63,26 +58,30 @@ function onResize() {
 }
 
 const croppedPosts = computed<CroppedPost[]>(() => {
-    if(columnDimensions.value == null) {
+    if (columnDimensions.value == null) {
         return [];
     }
 
-    const {width: columnWidth} = columnDimensions.value;
+    const { width: columnWidth } = columnDimensions.value;
 
-    return posts.map<CroppedPost>(p => {
+    return posts.map<CroppedPost>((p) => {
         const zoom = columnWidth / p.width;
         const renderHeight = p.height * zoom;
         const cropped = renderHeight > maxPostHeight;
-        return {post: p, cropped, renderHeight: cropped ? maxPostHeight : renderHeight};
-    })
+        return {
+            post: p,
+            cropped,
+            renderHeight: cropped ? maxPostHeight : renderHeight,
+        };
+    });
 });
 
 const orderedPosts = computed<CroppedPost[][]>(() => {
-    if(columnDimensions.value == null) {
+    if (columnDimensions.value == null) {
         return [];
     }
 
-    const {count: columnCount} = columnDimensions.value;
+    const { count: columnCount } = columnDimensions.value;
 
     if (columnCount <= 1) {
         return [croppedPosts.value];
@@ -119,7 +118,13 @@ onMounted(() => {
 <template>
     <div class="post-container" ref="container">
         <div class="post-column" v-for="(col, i) in orderedPosts" :key="i">
-            <PostContent v-for="post in col" :post="post.post" :key="post.post.id" :maxHeight="maxPostHeight" :cropped="post.cropped" />
+            <PostContent
+                v-for="post in col"
+                :post="post.post"
+                :key="post.post.id"
+                :maxHeight="maxPostHeight"
+                :cropped="post.cropped"
+            />
         </div>
     </div>
 </template>

@@ -33,7 +33,7 @@ const isVideo = computed(() => {
 </script>
 
 <template>
-    <div class="post" :style="{maxHeight: maxHeight + 'px'}">
+    <div class="post" :style="{ maxHeight: maxHeight + 'px' }">
         <video
             class="content"
             :poster="post.thumbnail_url || post.lowres_url"
@@ -55,11 +55,16 @@ const isVideo = computed(() => {
             />
         </video>
 
-        <div class="img-container"
-        @click="store.fullscreenPost = post"
-        >
-            <span class="crop-icon" title="post is cropped (too tall)" v-if="cropped"><i class="bi bi-crop"></i></span>
-            <img class="content"
+        <div class="img-container" @click="store.fullscreenPost = post">
+            <span
+                class="crop-icon"
+                title="post is cropped (too tall)"
+                v-if="cropped"
+            >
+                <i class="bi bi-crop"></i>
+            </span>
+            <img
+                class="content"
                 :src="content.url"
                 :width="content.width"
                 :height="content.height"
