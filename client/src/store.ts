@@ -1,6 +1,20 @@
 import { reactive } from "vue";
 import SearchQuery from "./search";
 
+type SettingsKey = keyof Omit<Store["settings"], "save" | "write">;
+
+function loadValue<K extends SettingsKey, V = Store["settings"][K]>(
+    key: K,
+    defaultValue: V,
+    transform: (val: string) => V,
+): V {
+    const val = localStorage?.getItem(key);
+    if (val === null) {
+        return defaultValue;
+    }
+    return transform(val);
+}
+
 type Store = {
     currentPage: number;
     totalPostCount: number;
@@ -9,6 +23,17 @@ type Store = {
     fullscreenPost: Post | null;
 
     sidebarClosed: boolean;
+
+    settings: {
+        columnWidth: number;
+        helpClosed: boolean;
+
+        save(): void;
+        write<K extends SettingsKey, V = Store["settings"][K]>(
+            key: K,
+            transform: (val: V) => string,
+        ): void;
+    };
 
     search: {
         query: SearchQuery;
@@ -39,6 +64,23 @@ const store = reactive<Store>({
     fullscreenPost: null,
 
     sidebarClosed: false,
+
+    settings: {
+        columnWidth: loadValue("columnWidth", 400, parseInt),
+        helpClosed: loadValue("helpClosed", false, JSON.parse),
+
+        save() {
+            this.write("columnWidth", (v) => v.toString());
+            this.write("helpClosed", JSON.stringify);
+        },
+
+        write<K extends keyof Store["settings"], V = Store["settings"][K]>(
+            key: K,
+            transform: (val: V) => string,
+        ) {
+            localStorage?.setItem(key, transform(this[key] as V));
+        },
+    },
 
     search: {
         query: new SearchQuery(),

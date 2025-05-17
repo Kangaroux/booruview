@@ -10,11 +10,10 @@ defineEmits(["toggle"]);
 
 const { closed } = defineProps<{ closed: boolean }>();
 const fetching = ref(false);
-const showHelp = ref(localStorage.getItem("hide-help") === null);
 
 function onCloseHelp() {
-    showHelp.value = false;
-    localStorage.setItem("hide-help", "1");
+    store.settings.helpClosed = true;
+    store.settings.save();
 }
 
 function doPostSearch() {
@@ -53,7 +52,10 @@ function onTagSelect(tag: Tag, negated: boolean) {
         </button>
         <div class="sidebar-content" v-show="!closed">
             <div class="search">
-                <SearchHelp v-if="showHelp" @on-close="onCloseHelp" />
+                <SearchHelp
+                    v-if="!store.settings.helpClosed"
+                    @on-close="onCloseHelp"
+                />
                 <SearchForm
                     @on-search="doPostSearch"
                     @on-tag-select="onTagSelect"
