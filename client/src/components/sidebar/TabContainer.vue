@@ -68,6 +68,7 @@ const closed = ref(false);
 .tabs {
     display: flex;
     padding: 0 10px;
+    gap: 5px;
 }
 
 .tab-btn {
@@ -79,7 +80,6 @@ const closed = ref(false);
     color: #999;
     cursor: pointer;
     font-size: 16px;
-    margin-right: 5px;
 
     &.active {
         border-color: #695675;
