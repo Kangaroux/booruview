@@ -153,13 +153,19 @@ function onTagSelect(tag: Tag, negated: boolean) {
     .sidebar-closed & {
         opacity: 0.5;
 
-        &:hover:not(:active) {
-            opacity: 1;
+        // Don't change opacity on mobile (fixes button getting stuck in hover state)
+        @media (pointer: fine) {
+            &:hover {
+                opacity: 1;
+            }
         }
     }
 
-    // Move the toggle btn to the left side of the screen on mobile
+    // Move the toggle btn to the bottom left side of the screen on mobile
     @media (max-width: $mobile-width) {
+        top: auto;
+        bottom: 50px;
+
         .sidebar-open & {
             left: 0;
         }
