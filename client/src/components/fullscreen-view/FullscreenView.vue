@@ -3,6 +3,7 @@ import store from "@/store";
 import { onMounted, onUnmounted, ref } from "vue";
 import ImageTab from "./ImageTab.vue";
 import InfoTab from "./InfoTab.vue";
+import ScreenCover from "../ScreenCover.vue";
 
 type Tab = "image" | "info";
 
@@ -30,7 +31,7 @@ onUnmounted(() => {
 
 <template>
     <div class="fullscreen-viewer">
-        <div class="screen-cover" @click="close()"></div>
+        <ScreenCover @click="close()" />
         <div class="viewer-container">
             <div class="tab">
                 <KeepAlive>
@@ -82,14 +83,6 @@ onUnmounted(() => {
     left: 0;
     right: 0;
     bottom: 0;
-}
-
-.screen-cover {
-    position: absolute;
-    z-index: 1;
-    background-color: rgba(0, 0, 0, 0.95);
-    width: 100%;
-    height: 100%;
 }
 
 .viewer-container {
