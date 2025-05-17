@@ -157,7 +157,7 @@ type PostList struct {
 }
 
 const (
-	PostsPerPage = 30
+	PostsPerPage = 50
 )
 
 var (
