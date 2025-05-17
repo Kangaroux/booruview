@@ -153,11 +153,8 @@ function onTagSelect(tag: Tag, negated: boolean) {
     .sidebar-closed & {
         opacity: 0.5;
 
-        // Fixes the toggle btn not dimming when pressed on mobile
-        @media (any-hover: hover) {
-            &:hover {
-                opacity: 1;
-            }
+        &:hover:not(:active) {
+            opacity: 1;
         }
     }
 
