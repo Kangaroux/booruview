@@ -1,32 +1,47 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import InfoTab from "./AboutTab.vue";
 import SettingsTab from "./SettingsTab.vue";
 
 type Tab = "about" | "settings";
 const currentTab = ref<Tab>("about");
+const closed = ref(false);
 </script>
 
 <template>
-    <div class="tab-container">
+    <div class="tab-container" :class="{ closed }">
         <header class="tabs">
             <button
                 class="tab-btn"
-                :class="{ active: currentTab === 'about' }"
+                :class="{ active: currentTab === 'about' && !closed }"
                 @click="currentTab = 'about'"
             >
                 about
             </button>
             <button
                 class="tab-btn"
-                :class="{ active: currentTab === 'settings' }"
+                :class="{ active: currentTab === 'settings' && !closed }"
                 @click="currentTab = 'settings'"
             >
                 settings
             </button>
+
+            <button
+                class="tab-btn close-btn"
+                :class="{ active: closed }"
+                @click="closed = !closed"
+            >
+                <i
+                    class="bi"
+                    :class="{
+                        'bi-chevron-down': !closed,
+                        'bi-chevron-up': closed,
+                    }"
+                ></i>
+            </button>
         </header>
 
-        <div class="tab-content">
+        <div class="tab-content" v-if="!closed">
             <KeepAlive>
                 <InfoTab v-if="currentTab === 'about'" />
                 <SettingsTab v-else-if="currentTab === 'settings'" />
@@ -39,14 +54,19 @@ const currentTab = ref<Tab>("about");
 <style lang="scss">
 .tab-container {
     margin-top: 40px;
-    flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
+
+    &:not(.closed) {
+        .tabs {
+            border-bottom: 1px solid #555;
+        }
+    }
 }
 
 .tabs {
-    border-bottom: 1px solid #555;
+    display: flex;
     padding: 0 10px;
 }
 
@@ -68,6 +88,10 @@ const currentTab = ref<Tab>("about");
     }
 }
 
+.close-btn {
+    margin-left: auto;
+}
+
 .tab-content {
     padding: 0 10px;
     flex: 1;
@@ -83,5 +107,13 @@ p {
     a:visited {
         color: #bb9fce;
     }
+}
+
+select {
+    background-color: #222;
+    border: 1px solid #555;
+    color: #999;
+    padding: 5px;
+    border-radius: 5px;
 }
 </style>

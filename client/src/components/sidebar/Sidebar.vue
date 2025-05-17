@@ -111,6 +111,7 @@ function onTagSelect(tag: Tag, negated: boolean) {
 
 .search {
     padding: 10px;
+    flex: 1;
 }
 
 .toggle-btn {
@@ -149,9 +150,6 @@ function onTagSelect(tag: Tag, negated: boolean) {
 
     // Move the toggle btn to the bottom left side of the screen on mobile
     @media (max-width: $mobile-width) {
-        top: auto;
-        bottom: 50px;
-
         .sidebar-open & {
             left: 0;
         }

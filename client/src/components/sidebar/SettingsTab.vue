@@ -86,6 +86,8 @@ function onChangeCloseSidebarOnSearch(e: Event) {
 
 <style lang="scss" scoped>
 .settings-container {
+    font-size: 16px;
+    color: #999;
 }
 
 .input {
@@ -103,6 +105,10 @@ function onChangeCloseSidebarOnSearch(e: Event) {
 }
 
 .input-group {
-    margin-top: 20px;
+    margin: 20px 0;
+}
+
+label + .input {
+    margin-top: 5px;
 }
 </style>
