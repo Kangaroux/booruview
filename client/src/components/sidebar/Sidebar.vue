@@ -4,6 +4,7 @@ import { ref } from "vue";
 import TagList from "../TagList.vue";
 import SearchForm from "../search/SearchForm.vue";
 import SearchHelp from "./SearchHelp.vue";
+import TabContainer from "./TabContainer.vue";
 
 defineEmits(["toggle"]);
 
@@ -50,42 +51,25 @@ function onTagSelect(tag: Tag, negated: boolean) {
             <i v-if="closed" class="bi bi-chevron-right"></i>
             <i v-else class="bi bi-chevron-left"></i>
         </button>
-        <nav class="sidebar-content" v-show="!closed">
-            <SearchHelp v-if="showHelp" @on-close="onCloseHelp" />
-            <SearchForm
-                @on-search="doPostSearch"
-                @on-tag-select="onTagSelect"
-                :show-spinner="fetching"
-            />
+        <div class="sidebar-content" v-show="!closed">
+            <div class="search">
+                <SearchHelp v-if="showHelp" @on-close="onCloseHelp" />
+                <SearchForm
+                    @on-search="doPostSearch"
+                    @on-tag-select="onTagSelect"
+                    :show-spinner="fetching"
+                />
 
-            <TagList
-                :jiggle="true"
-                :excludeTags="[...store.search.query.exclude.values()]"
-                :includeTags="[...store.search.query.include.values()]"
-                @click="onTagClick"
-            />
+                <TagList
+                    :jiggle="true"
+                    :excludeTags="[...store.search.query.exclude.values()]"
+                    :includeTags="[...store.search.query.include.values()]"
+                    @click="onTagClick"
+                />
+            </div>
 
-            <p>
-                Booruview is
-                <a
-                    href="https://github.com/Kangaroux/booru-viewer"
-                    target="_blank"
-                    >open source</a
-                >
-                and development is ongoing.
-            </p>
-            <p>
-                Feedback and suggestions are welcome. You can use the Github
-                issue tracker or send me an
-                <a href="mailto:2302541+Kangaroux@users.noreply.github.com"
-                    >email</a
-                >.
-            </p>
-            <p>
-                This site does not use tracking or cookies. Searches are cached
-                briefly and entirely anonymous.
-            </p>
-        </nav>
+            <TabContainer />
+        </div>
     </header>
 </template>
 
@@ -108,23 +92,18 @@ function onTagSelect(tag: Tag, negated: boolean) {
     width: 350px;
     height: 100%;
     position: relative;
-    padding: 10px;
-
-    p {
-        font-size: 16px;
-        color: #999;
-
-        a,
-        a:visited {
-            color: #bb9fce;
-        }
-    }
+    display: flex;
+    flex-direction: column;
 
     @media (max-width: $mobile-width) {
         .sidebar-open & {
             width: 100%;
         }
     }
+}
+
+.search {
+    padding: 10px;
 }
 
 .toggle-btn {
