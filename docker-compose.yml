@@ -55,6 +55,7 @@ services:
 
   grafana:
     image: grafana/grafana:11.6.0
+    profiles: [grafana]
     environment:
       - "GF_SERVER_ROOT_URL=https://grafana.localhost/"
     volumes:
@@ -62,6 +63,7 @@ services:
 
   loki:
     image: grafana/loki:3.5.0
+    profiles: [grafana]
     ports:
       - "3100:3100"
     volumes:
