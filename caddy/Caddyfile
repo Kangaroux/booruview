@@ -1,4 +1,4 @@
-{$CADDY_HOST:localhost}, www.{$CADDY_HOST:localhost} {
+{$CADDY_HOST} {
 	encode
 	file_server
 

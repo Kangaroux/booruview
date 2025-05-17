@@ -28,6 +28,8 @@ services:
     build:
       context: .
       dockerfile: caddy/Dockerfile
+    environment:
+      - "CADDY_HOST=:80"
     ports:
       - "80:80"
       - "443:443"
