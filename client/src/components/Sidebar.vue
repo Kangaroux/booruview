@@ -90,12 +90,13 @@ function onTagSelect(tag: Tag, negated: boolean) {
 </template>
 
 <style lang="scss" scoped>
-@import "../assets/colors";
+@import "@/assets/breakpoints";
+@import "@/assets/colors";
 
 .sidebar-container {
     position: relative;
 
-    @media (max-width: 600px) {
+    @media (max-width: $mobile-width) {
         .sidebar-open & {
             width: 100%;
         }
@@ -119,7 +120,7 @@ function onTagSelect(tag: Tag, negated: boolean) {
         }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: $mobile-width) {
         .sidebar-open & {
             width: 100%;
         }
@@ -161,7 +162,7 @@ function onTagSelect(tag: Tag, negated: boolean) {
     }
 
     // Move the toggle btn to the left side of the screen on mobile
-    @media (max-width: 600px) {
+    @media (max-width: $mobile-width) {
         .sidebar-open & {
             left: 0;
         }

@@ -45,6 +45,8 @@ const urlOriginal = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/breakpoints";
+
 .content-container {
     height: 100%;
     overflow-y: scroll;
@@ -56,29 +58,29 @@ const urlOriginal = computed(() => {
         display: none;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: $mobile-width) {
         width: 100%;
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: $mobile-width) {
     .high-res {
         display: none;
     }
 }
 
-@media not (max-width: 600px) {
+@media not (max-width: $mobile-width) {
     .low-res {
         display: none;
     }
 }
 
 .content {
-    @media not (max-width: 600px) {
+    @media not (max-width: $mobile-width) {
         max-width: 100%;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: $mobile-width) {
         position: relative;
         transform: translateY(-50%);
         top: 50%;
@@ -89,7 +91,7 @@ const urlOriginal = computed(() => {
         width: auto;
         cursor: zoom-in;
 
-        @media (max-width: 600px) {
+        @media (max-width: $mobile-width) {
             max-width: 100%;
         }
     }

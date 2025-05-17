@@ -67,6 +67,7 @@ watch(
 </template>
 
 <style scoped lang="scss">
+@import "assets/breakpoints";
 @import "assets/colors";
 
 .app {
@@ -79,7 +80,7 @@ watch(
 main {
     flex: 1;
 
-    @media (max-width: 600px) {
+    @media (max-width: $mobile-width) {
         .sidebar-open & {
             display: none;
         }

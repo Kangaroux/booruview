@@ -74,6 +74,8 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/breakpoints";
+
 .fullscreen-viewer {
     position: absolute;
     top: 0;
@@ -97,7 +99,7 @@ onUnmounted(() => {
     flex-direction: column;
     align-items: center;
 
-    @media not (max-width: 600px) {
+    @media not (max-width: $mobile-width) {
         padding: 0 100px;
     }
 }
@@ -114,7 +116,7 @@ onUnmounted(() => {
         display: none;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: $mobile-width) {
         overflow: scroll;
         width: 100%;
     }

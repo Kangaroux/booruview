@@ -21,10 +21,12 @@ watchEffect(() => {
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/breakpoints";
+
 .tag-list {
     max-width: 800px;
 
-    @media (max-width: 600px) {
+    @media (max-width: $mobile-width) {
         padding: 0 10px;
     }
 }
