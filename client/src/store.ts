@@ -120,10 +120,10 @@ const store = reactive<Store>({
     },
 
     setQueryParams() {
-        const url = new URL(window.location.href);
-        url.searchParams.set("page", this.currentPage.toString());
-        url.searchParams.set("q", this.query.asList().join(","));
-        window.history.pushState(null, "", url.toString());
+        const params = new URLSearchParams();
+        params.set("page", this.currentPage.toString());
+        params.set("q", this.query.asList().join(","));
+        window.location.hash = params.toString();
     },
 
     searchPosts({ reset }: { reset: boolean }): Promise<void> {
