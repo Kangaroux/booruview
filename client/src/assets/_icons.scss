@@ -1,0 +1,4 @@
+// Override the default URL which adds a hash. Using a fixed URL makes it easier to preload
+$bootstrap-icons-font-src: url("~/bootstrap-icons/font/fonts/bootstrap-icons.woff2") format("woff2"),
+                           url("~/bootstrap-icons/font/fonts/bootstrap-icons.woff") format("woff");
+@import "~/bootstrap-icons/font/bootstrap-icons.scss";
