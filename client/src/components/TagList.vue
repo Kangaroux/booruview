@@ -9,6 +9,7 @@ type listCategories = {
     copyright: tagWithState[];
     tag: tagWithState[];
     metadata: tagWithState[];
+    unknown: tagWithState[];
 };
 
 defineEmits<{ click: [tag: Tag] }>();
@@ -26,73 +27,53 @@ const categories = computed(() => {
         copyright: [],
         tag: [],
         metadata: [],
+        unknown: [],
     };
 
-    for (const t of includeTags) {
-        switch (t.type) {
+    function sortTag(tag: Tag, state: TagState) {
+        switch (tag.type) {
             case "artist":
-                ret.artist = ret.artist.concat({ tag: t, state: "include" });
+                ret.artist = ret.artist.concat({ tag, state });
                 break;
             case "character":
                 ret.character = ret.character.concat({
-                    tag: t,
-                    state: "include",
+                    tag,
+                    state,
                 });
                 break;
             case "copyright":
                 ret.copyright = ret.copyright.concat({
-                    tag: t,
-                    state: "include",
+                    tag,
+                    state,
                 });
                 break;
             case "tag":
-                ret.tag = ret.tag.concat({ tag: t, state: "include" });
+                ret.tag = ret.tag.concat({ tag, state });
                 break;
             case "metadata":
-            case "unknown":
                 ret.metadata = ret.metadata.concat({
-                    tag: t,
-                    state: "include",
+                    tag,
+                    state,
+                });
+                break;
+            case "unknown":
+                ret.unknown = ret.unknown.concat({
+                    tag,
+                    state,
                 });
                 break;
         }
     }
 
-    for (const t of excludeTags) {
-        switch (t.type) {
-            case "artist":
-                ret.artist = ret.artist.concat({ tag: t, state: "exclude" });
-                break;
-            case "character":
-                ret.character = ret.character.concat({
-                    tag: t,
-                    state: "exclude",
-                });
-                break;
-            case "copyright":
-                ret.copyright = ret.copyright.concat({
-                    tag: t,
-                    state: "exclude",
-                });
-                break;
-            case "tag":
-                ret.tag = ret.tag.concat({ tag: t, state: "exclude" });
-                break;
-            case "metadata":
-            case "unknown":
-                ret.metadata = ret.metadata.concat({
-                    tag: t,
-                    state: "exclude",
-                });
-                break;
-        }
-    }
+    includeTags.forEach((tag) => sortTag(tag, "include"));
+    excludeTags.forEach((tag) => sortTag(tag, "exclude"));
 
     ret.artist.sort((a, b) => a.tag.name.localeCompare(b.tag.name));
     ret.character.sort((a, b) => a.tag.name.localeCompare(b.tag.name));
     ret.copyright.sort((a, b) => a.tag.name.localeCompare(b.tag.name));
     ret.tag.sort((a, b) => a.tag.name.localeCompare(b.tag.name));
     ret.metadata.sort((a, b) => a.tag.name.localeCompare(b.tag.name));
+    ret.unknown.sort((a, b) => a.tag.name.localeCompare(b.tag.name));
 
     return ret;
 });
@@ -141,6 +122,16 @@ const categories = computed(() => {
     <h3 v-if="categories.metadata.length > 0">metadata</h3>
     <TagChip
         v-for="t in categories.metadata"
+        :tag="t.tag"
+        :key="t.tag.name"
+        :state="t.state"
+        :jiggle="jiggle"
+        @click="$emit('click', t.tag)"
+    />
+
+    <h3 v-if="categories.unknown.length > 0">raw</h3>
+    <TagChip
+        v-for="t in categories.unknown"
         :tag="t.tag"
         :key="t.tag.name"
         :state="t.state"
