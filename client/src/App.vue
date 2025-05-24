@@ -4,6 +4,7 @@ import store from "@/store";
 import PostContainer from "./components/PostContainer.vue";
 import Sidebar from "./components/sidebar/Sidebar.vue";
 import FullscreenView from "./components/fullscreen-view/FullscreenView.vue";
+import Router from "./Router.vue";
 
 const mainContentContainer = useTemplateRef("main-content");
 
@@ -23,6 +24,7 @@ watch(
 </script>
 
 <template>
+    <Router />
     <div
         class="app"
         :class="{

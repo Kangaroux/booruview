@@ -9,7 +9,6 @@ import TabContainer from "./TabContainer.vue";
 defineEmits(["toggle"]);
 
 const { closed } = defineProps<{ closed: boolean }>();
-const fetching = ref(false);
 
 function onCloseHelp() {
     store.settings.helpClosed = true;
@@ -17,19 +16,18 @@ function onCloseHelp() {
 }
 
 function doPostSearch() {
-    if (fetching.value) {
+    if (store.fetchingPosts) {
         return;
     }
 
-    fetching.value = true;
-    store
-        .searchPosts({ reset: true })
-        .then(() => {
-            if (store.settings.closeSidebarOnSearch) {
-                store.sidebarClosed = true;
-            }
-        })
-        .finally(() => (fetching.value = false));
+    store.currentPage = 1;
+    store.posts.clear();
+
+    store.searchPosts().then(() => {
+        if (store.settings.closeSidebarOnSearch) {
+            store.sidebarClosed = true;
+        }
+    });
 }
 
 function onTagClick(tag: Tag) {
@@ -64,7 +62,7 @@ function onTagSelect(tag: Tag, negated: boolean) {
                 <SearchForm
                     @on-search="doPostSearch"
                     @on-tag-select="onTagSelect"
-                    :show-spinner="fetching"
+                    :show-spinner="store.fetchingPosts"
                 />
 
                 <TagList

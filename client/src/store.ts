@@ -19,6 +19,7 @@ type Store = {
     currentPage: number;
     totalPostCount: number;
     resultsPerPage: number;
+    fetchingPosts: boolean;
 
     fullscreenPost: Post | null;
 
@@ -54,7 +55,7 @@ type Store = {
     nextPage(): void;
     postsForCurrentPage(): Post[] | undefined;
     prevPage(): void;
-    searchPosts({ reset }: { reset: boolean }): Promise<void>;
+    searchPosts(): Promise<void>;
     setQueryParams(): void;
 };
 
@@ -62,6 +63,7 @@ const store = reactive<Store>({
     currentPage: 1,
     totalPostCount: 0,
     resultsPerPage: 0,
+    fetchingPosts: false,
 
     fullscreenPost: null,
 
@@ -123,42 +125,49 @@ const store = reactive<Store>({
         const params = new URLSearchParams();
         params.set("page", this.currentPage.toString());
         params.set("q", this.query.asList().join(","));
-        window.location.hash = params.toString();
+
+        const newUrl = new URL(window.location.href);
+        newUrl.hash = params.toString();
+
+        if (window.location.href !== newUrl.toString()) {
+            // Slight hack: pushState() does not trigger the window hashchange event.
+            // This made it easier to add routing without having to redo a lot of logic.
+            // This means searchPosts() is called both by the UI (i.e. clicking search)
+            // and by the router (page load/forward/back)
+            window.history.pushState(null, "", newUrl);
+        }
     },
 
-    searchPosts({ reset }: { reset: boolean }): Promise<void> {
+    searchPosts(): Promise<void> {
         type PostListResponse = {
             count_per_page: number;
             total_count: number;
             results: Post[];
         };
 
+        this.fetchingPosts = true;
+
         return new Promise((resolve, reject) => {
-            const page = reset ? 1 : this.currentPage;
             const query =
                 `q=${encodeURIComponent(this.query.asList().join(" "))}` +
-                `&page=${page}`;
+                `&page=${this.currentPage}`;
+
+            this.setQueryParams();
 
             fetch("/api/posts?" + query)
                 .then((resp) => {
                     resp.json().then((json: PostListResponse) => {
-                        if (reset) {
-                            this.posts.clear();
-                        }
-
-                        this.posts.set(page, json.results);
+                        this.posts.set(this.currentPage, json.results);
                         this.resultsPerPage = json.count_per_page;
                         this.totalPostCount = json.total_count;
-                        this.currentPage = page;
-
-                        this.setQueryParams();
                         resolve();
                     });
                 })
                 .catch((err) => {
                     console.error(err);
                     reject(err);
-                });
+                })
+                .finally(() => (this.fetchingPosts = false));
         });
     },
 
@@ -223,14 +232,14 @@ const store = reactive<Store>({
     nextPage() {
         if (this.currentPage < this.maxPage()) {
             this.currentPage++;
-            this.searchPosts({ reset: false });
+            this.searchPosts();
         }
     },
 
     prevPage() {
         if (this.currentPage > 0) {
             this.currentPage--;
-            this.searchPosts({ reset: false });
+            this.searchPosts();
         }
     },
 });
