@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import { COMMIT_SHA } from '@/config';
+</script>
+
 <template>
     <p>
         Booruview is
@@ -15,4 +19,15 @@
         This site does not use tracking or cookies. Searches are cached briefly
         and entirely anonymous.
     </p>
+    <p class="version" v-if="COMMIT_SHA !== undefined">
+        ver. {{ COMMIT_SHA }}
+    </p>
 </template>
+
+<style scoped>
+.version {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    text-align: right;
+}
+</style>
