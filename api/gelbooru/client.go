@@ -274,6 +274,10 @@ func ListTags(tags string) ([]api.TagResponse, error) {
 
 	tagInfo := make([]api.TagResponse, resp.Attributes.Count)
 	for i, t := range resp.Tag {
+		if t.Name == "" {
+			continue
+		}
+
 		tagInfo[i] = api.TagResponse{
 			Name:  t.Name,
 			Type:  ParseTagNumericType(t.Type),

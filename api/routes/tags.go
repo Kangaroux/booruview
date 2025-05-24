@@ -32,8 +32,27 @@ func TagsHandler(w http.ResponseWriter, r *http.Request) {
 			return len(s) == 0 || gelbooru.IsSearchFilter(s)
 		},
 	)
+	// Strip leading hyphen
+	for i := range query {
+		if query[i][0] == '-' {
+			query[i] = query[i][1:]
+		}
+	}
+
 	slices.Sort(query)
 	query = slices.Compact(query)
+
+	// write empty response
+	if len(query) == 0 {
+		resp := TagsResponse{Results: []api.TagResponse{}}
+		data, err := json.Marshal(resp)
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+		w.Write(data)
+		return
+	}
 
 	if len(query) > tagLimit {
 		handle400Error(w, fmt.Sprintf("limit of %d tags", tagLimit))
