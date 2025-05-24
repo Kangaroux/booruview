@@ -6,6 +6,11 @@ import SettingsTab from "./SettingsTab.vue";
 type Tab = "about" | "settings";
 const currentTab = ref<Tab>("about");
 const closed = ref(false);
+
+function switchTab(tab: Tab) {
+    currentTab.value = tab;
+    closed.value = false;
+}
 </script>
 
 <template>
@@ -14,14 +19,14 @@ const closed = ref(false);
             <button
                 class="tab-btn"
                 :class="{ active: currentTab === 'about' && !closed }"
-                @click="currentTab = 'about'"
+                @click="switchTab('about')"
             >
                 about
             </button>
             <button
                 class="tab-btn"
                 :class="{ active: currentTab === 'settings' && !closed }"
-                @click="currentTab = 'settings'"
+                @click="switchTab('settings')"
             >
                 settings
             </button>
