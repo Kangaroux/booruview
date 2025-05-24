@@ -16,8 +16,7 @@ docker build -t $API_IMG -f api/Dockerfile.prod api/
 docker build -t $VALKEY_IMG valkey/
 docker build -t $CLIENT_IMG client/
 
-OWNER=$(id -u):$(id -g)
-docker run --rm -e OWNER=$OWNER -v ./client/dist:/app/dist $CLIENT_IMG ash -c 'yarn build && chown -R $OWNER dist/'
+docker run --rm -v ./client/dist:/app/dist $CLIENT_IMG yarn build
 docker build -t $CADDY_IMG -f caddy/Dockerfile .
 
 docker tag $API_IMG $API_IMG:$TAG
