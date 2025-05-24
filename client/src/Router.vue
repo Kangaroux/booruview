@@ -15,75 +15,84 @@ function parsePage(raw: string | null): number {
     return val;
 }
 
-function parseQuery(raw: string | null) {
-    if (raw === null || raw.length === 0) {
-        return;
-    }
-
-    const tagNames = raw.split(",").filter((v) => v.length > 0);
-
-    store.loadTags(tagNames).then(() => {
-        for (let name of tagNames) {
-            const negate = name[0] === "-";
-            if (negate) {
-                name = name.slice(1);
-            }
-
-            let tag = store.cachedTags.get(name);
-            if (tag === undefined) {
-                tag = {
-                    count: 0,
-                    name: name,
-                    type: "unknown",
-                };
-            }
-
-            if (negate) {
-                store.query.excludeTag(tag);
-            } else {
-                store.query.includeTag(tag);
-            }
+function parseQuery(raw: string | null): Promise<void> {
+    return new Promise((resolve, reject) => {
+        if (raw === null || raw.length === 0) {
+            resolve();
+            return;
         }
+
+        const tagNames = raw.split(",").filter((v) => v.length > 0);
+
+        store
+            .loadTags(tagNames)
+            .then(() => {
+                for (let name of tagNames) {
+                    const negate = name[0] === "-";
+                    if (negate) {
+                        name = name.slice(1);
+                    }
+
+                    let tag = store.cachedTags.get(name);
+                    if (tag === undefined) {
+                        tag = {
+                            count: 0,
+                            name: name,
+                            type: "unknown",
+                        };
+                    }
+
+                    if (negate) {
+                        store.query.excludeTag(tag);
+                    } else {
+                        store.query.includeTag(tag);
+                    }
+                }
+
+                resolve();
+            })
+            .catch(reject);
     });
 }
 
-function loadQueryParams(): boolean {
-    const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-    const page = params.get("page");
-    const query = params.get("q");
-    store.currentPage = parsePage(page);
-    parseQuery(query);
+function loadQueryParams(): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const params = new URLSearchParams(
+            window.location.hash.replace(/^#/, ""),
+        );
+        const page = params.get("page");
+        const query = params.get("q");
 
-    return page !== null && query !== null;
+        if (page === null || query === null) {
+            reject();
+            return;
+        }
+
+        store.currentPage = parsePage(page);
+        parseQuery(query).then(resolve).catch(reject);
+    });
 }
 
 function onRouteChange() {
     const lastPage = store.currentPage;
     const lastSearch = store.query.copy();
 
-    const paramsLoaded = loadQueryParams();
-    if (!paramsLoaded) {
-        return;
-    }
+    loadQueryParams().then(() => {
+        const pageChanged = store.currentPage !== lastPage;
+        const searchChanged = !lastSearch.equals(store.query);
 
-    const pageChanged = store.currentPage !== lastPage;
-    const searchChanged = !lastSearch.equals(store.query);
+        if (searchChanged) {
+            store.posts.clear();
+        }
 
-    if (searchChanged) {
-        store.posts.clear();
-    }
-
-    if (pageChanged || searchChanged) {
-        store.searchPosts();
-    }
+        if (pageChanged || searchChanged) {
+            store.searchPosts();
+        }
+    });
 }
 
 function onPageLoad() {
-    const paramsLoaded = loadQueryParams();
-
-    if (paramsLoaded) {
-        store.searchPosts();
-    }
+    loadQueryParams().then(() => store.searchPosts());
 }
 
 window.addEventListener("hashchange", onRouteChange);
