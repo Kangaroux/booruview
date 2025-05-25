@@ -1,7 +1,3 @@
-# Requires loki plugin:
-# docker plugin install grafana/loki-docker-driver:3.3.2-amd64 --alias loki --grant-all-permissions
-
-
 services:
   api:
     build:
@@ -17,12 +13,6 @@ services:
       - "VALKEY_ADDR=db:6379"
     volumes:
       - ./api:/app
-    logging: &logging
-      driver: loki
-      options:
-        loki-retries: 5
-        loki-batch-size: 100
-        loki-url: http://localhost:3100/loki/api/v1/push
 
   caddy:
     build:
@@ -35,7 +25,6 @@ services:
     volumes:
       - ./client/dist:/srv:ro   # Live client updates
       - caddy-data:/data
-    logging: *logging
 
   client:
     build:
@@ -52,26 +41,7 @@ services:
       context: valkey
     volumes:
       - dbdata:/data
-    logging: *logging
-
-  grafana:
-    image: grafana/grafana:11.6.0
-    profiles: [grafana]
-    environment:
-      - "GF_SERVER_ROOT_URL=https://grafana.localhost/"
-    volumes:
-      - grafana-data:/var/lib/grafana
-
-  loki:
-    image: grafana/loki:3.5.0
-    profiles: [grafana]
-    ports:
-      - "3100:3100"
-    volumes:
-      - loki-data:/loki
 
 volumes:
   caddy-data:
   dbdata:
-  grafana-data:
-  loki-data:
