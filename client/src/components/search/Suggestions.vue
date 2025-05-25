@@ -54,8 +54,8 @@ watchPostEffect(() => {
     background-color: #252525;
     border: 1px solid #555;
     color: #000;
-    padding: 4px 8px;
-    font-size: 16px;
+    padding: 10px;
+    font-size: 18px;
     list-style: none;
     margin-top: -1px;
     display: flex;

@@ -199,6 +199,8 @@ watch(query, (query, _, onCleanup) => {
 .suggestions {
     position: absolute;
     width: 100%;
+    z-index: 1;
+    padding-bottom: 10px;
 }
 
 .submit-btn {
