@@ -36,13 +36,9 @@ watchEffect(() => {
 
 .tag-list {
     max-width: 800px;
-    padding-bottom: 100px;
     overflow-y: scroll;
+    padding: 0 10px 100px 0;
 
     @include hide-scrollbar;
-
-    @media (max-width: $mobile-width) {
-        padding: 0 10px;
-    }
 }
 </style>

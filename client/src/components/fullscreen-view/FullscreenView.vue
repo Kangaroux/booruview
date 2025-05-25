@@ -87,10 +87,12 @@ onUnmounted(() => {
 }
 
 .viewer-container {
-    width: 100%;
     height: 100%;
     position: relative;
     z-index: 2;
+    width: fit-content;
+    margin: auto;
+    max-width: 100%;
 }
 
 .tab {
