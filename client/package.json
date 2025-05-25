@@ -14,6 +14,7 @@
     "dependencies": {
         "@csstools/normalize.css": "^12.1.1",
         "bootstrap-icons": "^1.12.1",
+        "panzoom": "^9.4.3",
         "vue": "^3.5.13"
     },
     "devDependencies": {

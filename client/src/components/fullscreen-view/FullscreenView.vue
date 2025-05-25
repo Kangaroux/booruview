@@ -33,7 +33,7 @@ onUnmounted(() => {
     <div class="fullscreen-viewer">
         <ScreenCover @click="close()" />
         <div class="viewer-container">
-            <div class="tab">
+            <div class="tab" :class="{ [`tab-${currentTab}`]: true }">
                 <KeepAlive>
                     <ImageTab v-if="currentTab == 'image'" />
                     <InfoTab v-else-if="currentTab == 'info'" />
@@ -83,6 +83,7 @@ onUnmounted(() => {
     left: 0;
     right: 0;
     bottom: 0;
+    overflow: hidden;
 }
 
 .viewer-container {
@@ -91,33 +92,31 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    @media not (max-width: $mobile-width) {
-        padding: 0 100px;
-    }
+    justify-content: space-between;
 }
 
 .tab {
     z-index: 2;
     min-height: 0;
-    flex: 1;
-    overflow-y: scroll;
+}
 
-    scrollbar-width: none;
+.tab-image {
+    height: 100%;
+    width: 100%;
+}
 
-    &::-webkit-scrollbar {
-        display: none;
-    }
-
-    @media (max-width: $mobile-width) {
-        overflow: scroll;
-        width: 100%;
-    }
+.tab-info {
+    margin: auto;
 }
 
 .tab-menu {
     display: flex;
     z-index: 2;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 500px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 0 10px black;
 }
 
 .menu-btn {
@@ -129,7 +128,7 @@ onUnmounted(() => {
     opacity: 0.5;
     transition: opacity 150ms;
     cursor: pointer;
-    padding: 15px;
+    padding: 10px 15px;
 
     &:hover,
     &.active {
@@ -140,5 +139,6 @@ onUnmounted(() => {
 .close-btn {
     color: #bb9fce;
     text-shadow: 0 0 5px #bb9fce;
+    padding-right: 10px;
 }
 </style>
