@@ -33,7 +33,7 @@ onUnmounted(() => {
     <div class="fullscreen-viewer">
         <ScreenCover @click="close()" />
         <div class="viewer-container">
-            <div class="tab" :class="{ [`tab-${currentTab}`]: true }">
+            <div class="tab">
                 <KeepAlive>
                     <ImageTab v-if="currentTab == 'image'" />
                     <InfoTab v-else-if="currentTab == 'info'" />
@@ -89,24 +89,14 @@ onUnmounted(() => {
 .viewer-container {
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
+    position: relative;
+    z-index: 2;
 }
 
 .tab {
     z-index: 2;
     min-height: 0;
-}
-
-.tab-image {
     height: 100%;
-    width: 100%;
-}
-
-.tab-info {
-    margin: auto;
 }
 
 .tab-menu {
@@ -117,6 +107,11 @@ onUnmounted(() => {
     padding: 0 10px;
     margin-bottom: 10px;
     box-shadow: 0 0 10px black;
+
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .menu-btn {
