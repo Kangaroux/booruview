@@ -79,10 +79,8 @@ function toggleClose() {
 <!-- NOTE: no `scoped` here -->
 <style lang="scss">
 .tab-container {
-    margin-top: 40px;
     display: flex;
     flex-direction: column;
-    min-height: 0;
 
     &:not(.closed) {
         .tabs {

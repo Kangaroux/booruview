@@ -54,12 +54,14 @@ function onTagSelect(tag: Tag, negated: boolean) {
                     :show-spinner="store.fetchingPosts"
                 />
 
-                <TagList
-                    :jiggle="true"
-                    :excludeTags="[...store.query.exclude.values()]"
-                    :includeTags="[...store.query.include.values()]"
-                    @click="onTagClick"
-                />
+                <div class="taglist-container">
+                    <TagList
+                        :jiggle="true"
+                        :excludeTags="[...store.query.exclude.values()]"
+                        :includeTags="[...store.query.include.values()]"
+                        @click="onTagClick"
+                    />
+                </div>
             </div>
 
             <TabContainer />
@@ -98,7 +100,14 @@ function onTagSelect(tag: Tag, negated: boolean) {
 
 .search {
     padding: 10px;
+    min-height: 0;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.taglist-container {
+    overflow-y: scroll;
 }
 
 .toggle-btn {

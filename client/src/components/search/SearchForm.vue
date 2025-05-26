@@ -222,7 +222,7 @@ watch(inputVal, (query, _, onCleanup) => {
 
     display: block;
     width: 100%;
-    margin-top: 8px;
+    margin: 10px 0;
     border-radius: 4px;
     color: #bb9fce;
     padding: 8px;
