@@ -17,16 +17,27 @@ const { showSpinner = false } = defineProps<{
     showSpinner?: boolean;
 }>();
 
+const abortFetch = new AbortController();
+const fetching = ref(false);
 const forceRenderKey = ref(0);
-const query = ref("");
+const inputVal = ref("");
 const selectedIndex = ref(-1);
 const suggestions = ref<Tag[]>([]);
 const timer = ref();
 const inputRef = useTemplateRef("input");
 
 function doTagSearch(query: string) {
+    // Cancel any existing request to fetch suggestions since we are about to fetch new ones
+    if (fetching.value) {
+        abortFetch.abort();
+    }
+
+    fetching.value = true;
+
     // Encoding the query prevents trailing whitespace from being stripped
-    fetch("/api/tagsearch?q=" + encodeURIComponent(query))
+    fetch("/api/tagsearch?q=" + encodeURIComponent(query), {
+        signal: abortFetch.signal,
+    })
         .then((resp) =>
             resp.json().then((json: SearchResponse) => {
                 suggestions.value = json.results.filter(
@@ -37,7 +48,8 @@ function doTagSearch(query: string) {
                 );
             }),
         )
-        .catch((err) => console.error(err));
+        .catch((err) => console.error(err))
+        .finally(() => (fetching.value = false));
 }
 
 function changeSelection(direction: number) {
@@ -61,11 +73,11 @@ function autoComplete() {
     let val = suggestions.value[index].name;
 
     // Preserve the NOT op
-    if (query.value.startsWith("-")) {
+    if (inputVal.value.startsWith("-")) {
         val = "-" + val;
     }
 
-    query.value = val;
+    inputVal.value = val;
 }
 
 function onSuggestionClick(index: number) {
@@ -81,10 +93,10 @@ function onInput(e: Event) {
 
     // Prevent the user from entering any leading whitespace
     const newVal = (e.target as HTMLInputElement).value.trimStart();
-    const changed = query.value !== newVal;
+    const changed = inputVal.value !== newVal;
 
     if (changed) {
-        query.value = newVal;
+        inputVal.value = newVal;
     } else {
         // query.value didn't change but the DOM element still has the whitespace.
         // Incrementing the key will force Vue to re-render with the cleaned value
@@ -94,13 +106,13 @@ function onInput(e: Event) {
 
 // Emits an event with a selected tag or to trigger a post search
 function onSubmit() {
-    if (query.value.length === 0) {
+    if (inputVal.value.length === 0) {
         emit("onSearch");
         return;
     }
 
     let tag: Tag;
-    const negated = query.value.startsWith("-");
+    const negated = inputVal.value.startsWith("-");
 
     if (selectedIndex.value !== -1) {
         tag = suggestions.value[selectedIndex.value];
@@ -108,7 +120,7 @@ function onSubmit() {
         // Refocus the search input if the user was selecting a suggestion
         inputRef.value?.focus();
     } else {
-        const value = negated ? query.value.slice(1) : query.value;
+        const value = negated ? inputVal.value.slice(1) : inputVal.value;
         const match = suggestions.value.find((t) => t.name === value);
 
         // User is submitting a raw tag that wasn't in the search suggestions
@@ -123,13 +135,13 @@ function onSubmit() {
         }
     }
 
-    query.value = "";
+    inputVal.value = "";
     selectedIndex.value = -1;
     emit("onTagSelect", tag, negated);
 }
 
 // Setup a debounce to fetch search results shortly after the user stops typing
-watch(query, (query, _, onCleanup) => {
+watch(inputVal, (query, _, onCleanup) => {
     onCleanup(() => clearTimeout(timer.value));
 
     selectedIndex.value = -1;
@@ -158,7 +170,7 @@ watch(query, (query, _, onCleanup) => {
             type="text"
             ref="input"
             placeholder="e.g: 1girl"
-            :value="query"
+            :value="inputVal"
             @input="onInput"
             @focus="selectedIndex = -1"
             autofocus
