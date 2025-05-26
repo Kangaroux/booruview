@@ -2,11 +2,7 @@
 import { onMounted } from "vue";
 import store from "./store";
 
-function parsePage(raw: string | null): number {
-    if (raw === null) {
-        return 1;
-    }
-
+function parsePage(raw: string): number {
     const val = parseInt(raw);
     if (!Number.isSafeInteger(val) || val < 1) {
         return 1;
@@ -60,10 +56,10 @@ function loadQueryParams(): Promise<void> {
         const params = new URLSearchParams(
             window.location.hash.replace(/^#/, ""),
         );
-        const page = params.get("page");
+        const page = params.get("page") || "1";
         const query = params.get("q");
 
-        if (page === null || query === null) {
+        if (query === null) {
             reject();
             return;
         }
@@ -77,22 +73,28 @@ function onRouteChange() {
     const lastPage = store.currentPage;
     const lastSearch = store.query.copy();
 
-    loadQueryParams().then(() => {
-        const pageChanged = store.currentPage !== lastPage;
-        const searchChanged = !lastSearch.equals(store.query);
+    loadQueryParams()
+        .then(() => {
+            const pageChanged = store.currentPage !== lastPage;
+            const searchChanged = !lastSearch.equals(store.query);
 
-        if (searchChanged) {
-            store.posts.clear();
-        }
+            if (searchChanged) {
+                store.posts.clear();
+            }
 
-        if (pageChanged || searchChanged) {
-            store.searchPosts();
-        }
-    });
+            if (pageChanged || searchChanged) {
+                store.searchPosts();
+            }
+        })
+        .catch(() => {});
 }
 
 function onPageLoad() {
-    loadQueryParams().then(() => store.searchPosts());
+    loadQueryParams()
+        .then(() => store.searchPosts())
+        .catch(() => {
+            // TODO: default search?
+        });
 }
 
 window.addEventListener("hashchange", onRouteChange);
