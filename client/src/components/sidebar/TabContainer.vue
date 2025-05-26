@@ -1,16 +1,28 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import AboutTab from "./AboutTab.vue";
 import HelpTab from "./HelpTab.vue";
 import SettingsTab from "./SettingsTab.vue";
+import store from "@/store";
 
 type Tab = "about" | "help" | "settings";
 const currentTab = ref<Tab>("help");
-const closed = ref(false);
+
+// CBA writing the full setting each time
+const closed = computed({
+    get: () => store.settings.sidebarTabsHidden,
+    set: (val: boolean) => (store.settings.sidebarTabsHidden = val),
+});
 
 function switchTab(tab: Tab) {
     currentTab.value = tab;
     closed.value = false;
+    store.settings.save();
+}
+
+function toggleClose() {
+    closed.value = !closed.value;
+    store.settings.save();
 }
 </script>
 
@@ -42,7 +54,7 @@ function switchTab(tab: Tab) {
             <button
                 class="tab-btn close-btn"
                 :class="{ active: closed }"
-                @click="closed = !closed"
+                @click="toggleClose"
             >
                 <i
                     class="bi"

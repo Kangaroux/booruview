@@ -30,6 +30,7 @@ type Store = {
         columnCount: number;
         columnWidth: number;
 
+        sidebarTabsHidden: boolean;
         closeSidebarOnSearch: boolean;
 
         save(): void;
@@ -72,6 +73,8 @@ const store = reactive<Store>({
         columnCount: loadValue("columnCount", 3, parseInt),
         columnWidth: loadValue("columnWidth", 400, parseInt),
 
+        sidebarTabsHidden: loadValue("sidebarTabsHidden", false, JSON.parse),
+
         closeSidebarOnSearch: loadValue(
             "closeSidebarOnSearch",
             true,
@@ -82,6 +85,7 @@ const store = reactive<Store>({
             this.write("columnSizing", (v) => v);
             this.write("columnCount", (v) => v.toString());
             this.write("columnWidth", (v) => v.toString());
+            this.write("sidebarTabsHidden", JSON.stringify);
             this.write("closeSidebarOnSearch", JSON.stringify);
         },
 
