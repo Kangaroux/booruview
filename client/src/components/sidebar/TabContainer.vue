@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import InfoTab from "./AboutTab.vue";
+import { ref } from "vue";
+import AboutTab from "./AboutTab.vue";
+import HelpTab from "./HelpTab.vue";
 import SettingsTab from "./SettingsTab.vue";
 
-type Tab = "about" | "settings";
-const currentTab = ref<Tab>("about");
+type Tab = "about" | "help" | "settings";
+const currentTab = ref<Tab>("help");
 const closed = ref(false);
 
 function switchTab(tab: Tab) {
@@ -22,6 +23,13 @@ function switchTab(tab: Tab) {
                 @click="switchTab('about')"
             >
                 about
+            </button>
+            <button
+                class="tab-btn"
+                :class="{ active: currentTab === 'help' && !closed }"
+                @click="switchTab('help')"
+            >
+                help
             </button>
             <button
                 class="tab-btn"
@@ -48,7 +56,8 @@ function switchTab(tab: Tab) {
 
         <div class="tab-content" v-if="!closed">
             <KeepAlive>
-                <InfoTab v-if="currentTab === 'about'" />
+                <HelpTab v-if="currentTab === 'help'" />
+                <AboutTab v-else-if="currentTab === 'about'" />
                 <SettingsTab v-else-if="currentTab === 'settings'" />
             </KeepAlive>
         </div>

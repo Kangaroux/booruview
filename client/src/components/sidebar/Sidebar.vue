@@ -1,19 +1,12 @@
 <script setup lang="ts">
 import store from "@/store";
-import { ref } from "vue";
 import TagList from "../TagList.vue";
 import SearchForm from "../search/SearchForm.vue";
-import SearchHelp from "./SearchHelp.vue";
 import TabContainer from "./TabContainer.vue";
 
 defineEmits(["toggle"]);
 
 const { closed } = defineProps<{ closed: boolean }>();
-
-function onCloseHelp() {
-    store.settings.helpClosed = true;
-    store.settings.save();
-}
 
 function doPostSearch() {
     if (store.fetchingPosts) {
@@ -55,10 +48,6 @@ function onTagSelect(tag: Tag, negated: boolean) {
         </button>
         <div class="sidebar-content" v-show="!closed">
             <div class="search">
-                <SearchHelp
-                    v-if="!store.settings.helpClosed"
-                    @on-close="onCloseHelp"
-                />
                 <SearchForm
                     @on-search="doPostSearch"
                     @on-tag-select="onTagSelect"

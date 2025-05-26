@@ -32,8 +32,6 @@ type Store = {
 
         closeSidebarOnSearch: boolean;
 
-        helpClosed: boolean;
-
         save(): void;
         write<K extends SettingsKey, V = Store["settings"][K]>(
             key: K,
@@ -80,14 +78,11 @@ const store = reactive<Store>({
             JSON.parse,
         ),
 
-        helpClosed: loadValue("helpClosed", false, JSON.parse),
-
         save() {
             this.write("columnSizing", (v) => v);
             this.write("columnCount", (v) => v.toString());
             this.write("columnWidth", (v) => v.toString());
             this.write("closeSidebarOnSearch", JSON.stringify);
-            this.write("helpClosed", JSON.stringify);
         },
 
         write<K extends keyof Store["settings"], V = Store["settings"][K]>(
