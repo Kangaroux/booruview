@@ -17,8 +17,6 @@ const { showSpinner = false } = defineProps<{
     showSpinner?: boolean;
 }>();
 
-const abortFetch = new AbortController();
-const fetching = ref(false);
 const forceRenderKey = ref(0);
 const inputVal = ref("");
 const selectedIndex = ref(-1);
@@ -27,18 +25,14 @@ const timer = ref();
 const inputRef = useTemplateRef("input");
 
 function doTagSearch(query: string) {
-    // Cancel any existing request to fetch suggestions since we are about to fetch new ones
-    if (fetching.value) {
-        abortFetch.abort();
-    }
-
-    fetching.value = true;
-
     // Encoding the query prevents trailing whitespace from being stripped
-    fetch("/api/tagsearch?q=" + encodeURIComponent(query), {
-        signal: abortFetch.signal,
-    })
-        .then((resp) =>
+    fetch("/api/tagsearch?q=" + encodeURIComponent(query))
+        .then((resp) => {
+            // Request took too long and results don't match the input, discard
+            if (query !== inputVal.value) {
+                return;
+            }
+
             resp.json().then((json: SearchResponse) => {
                 suggestions.value = json.results.filter(
                     // Don't suggest tags already added to the search
@@ -46,10 +40,9 @@ function doTagSearch(query: string) {
                         !store.query.include.has(t.name) &&
                         !store.query.exclude.has(t.name),
                 );
-            }),
-        )
-        .catch((err) => console.error(err))
-        .finally(() => (fetching.value = false));
+            });
+        })
+        .catch((err) => console.error(err));
 }
 
 function changeSelection(direction: number) {
