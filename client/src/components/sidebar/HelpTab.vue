@@ -3,31 +3,21 @@ const emit = defineEmits(["on-close"]);
 </script>
 
 <template>
-    <p>
-        Booruview lets you search and browse
-        <a href="https://gelbooru.com" target="_blank">Gelbooru</a>
-        posts.
-    </p>
-    <p>
-        Add tags to your search one at a time. To exclude a tag, use
-        <code>-tag</code>
-        . Results must match every tag in your search (AND).
-    </p>
-    <p>SFW Example:</p>
-    <p>
-        Type
-        <code>rating:general</code>
-        and confirm the tag. Type
-        <code>blue_sky</code>
-        and confirm. Click search.
-    </p>
+    <p>Quick reference:</p>
+    <ul>
+        <li>Searching without tags shows the most recent posts</li>
+        <li><code>blue_sky</code> → search for blue_sky</li>
+        <li><code>-blue_sky</code> → exclude blue_sky</li>
+        <li><code>blue*</code> → tags that start with blue</li>
+        <li><code>sort:score</code> → sort by most popular</li>
+        <li><code>rating:general</code> → SFW only</li>
+    </ul>
     <p>
         <a
             href="https://gelbooru.com/index.php?page=wiki&s=&s=view&id=26263"
             target="_blank"
+            >Gelbooru search cheatsheet</a
         >
-            Gelbooru Search Help
-        </a>
     </p>
 </template>
 
@@ -38,5 +28,10 @@ code {
     padding: 0 3px;
     border: 1px solid #4c4c4c;
     border-radius: 2px;
+}
+
+ul {
+    padding-left: 25px;
+    margin: 16px 0;
 }
 </style>

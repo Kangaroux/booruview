@@ -123,7 +123,8 @@ function toggleClose() {
     overflow-y: scroll;
 }
 
-p {
+p,
+li {
     font-size: 16px;
     color: #999;
 
