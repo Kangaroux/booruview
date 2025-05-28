@@ -41,13 +41,13 @@ func SuggestedSearchFilters(tag string) (isFilter bool, resp []string) {
 	if len(parts) == 1 {
 		return
 	}
-	isFilter = true
 
 	suffixes, ok := searchFilters[parts[0]]
 	if !ok || len(suffixes) == 0 {
 		return
 	}
 
+	isFilter = true
 	prefix := parts[0] + ":"
 	for _, s := range suffixes {
 		if strings.HasPrefix(s, parts[1]) {

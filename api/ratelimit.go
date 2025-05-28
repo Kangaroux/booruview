@@ -44,8 +44,6 @@ func evictKeys() {
 	clientLimitsMutex.Lock()
 	defer clientLimitsMutex.Unlock()
 
-	log.Println("[rate limit] evict start")
-
 	evictCount := 0
 	evictIfOlder := time.Now().Add(-evictInterval)
 	for k, v := range clientLimits {
@@ -58,8 +56,6 @@ func evictKeys() {
 	if evictCount > 0 {
 		log.Println("[rate limit] evicted", evictCount, "old rate limit keys")
 	}
-
-	log.Println("[rate limit] evict done")
 }
 
 func getLimiter(ip string) *limiter {
