@@ -32,6 +32,11 @@ function onChangeSearchOnLoad(e: Event) {
     store.settings.searchOnLoad = (e.target as HTMLInputElement).checked;
     store.settings.save();
 }
+
+function onChangeHighResImages(e: Event) {
+    store.settings.highResImages = (e.target as HTMLInputElement).checked;
+    store.settings.save();
+}
 </script>
 
 <template>
@@ -84,6 +89,17 @@ function onChangeSearchOnLoad(e: Event) {
                 />
                 <span class="value">{{ store.settings.columnWidth }}</span>
             </div>
+        </div>
+
+        <div class="input-group">
+            <label>
+                <input
+                    type="checkbox"
+                    :checked="store.settings.highResImages"
+                    @change="onChangeHighResImages"
+                />
+                high resolution images</label
+            >
         </div>
 
         <div class="input-group">

@@ -35,6 +35,7 @@ type Store = {
         sidebarTabsHidden: boolean;
         closeSidebarOnSearch: boolean;
         searchOnLoad: boolean;
+        highResImages: boolean;
 
         save(): void;
         write<K extends SettingsKey, V = Store["settings"][K]>(
@@ -77,14 +78,13 @@ const store = reactive<Store>({
         columnWidth: loadValue("columnWidth", 400, parseInt),
 
         sidebarTabsHidden: loadValue("sidebarTabsHidden", false, JSON.parse),
-
         searchOnLoad: loadValue("searchOnLoad", true, JSON.parse),
-
         closeSidebarOnSearch: loadValue(
             "closeSidebarOnSearch",
             true,
             JSON.parse,
         ),
+        highResImages: loadValue("highResImages", true, JSON.parse),
 
         save() {
             this.write("columnSizing", (v) => v);
@@ -93,6 +93,7 @@ const store = reactive<Store>({
             this.write("sidebarTabsHidden", JSON.stringify);
             this.write("searchOnLoad", JSON.stringify);
             this.write("closeSidebarOnSearch", JSON.stringify);
+            this.write("highResImages", JSON.stringify);
         },
 
         write<K extends keyof Store["settings"], V = Store["settings"][K]>(

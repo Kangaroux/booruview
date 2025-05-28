@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import store from "@/store";
 import {
+    computed,
     onActivated,
     onDeactivated,
     onUnmounted,
@@ -32,28 +33,35 @@ onUnmounted(() => {
 onDeactivated(() => pz?.pause());
 onActivated(() => pz?.resume());
 
-// const urlLowRes = computed(() => {
-//     if (store.fullscreenPost === null) {
-//         return "";
-//     }
+const img = computed(() => {
+    if (store.fullscreenPost === null) {
+        return null;
+    }
 
-//     return store.fullscreenPost.lowres_url || store.fullscreenPost.image_url;
-// });
-// const urlOriginal = computed(() => {
-//     if (store.fullscreenPost === null) {
-//         return "";
-//     }
+    const hasHighRes = store.fullscreenPost.image_url.length > 0;
+    const hasLowRes = store.fullscreenPost.lowres_url.length > 0;
 
-//     return store.fullscreenPost.image_url;
-// });
+    if (!hasLowRes || (hasHighRes && store.settings.highResImages)) {
+        return {
+            url: store.fullscreenPost.image_url,
+            height: store.fullscreenPost.height,
+            width: store.fullscreenPost.width,
+        };
+    }
+
+    return {
+        url: store.fullscreenPost.lowres_url,
+        height: store.fullscreenPost.lowres_height,
+        width: store.fullscreenPost.lowres_width,
+    };
+});
 </script>
 
 <template>
     <img
-        class="content high-res"
-        :src="store.fullscreenPost?.image_url"
-        :width="store.fullscreenPost?.width"
-        :height="store.fullscreenPost?.height"
+        :src="img?.url"
+        :width="img?.width"
+        :height="img?.height"
         loading="lazy"
         ref="img"
     />
