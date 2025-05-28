@@ -10,10 +10,10 @@ import (
 
 const (
 	perSecondLimit = 3
-	perSecondBurst = 5
+	perSecondBurst = 10
 
 	evictInterval = 5 * time.Minute
-	banTime       = 15 * time.Minute
+	banTime       = 5 * time.Minute
 )
 
 var (
