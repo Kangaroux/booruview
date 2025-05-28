@@ -6,7 +6,7 @@ import SettingsTab from "./SettingsTab.vue";
 import store from "@/store";
 
 type Tab = "about" | "help" | "settings";
-const currentTab = ref<Tab>("help");
+const currentTab = ref<Tab>("about");
 
 // CBA writing the full setting each time
 const closed = computed({
