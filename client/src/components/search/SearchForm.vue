@@ -17,6 +17,7 @@ const { showSpinner = false } = defineProps<{
     showSpinner?: boolean;
 }>();
 
+const containerRef = useTemplateRef("container");
 const forceRenderKey = ref(0);
 const inputVal = ref("");
 const selectedIndex = ref(-1);
@@ -135,6 +136,20 @@ function onSubmit() {
     emit("onTagSelect", tag, negated);
 }
 
+function onContainerLostFocus(e: FocusEvent) {
+    if (containerRef.value === null) {
+        return;
+    }
+
+    // Hide suggestions if user clicks somewhere else on the page
+    if (
+        e.relatedTarget === null ||
+        !containerRef.value.contains(e.relatedTarget as Node)
+    ) {
+        showSuggestions.value = false;
+    }
+}
+
 // Setup a debounce to fetch search results shortly after the user stops typing
 watch(inputVal, (query, _, onCleanup) => {
     onCleanup(() => clearTimeout(timer.value));
@@ -157,6 +172,8 @@ watch(inputVal, (query, _, onCleanup) => {
         @keydown.up.prevent="changeSelection(-1)"
         @keydown.down.prevent="changeSelection(1)"
         @keydown.esc.prevent="showSuggestions = false"
+        @focusout="onContainerLostFocus"
+        ref="container"
     >
         <!-- forceRenderKey triggers a re-render when changed -->
         <template :key="forceRenderKey" />
