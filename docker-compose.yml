@@ -33,6 +33,8 @@ services:
     environment:
       - NODE_ENV=development
       - VITE_DEV=1
+      - VITE_COMMIT_SHA
+      - VITE_LAST_COMMIT_DATE
     volumes:
       - ./client:/app
 
