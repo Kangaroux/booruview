@@ -34,6 +34,7 @@ type Store = {
 
         sidebarTabsHidden: boolean;
         closeSidebarOnSearch: boolean;
+        searchOnLoad: boolean;
 
         save(): void;
         write<K extends SettingsKey, V = Store["settings"][K]>(
@@ -77,6 +78,8 @@ const store = reactive<Store>({
 
         sidebarTabsHidden: loadValue("sidebarTabsHidden", false, JSON.parse),
 
+        searchOnLoad: loadValue("searchOnLoad", true, JSON.parse),
+
         closeSidebarOnSearch: loadValue(
             "closeSidebarOnSearch",
             true,
@@ -88,6 +91,7 @@ const store = reactive<Store>({
             this.write("columnCount", (v) => v.toString());
             this.write("columnWidth", (v) => v.toString());
             this.write("sidebarTabsHidden", JSON.stringify);
+            this.write("searchOnLoad", JSON.stringify);
             this.write("closeSidebarOnSearch", JSON.stringify);
         },
 

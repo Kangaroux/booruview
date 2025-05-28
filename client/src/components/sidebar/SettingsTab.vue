@@ -27,6 +27,11 @@ function onChangeCloseSidebarOnSearch(e: Event) {
     ).checked;
     store.settings.save();
 }
+
+function onChangeSearchOnLoad(e: Event) {
+    store.settings.searchOnLoad = (e.target as HTMLInputElement).checked;
+    store.settings.save();
+}
 </script>
 
 <template>
@@ -89,6 +94,17 @@ function onChangeCloseSidebarOnSearch(e: Event) {
                     @change="onChangeCloseSidebarOnSearch"
                 />
                 searching closes sidebar</label
+            >
+        </div>
+
+        <div class="input-group">
+            <label>
+                <input
+                    type="checkbox"
+                    :checked="store.settings.searchOnLoad"
+                    @change="onChangeSearchOnLoad"
+                />
+                auto-search when page loads</label
             >
         </div>
     </div>

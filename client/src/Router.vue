@@ -91,7 +91,11 @@ function onRouteChange() {
 
 function onPageLoad() {
     loadQueryParams()
-        .then(() => store.searchPosts())
+        .then(() => {
+            if (store.settings.searchOnLoad) {
+                store.searchPosts();
+            }
+        })
         .catch(() => {
             // TODO: default search?
         });
