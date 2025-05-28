@@ -11,10 +11,11 @@ function parsePage(raw: string): number {
     return val;
 }
 
-function parseQuery(raw: string | null): Promise<void> {
-    return new Promise((resolve, reject) => {
-        if (raw === null || raw.length === 0) {
-            resolve();
+// Promise resolves with the number of tags in the query
+function parseQuery(raw: string): Promise<number> {
+    return new Promise<number>((resolve, reject) => {
+        if (raw.length === 0) {
+            resolve(0);
             return;
         }
 
@@ -45,27 +46,24 @@ function parseQuery(raw: string | null): Promise<void> {
                     }
                 }
 
-                resolve();
+                resolve(tagNames.length);
             })
             .catch(reject);
     });
 }
 
+// Loads the query params into the store. Resolves if the query is non-empty
 function loadQueryParams(): Promise<void> {
     return new Promise((resolve, reject) => {
         const params = new URLSearchParams(
             window.location.hash.replace(/^#/, ""),
         );
         const page = params.get("page") || "1";
-        const query = params.get("q");
-
-        if (query === null) {
-            reject();
-            return;
-        }
-
+        const query = params.get("q") || "";
         store.currentPage = parsePage(page);
-        parseQuery(query).then(resolve).catch(reject);
+        parseQuery(query)
+            .then((tagCount) => (tagCount > 0 ? resolve() : reject()))
+            .catch(reject);
     });
 }
 
@@ -97,7 +95,7 @@ function onPageLoad() {
             }
         })
         .catch(() => {
-            // TODO: default search?
+            store.setQueryParams();
         });
 }
 
