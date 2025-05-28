@@ -15,6 +15,8 @@ function loadValue<K extends SettingsKey, V = Store["settings"][K]>(
     return transform(val);
 }
 
+export type ColumnSizing = "fixed" | "dynamic";
+
 type Store = {
     currentPage: number;
     totalPostCount: number;
@@ -26,7 +28,7 @@ type Store = {
     sidebarClosed: boolean;
 
     settings: {
-        columnSizing: "fixed" | "dynamic";
+        columnSizing: ColumnSizing;
         columnCount: number;
         columnWidth: number;
 

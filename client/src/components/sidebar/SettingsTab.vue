@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import store from "@/store";
+import store, { type ColumnSizing } from "@/store";
+
+const columnSizingOptions: Record<ColumnSizing, string> = {
+    dynamic: "dynamic",
+    fixed: "fixed",
+};
 
 function onChangeColCount(e: Event) {
     store.settings.columnCount = parseInt((e.target as HTMLInputElement).value);
@@ -27,19 +32,23 @@ function onChangeCloseSidebarOnSearch(e: Event) {
 <template>
     <div class="settings-container">
         <div class="input-group">
-            <label>column sizing</label>
+            <label># of columns</label>
             <div class="input">
                 <select
                     :value="store.settings.columnSizing"
                     @change="onChangeColSizing"
                 >
-                    <option>fixed</option>
-                    <option>dynamic</option>
+                    <option
+                        v-for="(label, val) in columnSizingOptions"
+                        :value="val"
+                    >
+                        {{ label }}
+                    </option>
                 </select>
             </div>
         </div>
 
-        <div class="input-group">
+        <div class="input-group" v-if="store.settings.columnSizing === 'fixed'">
             <label>column count</label>
             <div class="input">
                 <input
@@ -48,14 +57,16 @@ function onChangeCloseSidebarOnSearch(e: Event) {
                     max="20"
                     step="1"
                     :value="store.settings.columnCount"
-                    :disabled="store.settings.columnSizing !== 'fixed'"
                     @input="onChangeColCount"
                 />
                 <span class="value">{{ store.settings.columnCount }}</span>
             </div>
         </div>
 
-        <div class="input-group">
+        <div
+            class="input-group"
+            v-if="store.settings.columnSizing === 'dynamic'"
+        >
             <label>column width</label>
             <div class="input">
                 <input
@@ -64,7 +75,6 @@ function onChangeCloseSidebarOnSearch(e: Event) {
                     max="1000"
                     step="10"
                     :value="store.settings.columnWidth"
-                    :disabled="store.settings.columnSizing !== 'dynamic'"
                     @input="onChangeColWidth"
                 />
                 <span class="value">{{ store.settings.columnWidth }}</span>
