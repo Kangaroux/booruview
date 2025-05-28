@@ -85,7 +85,7 @@ function onTagSelect(tag: Tag, negated: boolean) {
 
 .sidebar-content {
     background-color: darken($bg-color, 2.5%);
-    width: 350px;
+    width: 450px;
     height: 100%;
     position: relative;
     display: flex;

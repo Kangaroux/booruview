@@ -77,7 +77,7 @@ function onChangeHighResImages(e: Event) {
             class="input-group"
             v-if="store.settings.columnSizing === 'dynamic'"
         >
-            <label>column width</label>
+            <label>max column width</label>
             <div class="input">
                 <input
                     type="range"
@@ -87,8 +87,19 @@ function onChangeHighResImages(e: Event) {
                     :value="store.settings.columnWidth"
                     @input="onChangeColWidth"
                 />
-                <span class="value">{{ store.settings.columnWidth }}</span>
+                <span class="value">{{ store.settings.columnWidth }}px</span>
             </div>
+        </div>
+
+        <div class="input-group">
+            <label>
+                <input
+                    type="checkbox"
+                    :checked="store.settings.searchOnLoad"
+                    @change="onChangeSearchOnLoad"
+                />
+                auto-search when page loads if search isn't empty</label
+            >
         </div>
 
         <div class="input-group">
@@ -98,7 +109,7 @@ function onChangeHighResImages(e: Event) {
                     :checked="store.settings.highResImages"
                     @change="onChangeHighResImages"
                 />
-                high resolution images</label
+                high resolution images (uncheck if slow connection)</label
             >
         </div>
 
@@ -110,17 +121,6 @@ function onChangeHighResImages(e: Event) {
                     @change="onChangeCloseSidebarOnSearch"
                 />
                 searching closes sidebar</label
-            >
-        </div>
-
-        <div class="input-group">
-            <label>
-                <input
-                    type="checkbox"
-                    :checked="store.settings.searchOnLoad"
-                    @change="onChangeSearchOnLoad"
-                />
-                auto-search when page loads</label
             >
         </div>
     </div>
@@ -147,10 +147,14 @@ function onChangeHighResImages(e: Event) {
 }
 
 .input-group {
-    margin: 20px 0;
+    margin: 16px 0;
 }
 
 label + .input {
     margin-top: 5px;
+}
+
+label {
+    display: block;
 }
 </style>
