@@ -23,6 +23,7 @@ const selectedIndex = ref(-1);
 const suggestions = ref<Tag[]>([]);
 const timer = ref();
 const inputRef = useTemplateRef("input");
+const showSuggestions = ref(false);
 
 function doTagSearch(query: string) {
     // Encoding the query prevents trailing whitespace from being stripped
@@ -90,6 +91,7 @@ function onInput(e: Event) {
 
     if (changed) {
         inputVal.value = newVal;
+        showSuggestions.value = true;
     } else {
         // query.value didn't change but the DOM element still has the whitespace.
         // Incrementing the key will force Vue to re-render with the cleaned value
@@ -154,6 +156,7 @@ watch(inputVal, (query, _, onCleanup) => {
         @keydown.tab.prevent="autoComplete()"
         @keydown.up.prevent="changeSelection(-1)"
         @keydown.down.prevent="changeSelection(1)"
+        @keydown.esc.prevent="showSuggestions = false"
     >
         <!-- forceRenderKey triggers a re-render when changed -->
         <template :key="forceRenderKey" />
@@ -173,6 +176,7 @@ watch(inputVal, (query, _, onCleanup) => {
             :tags="suggestions"
             :selected-index="selectedIndex"
             @click="onSuggestionClick"
+            v-if="showSuggestions"
         />
     </div>
     <button
