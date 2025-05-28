@@ -27,20 +27,20 @@ watchPostEffect(() => {
 
 <template>
     <ul ref="list" class="tag-list" tabindex="0">
-        <template v-for="(tag, i) in tags" :key="tag.name">
-            <li
-                class="list-item"
-                :class="tag.type"
-                :title="tag.name"
-                tabindex="-1"
-                @click="$emit('click', i)"
-            >
-                <span class="name">{{ tag.name }}</span>
-                <span class="count" v-if="tag.type !== 'unknown'">
-                    {{ tag.count }}
-                </span>
-            </li>
-        </template>
+        <li
+            v-for="(tag, i) in tags"
+            :key="tag.name"
+            class="list-item"
+            :class="tag.type"
+            :title="tag.name"
+            tabindex="-1"
+            @click="$emit('click', i)"
+        >
+            <span class="name">{{ tag.name.replace(/_/g, " ") }}</span>
+            <span class="count" v-if="tag.type !== 'unknown'">
+                {{ tag.count }}
+            </span>
+        </li>
     </ul>
 </template>
 
