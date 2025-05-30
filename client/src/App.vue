@@ -43,24 +43,26 @@ watch(
             <FullscreenView v-if="store.fullscreenPost !== null" />
             <div v-if="store.hasResults()">
                 <PostContainer :posts="store.postsForCurrentPage() || []" />
-                <footer>
+                <footer class="page-nav">
+                    <button
+                        class="btn-primary"
+                        @click="store.prevPage()"
+                        v-if="store.currentPage > 1"
+                    >
+                        <i class="bi bi-arrow-left"></i> prev
+                    </button>
+                    <button
+                        class="btn-primary"
+                        @click="store.nextPage()"
+                        v-if="store.currentPage < store.maxPage()"
+                    >
+                        next <i class="bi bi-arrow-right"></i>
+                    </button>
                     <p>
                         page {{ store.currentPage }} of
                         {{ store.maxPage() }} ({{ store.totalPostCount }}
                         results)
                     </p>
-                    <button
-                        @click="store.prevPage()"
-                        v-if="store.currentPage > 1"
-                    >
-                        &lt;&lt; prev page
-                    </button>
-                    <button
-                        @click="store.nextPage()"
-                        v-if="store.currentPage < store.maxPage()"
-                    >
-                        next page &gt;&gt;
-                    </button>
                 </footer>
             </div>
         </main>
@@ -69,6 +71,7 @@ watch(
 
 <style scoped lang="scss">
 @import "assets/breakpoints";
+@import "assets/buttons";
 @import "assets/colors";
 
 .app {
@@ -93,6 +96,15 @@ main {
         .sidebar-open & {
             display: none;
         }
+    }
+}
+
+.page-nav {
+    margin-top: 40px;
+    text-align: center;
+
+    .btn-primary:nth-of-type(2) {
+        margin-left: 10px;
     }
 }
 </style>
