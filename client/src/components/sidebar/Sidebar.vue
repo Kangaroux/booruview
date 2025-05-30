@@ -74,7 +74,7 @@ function onTagSelect(tag: Tag, negated: boolean) {
 
 .sidebar-container {
     position: relative;
-    background-color: $sidebar-bg-color;
+    background-color: $color-sidebar;
 
     @media (max-width: $mobile-width) {
         .sidebar-open & {

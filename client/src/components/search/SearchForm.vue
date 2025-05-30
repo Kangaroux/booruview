@@ -197,7 +197,7 @@ watch(inputVal, (query, _, onCleanup) => {
         />
     </div>
     <button
-        class="submit-btn"
+        class="submit-btn btn-primary"
         type="submit"
         @click="onSubmit"
         :disabled="showSpinner"
@@ -208,6 +208,9 @@ watch(inputVal, (query, _, onCleanup) => {
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/buttons";
+@import "@/assets/colors";
+
 .input {
     background-color: #252525;
     border: 1px solid #555;
@@ -230,33 +233,12 @@ watch(inputVal, (query, _, onCleanup) => {
 }
 
 .submit-btn {
-    $btn-color: #342b3a;
-    $border-color: lighten($btn-color, 20%);
     $spinner-size: 20px;
 
     display: block;
     width: 100%;
     margin: 10px 0;
-    border-radius: 4px;
-    color: #bb9fce;
-    padding: 8px;
-    cursor: pointer;
-    font-size: 16px;
     line-height: $spinner-size;
-
-    background-color: $btn-color;
-    border: 1px solid $border-color;
-
-    &:hover {
-        background-color: lighten($btn-color, 2.5%);
-        border-color: lighten($border-color, 2.5%);
-    }
-
-    &:disabled {
-        cursor: default;
-        background-color: darken($btn-color, 2.5%);
-        border-color: darken($border-color, 2.5%);
-    }
 
     span {
         display: block;

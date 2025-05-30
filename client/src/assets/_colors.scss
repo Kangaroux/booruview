@@ -1,6 +1,8 @@
-$bg-color: #151515;
-$sidebar-bg-color: darken($bg-color, 2.5%);
-$dark-gray: #202020;
-$light-gray: #555;
+$color-bg: #151515;
+$color-sidebar: darken($color-bg, 2.5%);
+$color-darkgray: #202020;
+$color-lightgray: #555;
 
-$col-primary: #342b3a;
+$color-primary: #342b3a;
+$color-primary-lighter: #695675;
+$color-primary-light: #bb9fce;
