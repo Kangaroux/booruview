@@ -10,7 +10,7 @@ import {
 } from "vue";
 import createPanZoom, { type PanZoom } from "panzoom";
 
-const imgRef = useTemplateRef("img");
+const imgRef = useTemplateRef("imgRef");
 let pz: PanZoom;
 
 const htmlRoot = document.body.parentElement as HTMLElement;
@@ -42,35 +42,32 @@ onDeactivated(() => pz.pause());
 onActivated(() => pz.resume());
 
 const img = computed(() => {
-    if (store.fullscreenPost === null) {
-        return null;
-    }
-
-    const hasHighRes = store.fullscreenPost.image_url.length > 0;
-    const hasLowRes = store.fullscreenPost.lowres_url.length > 0;
+    const post = store.fullscreenPost!;
+    const hasHighRes = post.image_url.length > 0;
+    const hasLowRes = post.lowres_url.length > 0;
 
     if (!hasLowRes || (hasHighRes && store.settings.highResImages)) {
         return {
-            url: store.fullscreenPost.image_url,
-            height: store.fullscreenPost.height,
-            width: store.fullscreenPost.width,
+            url: post.image_url,
+            height: post.height,
+            width: post.width,
         };
     }
 
     return {
-        url: store.fullscreenPost.lowres_url,
-        height: store.fullscreenPost.lowres_height,
-        width: store.fullscreenPost.lowres_width,
+        url: post.lowres_url,
+        height: post.lowres_height,
+        width: post.lowres_width,
     };
 });
 </script>
 
 <template>
     <img
-        :src="img?.url"
-        :width="img?.width"
-        :height="img?.height"
+        :src="img.url"
+        :width="img.width"
+        :height="img.height"
         loading="lazy"
-        ref="img"
+        ref="imgRef"
     />
 </template>

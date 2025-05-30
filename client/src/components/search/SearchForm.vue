@@ -27,7 +27,7 @@ const timer = ref();
 const inputRef = useTemplateRef("input");
 const showSuggestions = ref(false);
 
-const onLostFocus = useDeepFocusOut(
+const onFocusOut = useDeepFocusOut(
     containerRef,
     () => (showSuggestions.value = false),
 );
@@ -164,7 +164,7 @@ watch(inputVal, (query, _, onCleanup) => {
         @keydown.up.prevent="changeSelection(-1)"
         @keydown.down.prevent="changeSelection(1)"
         @keydown.esc.prevent="showSuggestions = false"
-        @focusout="onLostFocus"
+        @focusout="onFocusOut"
         ref="container"
     >
         <!-- forceRenderKey triggers a re-render when changed -->
