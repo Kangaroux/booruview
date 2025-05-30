@@ -17,7 +17,7 @@ watchEffect(() => {
 <template>
     <div class="tag-list-container">
         <div class="tag-list">
-            <TagList :jiggle="false" :includeTags="tags" :exclude-tags="[]" />
+            <TagList :jiggle="false" :tags="tags" :show-checkmark="true" />
         </div>
     </div>
 </template>

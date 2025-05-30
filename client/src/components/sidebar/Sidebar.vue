@@ -51,8 +51,8 @@ function onTagSelect(tag: Tag, negated: boolean) {
                 <div class="taglist-container">
                     <TagList
                         :jiggle="true"
-                        :excludeTags="[...store.query.exclude.values()]"
-                        :includeTags="[...store.query.include.values()]"
+                        :tags="store.query.all()"
+                        :show-checkmark="false"
                     />
                 </div>
             </div>

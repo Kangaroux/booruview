@@ -7,6 +7,12 @@ class SearchQuery {
         this.exclude = new Map();
     }
 
+    all(): Tag[] {
+        return Array.from(this.include.values()).concat(
+            Array.from(this.exclude.values()),
+        );
+    }
+
     includeTag(t: Tag) {
         this.include.set(t.name, t);
         this.exclude.delete(t.name);

@@ -25,6 +25,7 @@ onMounted(() => {
 
 <template>
     <div class="chip" :class="cls">
+        <i class="bi bi-check-lg" v-if="state === 'include'"></i>
         {{ tag.name }}
     </div>
 </template>

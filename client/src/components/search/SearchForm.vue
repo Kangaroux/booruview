@@ -173,7 +173,10 @@ watch(inputVal, (query, _, onCleanup) => {
             placeholder="e.g: 1girl"
             :value="inputVal"
             @input="onInput"
-            @focus="selectedIndex = -1"
+            @focus="
+                selectedIndex = -1;
+                showSuggestions = true;
+            "
             autofocus
         />
         <SearchSuggestions

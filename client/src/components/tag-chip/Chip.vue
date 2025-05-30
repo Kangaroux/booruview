@@ -4,7 +4,7 @@ import { computed, ref, useAttrs, useTemplateRef } from "vue";
 import ChipStatic from "./ChipStatic.vue";
 import { useDismiss } from "@/composable";
 
-const props = defineProps<{ jiggle?: boolean; tag: Tag }>();
+const props = defineProps<{ jiggle?: boolean; state: TagState; tag: Tag }>();
 const { tag } = props;
 const showOptions = ref(false);
 const containerRef = useTemplateRef("container");
@@ -32,11 +32,7 @@ function onRemove() {
 
 <template>
     <div class="chip-container" ref="container">
-        <ChipStatic
-            v-bind="props"
-            :state="isExcluded ? 'exclude' : 'include'"
-            @click="showOptions = !showOptions"
-        />
+        <ChipStatic v-bind="props" @click="showOptions = !showOptions" />
         <div class="options" v-if="showOptions">
             <button
                 class="btn-primary option-btn"
@@ -82,6 +78,7 @@ function onRemove() {
     flex-direction: column;
     z-index: 2;
     width: max-content;
+    box-shadow: 0 0 10px black;
 }
 
 .option-btn {

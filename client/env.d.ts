@@ -14,7 +14,7 @@ type Tag = {
     type: TagType;
 };
 
-type TagState = "include" | "exclude";
+type TagState = "include" | "exclude" | "none";
 
 type Rating = "general" | "sensitive" | "questionable" | "explicit";
 
