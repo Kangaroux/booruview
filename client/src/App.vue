@@ -45,14 +45,14 @@ watch(
                 <PostContainer :posts="store.postsForCurrentPage() || []" />
                 <footer class="page-nav">
                     <button
-                        class="btn-primary"
+                        class="btn-primary btn-rounded"
                         @click="store.prevPage()"
                         v-if="store.currentPage > 1"
                     >
                         <i class="bi bi-arrow-left"></i> prev
                     </button>
                     <button
-                        class="btn-primary"
+                        class="btn-primary btn-rounded"
                         @click="store.nextPage()"
                         v-if="store.currentPage < store.maxPage()"
                     >

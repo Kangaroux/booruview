@@ -197,7 +197,7 @@ watch(inputVal, (query, _, onCleanup) => {
         />
     </div>
     <button
-        class="submit-btn btn-primary"
+        class="submit-btn btn-primary btn-rounded"
         type="submit"
         @click="onSubmit"
         :disabled="showSpinner"

@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 
-defineEmits(["click"]);
-
 const {
     jiggle = false,
     state,
@@ -26,12 +24,14 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="chip" :class="cls" @click="$emit('click')">
+    <div class="chip" :class="cls">
         {{ tag.name }}
     </div>
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/colors";
+
 .chip {
     padding: 8px;
     margin: 0 4px 4px 0;
@@ -45,6 +45,14 @@ onMounted(() => {
     &.state-exclude {
         filter: brightness(0.8);
         text-decoration: line-through;
+    }
+}
+
+.chip-options {
+    button {
+        border: 1px solid white;
+        background: $color-lightgray;
+        color: white;
     }
 }
 

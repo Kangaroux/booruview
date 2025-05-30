@@ -117,6 +117,7 @@ function onTagSelect(tag: Tag, negated: boolean) {
 
 .taglist-container {
     overflow-y: scroll;
+    flex: 1;
 }
 
 .toggle-btn {

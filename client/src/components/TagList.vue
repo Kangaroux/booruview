@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import TagChip from "./TagChip.vue";
+import ChipStatic from "./tag-chip/ChipStatic.vue";
+import Chip from "./tag-chip/Chip.vue";
 
 type tagWithState = { tag: Tag; state: TagState };
 type listCategories = {
@@ -11,8 +12,6 @@ type listCategories = {
     metadata: tagWithState[];
     unknown: tagWithState[];
 };
-
-defineEmits<{ click: [tag: Tag] }>();
 
 const { jiggle, excludeTags, includeTags } = defineProps<{
     jiggle: boolean;
@@ -81,62 +80,57 @@ const categories = computed(() => {
 
 <template>
     <h3 v-if="categories.artist.length > 0">artist</h3>
-    <TagChip
+    <Chip
         v-for="t in categories.artist"
-        :tag="t.tag"
         :key="t.tag.name"
+        :tag="t.tag"
         :state="t.state"
         :jiggle="jiggle"
-        @click="$emit('click', t.tag)"
     />
 
     <h3 v-if="categories.character.length > 0">character</h3>
-    <TagChip
+    <Chip
         v-for="t in categories.character"
-        :tag="t.tag"
         :key="t.tag.name"
+        :tag="t.tag"
         :state="t.state"
         :jiggle="jiggle"
-        @click="$emit('click', t.tag)"
     />
 
     <h3 v-if="categories.copyright.length > 0">copyright</h3>
-    <TagChip
+    <Chip
         v-for="t in categories.copyright"
-        :tag="t.tag"
         :key="t.tag.name"
+        :tag="t.tag"
         :state="t.state"
         :jiggle="jiggle"
-        @click="$emit('click', t.tag)"
     />
+
     <h3 v-if="categories.tag.length > 0">tags</h3>
-    <TagChip
+    <Chip
         v-for="t in categories.tag"
-        :tag="t.tag"
         :key="t.tag.name"
+        :tag="t.tag"
         :state="t.state"
         :jiggle="jiggle"
-        @click="$emit('click', t.tag)"
     />
 
     <h3 v-if="categories.metadata.length > 0">metadata</h3>
-    <TagChip
+    <Chip
         v-for="t in categories.metadata"
-        :tag="t.tag"
         :key="t.tag.name"
+        :tag="t.tag"
         :state="t.state"
         :jiggle="jiggle"
-        @click="$emit('click', t.tag)"
     />
 
     <h3 v-if="categories.unknown.length > 0">raw</h3>
-    <TagChip
+    <Chip
         v-for="t in categories.unknown"
-        :tag="t.tag"
         :key="t.tag.name"
+        :tag="t.tag"
         :state="t.state"
         :jiggle="jiggle"
-        @click="$emit('click', t.tag)"
     />
 </template>
 
