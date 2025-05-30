@@ -28,6 +28,8 @@ type Store = {
     sidebarClosed: boolean;
 
     settings: {
+        consented: boolean;
+
         columnSizing: ColumnSizing;
         columnCount: number;
         columnWidth: number;
@@ -73,6 +75,8 @@ const store = reactive<Store>({
     sidebarClosed: false,
 
     settings: {
+        consented: loadValue("consented", false, JSON.parse),
+
         columnSizing: loadValue("columnSizing", "dynamic", (v) => v as any),
         columnCount: loadValue("columnCount", 3, parseInt),
         columnWidth: loadValue("columnWidth", 400, parseInt),
@@ -87,6 +91,7 @@ const store = reactive<Store>({
         highResImages: loadValue("highResImages", true, JSON.parse),
 
         save() {
+            this.write("consented", JSON.stringify);
             this.write("columnSizing", (v) => v);
             this.write("columnCount", (v) => v.toString());
             this.write("columnWidth", (v) => v.toString());

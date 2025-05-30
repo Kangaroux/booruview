@@ -5,6 +5,7 @@ import PostContainer from "./components/PostContainer.vue";
 import Sidebar from "./components/sidebar/Sidebar.vue";
 import FullscreenView from "./components/fullscreen-view/FullscreenView.vue";
 import Router from "./Router.vue";
+import ContentWarning from "./components/ContentWarning.vue";
 
 const mainContainer = useTemplateRef("main");
 
@@ -35,6 +36,7 @@ watch(
             'sidebar-open': !store.sidebarClosed,
         }"
     >
+        <ContentWarning v-if="!store.settings.consented" />
         <Sidebar
             :closed="store.sidebarClosed"
             @toggle="store.sidebarClosed = !store.sidebarClosed"
