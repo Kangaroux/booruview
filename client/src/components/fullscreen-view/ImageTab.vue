@@ -4,34 +4,42 @@ import {
     computed,
     onActivated,
     onDeactivated,
+    onMounted,
     onUnmounted,
     useTemplateRef,
-    watchPostEffect,
 } from "vue";
 import createPanZoom, { type PanZoom } from "panzoom";
 
 const imgRef = useTemplateRef("img");
-let pz: PanZoom | undefined;
+let pz: PanZoom;
 
-watchPostEffect(() => {
-    if (imgRef.value == null) {
-        return;
-    }
+const htmlRoot = document.body.parentElement as HTMLElement;
+const overscrollCssClass = "prevent-overscroll";
 
-    pz = createPanZoom(imgRef.value, {
+onMounted(() => {
+    pz = createPanZoom(imgRef.value!, {
         autocenter: true,
         bounds: true,
         maxZoom: 3,
         minZoom: 0.1,
+        onTouch() {
+            // Don't block the touch event so the user can right click
+            return false;
+        },
     });
+
+    // Since the touch event isn't being blocked we need to prevent the user from
+    // overscrolling the page (refresh by pulling down)
+    htmlRoot.classList.add(overscrollCssClass);
 });
 
 onUnmounted(() => {
-    pz?.dispose();
+    pz.dispose();
+    htmlRoot.classList.remove(overscrollCssClass);
 });
 
-onDeactivated(() => pz?.pause());
-onActivated(() => pz?.resume());
+onDeactivated(() => pz.pause());
+onActivated(() => pz.resume());
 
 const img = computed(() => {
     if (store.fullscreenPost === null) {
