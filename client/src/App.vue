@@ -6,15 +6,18 @@ import Sidebar from "./components/sidebar/Sidebar.vue";
 import FullscreenView from "./components/fullscreen-view/FullscreenView.vue";
 import Router from "./Router.vue";
 
-const mainContentContainer = useTemplateRef("main-content");
+const mainContainer = useTemplateRef("main");
 
 watch(
-    () => [mainContentContainer, store.posts],
+    () => [mainContainer, store.posts],
     () => {
-        if (!mainContentContainer.value) {
-            return;
-        }
-        mainContentContainer.value.scrollTop = 0;
+        // Scroll needs to be deferred in order to work on mobile
+        setTimeout(() => {
+            if (mainContainer.value === null) {
+                return;
+            }
+            mainContainer.value.scrollTop = 0;
+        }, 0);
     },
     {
         flush: "post",
@@ -36,13 +39,9 @@ watch(
             :closed="store.sidebarClosed"
             @toggle="store.sidebarClosed = !store.sidebarClosed"
         />
-        <main>
+        <main ref="main">
             <FullscreenView v-if="store.fullscreenPost !== null" />
-            <div
-                class="main-content"
-                ref="main-content"
-                v-if="store.hasResults()"
-            >
+            <div v-if="store.hasResults()">
                 <PostContainer :posts="store.postsForCurrentPage() || []" />
                 <footer>
                     <p>
@@ -77,20 +76,23 @@ watch(
     flex-direction: row;
     width: 100%;
     height: 100%;
+
+    @media (max-width: $mobile-width) {
+        &.sidebar-closed {
+            flex-direction: column;
+        }
+    }
 }
 
 main {
     flex: 1;
+    min-height: 0;
+    overflow-y: scroll;
 
     @media (max-width: $mobile-width) {
         .sidebar-open & {
             display: none;
         }
     }
-}
-
-.main-content {
-    height: 100%;
-    overflow-y: scroll;
 }
 </style>

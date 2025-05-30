@@ -42,9 +42,12 @@ function onTagSelect(tag: Tag, negated: boolean) {
 
 <template>
     <header class="sidebar-container">
-        <button class="toggle-btn" @click="$emit('toggle')">
-            <i class="bi bi-list"></i>
-        </button>
+        <div class="sidebar-header">
+            <button class="toggle-btn" @click="$emit('toggle')">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+
         <div class="sidebar-content" v-show="!closed">
             <div class="search">
                 <SearchForm
@@ -73,22 +76,29 @@ function onTagSelect(tag: Tag, negated: boolean) {
 @import "@/assets/colors";
 
 .sidebar-container {
-    position: relative;
+    display: flex;
+    flex-direction: column;
     background-color: $color-sidebar;
+    height: 100%;
 
     @media (max-width: $mobile-width) {
         .sidebar-open & {
             width: 100%;
+        }
+
+        .sidebar-closed & {
+            height: auto;
         }
     }
 }
 
 .sidebar-content {
     width: 450px;
-    height: 100%;
+    margin-top: 10px;
     position: relative;
     display: flex;
     flex-direction: column;
+    flex: 1;
 
     @media (max-width: $mobile-width) {
         .sidebar-open & {
@@ -112,9 +122,9 @@ function onTagSelect(tag: Tag, negated: boolean) {
 .toggle-btn {
     background: none;
     border: none;
-    color: #bb9fce;
-    font-size: 36px;
-
+    font-size: 40px;
     cursor: pointer;
+
+    color: $color-primary-lighter;
 }
 </style>
