@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTemplateRef, watch } from "vue";
+import { computed, useTemplateRef, watch } from "vue";
 import store from "@/store";
 import PostContainer from "./components/PostContainer.vue";
 import Sidebar from "./components/sidebar/Sidebar.vue";
@@ -25,6 +25,17 @@ watch(
         deep: true,
     },
 );
+
+const hasConsented = computed(() => {
+    if (store.settings.consented) {
+        return true;
+    }
+
+    // Don't show consent modal for search engine crawlers
+    const crawlers = /Googlebot|Bingbot|DuckDuckbot/;
+    const isCrawler = crawlers.exec(navigator.userAgent) !== null;
+    return isCrawler;
+});
 </script>
 
 <template>
@@ -36,7 +47,7 @@ watch(
             'sidebar-open': !store.sidebarClosed,
         }"
     >
-        <ContentWarning v-if="!store.settings.consented" />
+        <ContentWarning v-if="!hasConsented" />
         <Sidebar
             :closed="store.sidebarClosed"
             @toggle="store.sidebarClosed = !store.sidebarClosed"
