@@ -2,7 +2,7 @@
 import { ref, useTemplateRef, watch } from "vue";
 import SearchSuggestions from "./Suggestions.vue";
 import store from "@/store";
-import { useDeepFocusOut } from "@/composable";
+import { useDismiss } from "@/composable";
 
 type SearchResponse = {
     results: Tag[];
@@ -27,10 +27,7 @@ const timer = ref();
 const inputRef = useTemplateRef("input");
 const showSuggestions = ref(false);
 
-const onFocusOut = useDeepFocusOut(
-    containerRef,
-    () => (showSuggestions.value = false),
-);
+useDismiss(containerRef, () => (showSuggestions.value = false));
 
 function doTagSearch(query: string) {
     // Encoding the query prevents trailing whitespace from being stripped
@@ -164,7 +161,6 @@ watch(inputVal, (query, _, onCleanup) => {
         @keydown.up.prevent="changeSelection(-1)"
         @keydown.down.prevent="changeSelection(1)"
         @keydown.esc.prevent="showSuggestions = false"
-        @focusout="onFocusOut"
         ref="container"
     >
         <!-- forceRenderKey triggers a re-render when changed -->

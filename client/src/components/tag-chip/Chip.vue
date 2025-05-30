@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import store from "@/store";
-import { computed, ref, useAttrs } from "vue";
+import { computed, ref, useAttrs, useTemplateRef } from "vue";
 import ChipStatic from "./ChipStatic.vue";
+import { useDismiss } from "@/composable";
 
 const props = defineProps<{ jiggle?: boolean; tag: Tag }>();
 const { tag } = props;
 const showOptions = ref(false);
+const containerRef = useTemplateRef("container");
+
+useDismiss(containerRef, () => (showOptions.value = false));
 
 const isIncluded = computed(() => store.query.include.has(tag.name));
 const isExcluded = computed(() => store.query.exclude.has(tag.name));
@@ -27,7 +31,7 @@ function onRemove() {
 </script>
 
 <template>
-    <div class="chip-container">
+    <div class="chip-container" ref="container">
         <ChipStatic
             v-bind="props"
             :state="isExcluded ? 'exclude' : 'include'"

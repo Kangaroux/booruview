@@ -1,21 +1,19 @@
-import { type ShallowRef } from "vue";
+import { onMounted, onUnmounted, type ShallowRef } from "vue";
 
-export function useDeepFocusOut(
+export function useDismiss(
     el: Readonly<ShallowRef<HTMLElement | null>>,
-    onFocusOut: () => void,
+    onDismiss: () => void,
 ) {
-    function handler(e: FocusEvent) {
+    function handler(e: MouseEvent) {
         if (el.value === null) {
             return;
         }
 
-        if (
-            e.relatedTarget === null ||
-            !el.value.contains(e.relatedTarget as Node)
-        ) {
-            onFocusOut();
+        if (e.target === null || !el.value.contains(e.target as Node)) {
+            onDismiss();
         }
     }
 
-    return handler;
+    onMounted(() => document.addEventListener("click", handler));
+    onUnmounted(() => document.removeEventListener("click", handler));
 }
