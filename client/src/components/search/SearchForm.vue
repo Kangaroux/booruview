@@ -2,6 +2,7 @@
 import { ref, useTemplateRef, watch } from "vue";
 import SearchSuggestions from "./Suggestions.vue";
 import store from "@/store";
+import { useDeepFocusOut } from "@/composable";
 
 type SearchResponse = {
     results: Tag[];
@@ -25,6 +26,11 @@ const suggestions = ref<Tag[]>([]);
 const timer = ref();
 const inputRef = useTemplateRef("input");
 const showSuggestions = ref(false);
+
+const onLostFocus = useDeepFocusOut(
+    containerRef,
+    () => (showSuggestions.value = false),
+);
 
 function doTagSearch(query: string) {
     // Encoding the query prevents trailing whitespace from being stripped
@@ -136,20 +142,6 @@ function onSubmit() {
     emit("onTagSelect", tag, negated);
 }
 
-function onContainerLostFocus(e: FocusEvent) {
-    if (containerRef.value === null) {
-        return;
-    }
-
-    // Hide suggestions if user clicks somewhere else on the page
-    if (
-        e.relatedTarget === null ||
-        !containerRef.value.contains(e.relatedTarget as Node)
-    ) {
-        showSuggestions.value = false;
-    }
-}
-
 // Setup a debounce to fetch search results shortly after the user stops typing
 watch(inputVal, (query, _, onCleanup) => {
     onCleanup(() => clearTimeout(timer.value));
@@ -172,7 +164,7 @@ watch(inputVal, (query, _, onCleanup) => {
         @keydown.up.prevent="changeSelection(-1)"
         @keydown.down.prevent="changeSelection(1)"
         @keydown.esc.prevent="showSuggestions = false"
-        @focusout="onContainerLostFocus"
+        @focusout="onLostFocus"
         ref="container"
     >
         <!-- forceRenderKey triggers a re-render when changed -->
