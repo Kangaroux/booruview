@@ -187,12 +187,11 @@ func ListPosts(tags string, page int) (*PostList, error) {
 	resp := FullPostResponse{
 		Post: make([]PostResponse, 0, PostsPerPage),
 	}
-
 	if err := json.Unmarshal(body, &resp); err != nil {
 		return nil, err
 	}
 
-	posts := make([]api.PostResponse, len(resp.Post))
+	posts := make([]api.PostResponse, 0, len(resp.Post))
 	for _, p := range resp.Post {
 		data := api.PostResponse{
 			Id:    p.Id,
