@@ -26,7 +26,10 @@ onMounted(() => {
 <template>
     <div class="chip" :class="cls">
         <i class="bi bi-check-lg" v-if="state === 'include'"></i>
-        {{ tag.name }}<span class="dep-warning" v-if="tag.type === 'deprecated'"> (deprecated)</span>
+        {{ tag.name
+        }}<span class="dep-warning" v-if="tag.type === 'deprecated'">
+            (deprecated)</span
+        >
     </div>
 </template>
 
@@ -49,7 +52,7 @@ onMounted(() => {
     }
 
     .dep-warning {
-        color: #F44;
+        color: #f44;
     }
 }
 

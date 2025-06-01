@@ -29,6 +29,25 @@ function onTagSelect(tag: Tag, negated: boolean) {
     } else {
         store.query.excludeTag(tag);
     }
+
+    // Slight hack: try looking up unknown tags and replace it with the real version
+    if (tag.type === "unknown") {
+        store.loadTags([tag.name]).then(() => {
+            const real = store.cachedTags.get(tag.name);
+
+            if (real === undefined) {
+                return;
+            }
+
+            store.query.removeTag(tag);
+
+            if (!negated) {
+                store.query.includeTag(real);
+            } else {
+                store.query.excludeTag(real);
+            }
+        });
+    }
 }
 </script>
 
