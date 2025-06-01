@@ -26,7 +26,7 @@ onMounted(() => {
 <template>
     <div class="chip" :class="cls">
         <i class="bi bi-check-lg" v-if="state === 'include'"></i>
-        {{ tag.name }}
+        {{ tag.name }}<span class="dep-warning" v-if="tag.type === 'deprecated'"> (deprecated)</span>
     </div>
 </template>
 
@@ -46,6 +46,10 @@ onMounted(() => {
     &.state-exclude {
         filter: brightness(0.8);
         text-decoration: line-through;
+    }
+
+    .dep-warning {
+        color: #F44;
     }
 }
 
@@ -79,6 +83,7 @@ onMounted(() => {
     animation: 300ms linear 0s jiggle-anim;
 }
 
+.deprecated,
 .tag {
     background-color: #303030;
     color: hsl(208, 56%, 75%);
@@ -102,7 +107,6 @@ onMounted(() => {
     background-color: #f80;
 }
 
-.deprecated,
 .unknown {
     background-color: #6275ae;
     color: #0b1227;
