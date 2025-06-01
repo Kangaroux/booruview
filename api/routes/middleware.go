@@ -3,6 +3,7 @@ package routes
 import (
 	"log"
 	"net/http"
+	"runtime/debug"
 	"strings"
 
 	api "github.com/kangaroux/booru-viewer"
@@ -14,6 +15,7 @@ func RecoverMiddleware(next http.Handler) http.Handler {
 		defer func() {
 			if err := recover(); err != nil {
 				log.Println("recovered from panic:", err)
+				log.Println(string(debug.Stack()))
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}()

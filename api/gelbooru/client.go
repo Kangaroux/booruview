@@ -63,7 +63,7 @@ func doApiTagSearch(query string) ([]api.TagResponse, error) {
 	params.Add("page", "autocomplete2")
 	params.Add("term", query)
 
-	rawResp, err := api.HttpGet(ApiUrl + "?" + params.Encode())
+	rawResp, err := httpGet(ApiUrl, params)
 	if err != nil {
 		return nil, err
 	}
@@ -174,7 +174,7 @@ func ListPosts(tags string, page int) (*PostList, error) {
 	params.Add("tags", tags)
 	params.Add("pid", strconv.Itoa(page-1)) // Pages are 0-indexed
 
-	rawResp, err := api.HttpGet(ApiUrl + "?" + params.Encode())
+	rawResp, err := httpGet(ApiUrl, params)
 	if err != nil {
 		return nil, err
 	}
@@ -257,7 +257,7 @@ func ListTags(tags string) ([]api.TagResponse, error) {
 	params.Add("json", "1")
 	params.Add("names", tags)
 
-	rawResp, err := api.HttpGet(ApiUrl + "?" + params.Encode())
+	rawResp, err := httpGet(ApiUrl, params)
 	if err != nil {
 		return nil, err
 	}
