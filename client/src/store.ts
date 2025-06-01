@@ -21,6 +21,7 @@ type Store = {
     currentPage: number;
     totalPostCount: number;
     resultsPerPage: number;
+    hasSearched: boolean;
     fetchingPosts: boolean;
 
     fullscreenPost: Post | null;
@@ -54,7 +55,6 @@ type Store = {
 
     tagsForPost(post: Post): Promise<Tag[]>;
 
-    hasResults(): boolean;
     loadTags(tags: string[]): Promise<void>;
     maxPage(): number;
     nextPage(): void;
@@ -68,6 +68,7 @@ const store = reactive<Store>({
     currentPage: 1,
     totalPostCount: 0,
     resultsPerPage: 0,
+    hasSearched: false,
     fetchingPosts: false,
 
     fullscreenPost: null,
@@ -128,10 +129,6 @@ const store = reactive<Store>({
         });
     },
 
-    hasResults(): boolean {
-        return this.totalPostCount > 0;
-    },
-
     setQueryParams() {
         const params = new URLSearchParams();
         params.set("page", this.currentPage.toString());
@@ -171,6 +168,7 @@ const store = reactive<Store>({
                         this.posts.set(this.currentPage, json.results);
                         this.resultsPerPage = json.count_per_page;
                         this.totalPostCount = json.total_count;
+                        this.hasSearched = true;
                         resolve();
                     });
                 })

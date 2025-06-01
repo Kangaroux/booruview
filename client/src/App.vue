@@ -6,6 +6,8 @@ import Sidebar from "./components/sidebar/Sidebar.vue";
 import FullscreenView from "./components/fullscreen-view/FullscreenView.vue";
 import Router from "./Router.vue";
 import ContentWarning from "./components/ContentWarning.vue";
+import Footer from "./components/Footer.vue";
+import NoResults from "./components/NoResults.vue";
 
 const mainContainer = useTemplateRef("main");
 
@@ -48,44 +50,27 @@ const hasConsented = computed(() => {
         }"
     >
         <ContentWarning v-if="!hasConsented" />
+        <FullscreenView v-if="store.fullscreenPost !== null" />
+
         <Sidebar
             :closed="store.sidebarClosed"
             @toggle="store.sidebarClosed = !store.sidebarClosed"
         />
         <main ref="main">
-            <FullscreenView v-if="store.fullscreenPost !== null" />
-            <div v-if="store.hasResults()">
-                <PostContainer :posts="store.postsForCurrentPage() || []" />
-                <footer class="page-nav">
-                    <button
-                        class="btn-primary btn-rounded"
-                        @click="store.prevPage()"
-                        v-if="store.currentPage > 1"
-                    >
-                        <i class="bi bi-arrow-left"></i> prev
-                    </button>
-                    <button
-                        class="btn-primary btn-rounded"
-                        @click="store.nextPage()"
-                        v-if="store.currentPage < store.maxPage()"
-                    >
-                        next <i class="bi bi-arrow-right"></i>
-                    </button>
-                    <p>
-                        page {{ store.currentPage }} of
-                        {{ store.maxPage() }} ({{ store.totalPostCount }}
-                        results)
-                    </p>
-                </footer>
-            </div>
+            <template v-if="store.hasSearched">
+                <NoResults v-if="store.totalPostCount === 0" />
+                <template v-else>
+                    <PostContainer :posts="store.postsForCurrentPage() || []" />
+                    <Footer v-if="!store.fetchingPosts" />
+                </template>
+            </template>
         </main>
     </div>
 </template>
 
 <style scoped lang="scss">
-@import "assets/breakpoints";
-@import "assets/buttons";
-@import "assets/colors";
+@import "@/assets/breakpoints";
+@import "@/assets/colors";
 
 .app {
     display: flex;
@@ -109,15 +94,6 @@ main {
         .sidebar-open & {
             display: none;
         }
-    }
-}
-
-.page-nav {
-    margin-top: 40px;
-    text-align: center;
-
-    .btn-primary:nth-of-type(2) {
-        margin-left: 10px;
     }
 }
 </style>
