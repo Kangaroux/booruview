@@ -9,7 +9,7 @@ import (
 func DoRequest(req *http.Request) (*http.Response, error) {
 	earlier := time.Now()
 	resp, err := http.DefaultClient.Do(req)
-	log.Println("hi")
+
 	if err != nil {
 		log.Print(err)
 	} else {

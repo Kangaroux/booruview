@@ -185,7 +185,7 @@ func ListPosts(tags string, page int) (*PostList, error) {
 	}
 
 	resp := FullPostResponse{
-		Post: make([]PostResponse, PostsPerPage),
+		Post: make([]PostResponse, 0, PostsPerPage),
 	}
 
 	if err := json.Unmarshal(body, &resp); err != nil {
@@ -193,7 +193,7 @@ func ListPosts(tags string, page int) (*PostList, error) {
 	}
 
 	posts := make([]api.PostResponse, len(resp.Post))
-	for i, p := range resp.Post {
+	for _, p := range resp.Post {
 		data := api.PostResponse{
 			Id:    p.Id,
 			Score: p.Score,
@@ -220,7 +220,7 @@ func ListPosts(tags string, page int) (*PostList, error) {
 			log.Println("warning: failed to parse post created_at:", err)
 		}
 
-		posts[i] = data
+		posts = append(posts, data)
 	}
 
 	return &PostList{
