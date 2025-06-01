@@ -27,11 +27,12 @@ type TagSearchResponse struct {
 
 var (
 	tagTypeMap = map[string]api.TagType{
-		"tag":       api.Tag,
-		"artist":    api.Artist,
-		"character": api.Character,
-		"copyright": api.Copyright,
-		"metadata":  api.Metadata,
+		"tag":        api.Tag,
+		"artist":     api.Artist,
+		"character":  api.Character,
+		"copyright":  api.Copyright,
+		"metadata":   api.Metadata,
+		"deprecated": api.Deprecated,
 	}
 
 	tagNumericTypeMap = map[int]api.TagType{
@@ -40,6 +41,7 @@ var (
 		3: api.Copyright,
 		4: api.Character,
 		5: api.Metadata,
+		6: api.Deprecated,
 	}
 )
 

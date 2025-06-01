@@ -6,6 +6,7 @@ type TagType =
     | "copyright"
     | "character"
     | "metadata"
+    | "deprecated"
     | "unknown";
 
 type Tag = {

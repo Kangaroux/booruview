@@ -3,12 +3,13 @@ package api
 type TagType string
 
 const (
-	Tag       TagType = "tag"
-	Artist    TagType = "artist"
-	Copyright TagType = "copyright"
-	Character TagType = "character"
-	Metadata  TagType = "metadata"
-	Unknown   TagType = "unknown"
+	Tag        TagType = "tag"
+	Artist     TagType = "artist"
+	Copyright  TagType = "copyright"
+	Character  TagType = "character"
+	Metadata   TagType = "metadata"
+	Deprecated TagType = "deprecated"
+	Unknown    TagType = "unknown"
 )
 
 func ParseTagType(val string) TagType {
@@ -23,8 +24,8 @@ func ParseTagType(val string) TagType {
 		return Character
 	case string(Metadata):
 		return Metadata
-	case string(Unknown):
-		return Unknown
+	case string(Deprecated):
+		return Deprecated
 	default:
 		return Unknown
 	}

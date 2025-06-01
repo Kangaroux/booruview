@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import store from "@/store";
-import { computed, ref, useAttrs, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 import ChipStatic from "./ChipStatic.vue";
 import { useDismiss } from "@/composable";
 

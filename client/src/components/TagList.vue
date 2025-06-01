@@ -39,6 +39,7 @@ const categories = computed(() => {
             case "copyright":
                 ret.copyright = ret.copyright.concat(tag);
                 break;
+            case "deprecated":
             case "tag":
                 ret.tag = ret.tag.concat(tag);
                 break;
