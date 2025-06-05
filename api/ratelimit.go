@@ -10,10 +10,10 @@ import (
 
 const (
 	perSecondLimit = 3
-	perSecondBurst = 10
+	burstLimit     = 20
 
 	evictInterval = 5 * time.Minute
-	banTime       = 5 * time.Minute
+	banTime       = 10 * time.Minute
 )
 
 var (
@@ -64,7 +64,7 @@ func getLimiter(ip string) *limiter {
 
 	lim, ok := clientLimits[ip]
 	if !ok {
-		lim = &limiter{limiter: rate.NewLimiter(perSecondLimit, perSecondBurst)}
+		lim = &limiter{limiter: rate.NewLimiter(perSecondLimit, burstLimit)}
 		clientLimits[ip] = lim
 	}
 
