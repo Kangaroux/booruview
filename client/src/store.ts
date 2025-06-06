@@ -157,7 +157,7 @@ const store = reactive<Store>({
 
         return new Promise((resolve, reject) => {
             const query =
-                `q=${encodeURIComponent(this.query.asList().join(" "))}` +
+                `q=${encodeURIComponent(this.query.asList().join(","))}` +
                 `&page=${this.currentPage}`;
 
             this.setQueryParams();

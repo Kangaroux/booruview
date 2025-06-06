@@ -38,7 +38,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Clean up the query so we're left with a sorted list of unique tags
 	normalized := slices.DeleteFunc(
-		strings.Split(r.FormValue("q"), " "),
+		strings.Split(r.FormValue("q"), ","),
 		func(s string) bool {
 			return len(s) == 0
 		},
