@@ -6,9 +6,11 @@ import (
 	"time"
 )
 
+var httpClient = &http.Client{Timeout: 5 * time.Second}
+
 func DoRequest(req *http.Request) (*http.Response, error) {
 	earlier := time.Now()
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httpClient.Do(req)
 
 	if err != nil {
 		log.Print(err)
