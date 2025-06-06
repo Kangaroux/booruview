@@ -15,7 +15,7 @@ func DoRequest(req *http.Request) (*http.Response, error) {
 	if err != nil {
 		log.Print(err)
 	} else {
-		log.Printf("GET  [%1.4fs]  %d  %s", time.Since(earlier).Seconds(), resp.StatusCode, req.URL)
+		log.Printf("%s  [%1.4fs]  %d  %s", req.Method, time.Since(earlier).Seconds(), resp.StatusCode, req.URL)
 	}
 
 	return resp, err
