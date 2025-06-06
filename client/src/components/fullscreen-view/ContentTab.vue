@@ -41,7 +41,7 @@ onUnmounted(() => {
 onDeactivated(() => pz.pause());
 onActivated(() => pz.resume());
 
-const img = computed(() => {
+const content = computed(() => {
     const post = store.fullscreenPost!;
     const hasHighRes = post.image_url.length > 0;
     const hasLowRes = post.lowres_url.length > 0;
@@ -64,9 +64,9 @@ const img = computed(() => {
 
 <template>
     <img
-        :src="img.url"
-        :width="img.width"
-        :height="img.height"
+        :src="content.url"
+        :width="content.width"
+        :height="content.height"
         loading="lazy"
         ref="imgRef"
     />

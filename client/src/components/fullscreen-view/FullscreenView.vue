@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import store from "@/store";
 import { onMounted, onUnmounted, ref } from "vue";
-import ImageTab from "./ImageTab.vue";
+import ContentTab from "./ContentTab.vue";
 import InfoTab from "./InfoTab.vue";
 import ScreenCover from "../ScreenCover.vue";
 
-type Tab = "image" | "info";
+type Tab = "content" | "info";
 
-const currentTab = ref<Tab>("image");
+const currentTab = ref<Tab>("content");
 
 function close() {
     store.fullscreenPost = null;
@@ -35,16 +35,16 @@ onUnmounted(() => {
         <div class="viewer-container">
             <div class="tab">
                 <KeepAlive>
-                    <ImageTab v-if="currentTab == 'image'" />
+                    <ContentTab v-if="currentTab == 'content'" />
                     <InfoTab v-else-if="currentTab == 'info'" />
                 </KeepAlive>
             </div>
             <footer class="tab-menu">
                 <button
                     class="menu-btn"
-                    :class="{ active: currentTab == 'image' }"
-                    @click="currentTab = 'image'"
-                    title="view image"
+                    :class="{ active: currentTab == 'content' }"
+                    @click="currentTab = 'content'"
+                    title="view content"
                 >
                     <i class="bi bi-image"></i>
                 </button>

@@ -9,6 +9,14 @@ const { cropped, maxHeight, post } = defineProps<{
 }>();
 
 const content = computed<{ url: string; width: number; height: number }>(() => {
+    if (isVideo) {
+        return {
+            url: post.thumbnail_url,
+            width: post.thumbnail_width,
+            height: post.thumbnail_height,
+        };
+    }
+
     if (post.lowres_url.length > 0) {
         return {
             url: post.lowres_url,
@@ -25,53 +33,52 @@ const content = computed<{ url: string; width: number; height: number }>(() => {
 });
 
 const isVideo = computed(() => {
-    return (
-        content.value.url.endsWith(".mp4") ||
-        content.value.url.endsWith(".webm")
-    );
+    return post.image_url.endsWith(".mp4") || post.image_url.endsWith(".webm");
 });
 </script>
 
 <template>
-    <div class="post" :style="{ maxHeight: maxHeight + 'px' }">
-        <video
+    <div
+        class="post"
+        :style="{ maxHeight: maxHeight + 'px' }"
+        @click="store.fullscreenPost = post"
+    >
+        <template v-if="isVideo">
+            <!-- <video
             class="content"
             :poster="post.thumbnail_url || post.lowres_url"
             :width="content.width"
             :height="content.height"
             preload="none"
-            controls
-            v-if="isVideo"
-        >
-            <source
-                :src="content.url"
-                type="video/mp4"
-                v-if="content.url.endsWith('.mp4')"
-            />
-            <source
-                :src="content.url"
-                type="video/webm"
-                v-if="content.url.endsWith('.webm')"
-            />
-        </video>
-
-        <div class="img-container" @click="store.fullscreenPost = post">
-            <span
-                class="crop-icon"
-                title="post is cropped (too tall)"
-                v-if="cropped"
             >
-                <i class="bi bi-crop"></i>
-            </span>
-            <img
-                class="content"
-                :src="content.url"
-                :width="content.width"
-                :height="content.height"
-                loading="lazy"
-                v-if="!isVideo"
-            />
-        </div>
+                <source
+                    :src="content.url"
+                    type="video/mp4"
+                    v-if="content.url.endsWith('.mp4')"
+                />
+                <source
+                    :src="content.url"
+                    type="video/webm"
+                    v-if="content.url.endsWith('.webm')"
+                />
+            </video> -->
+        </template>
+
+        <img
+            class="content"
+            :src="content.url"
+            :width="content.width"
+            :height="content.height"
+            loading="lazy"
+        />
+
+        <span
+            v-if="cropped"
+            class="crop-icon"
+            title="post is cropped (too tall)"
+            ><i class="bi bi-crop"></i
+        ></span>
+        <i v-if="isVideo" class="bi bi-play-circle play-icon"></i>
     </div>
 </template>
 
@@ -80,6 +87,7 @@ const isVideo = computed(() => {
     break-inside: avoid;
     font-size: 0;
     position: relative;
+    cursor: pointer;
 }
 
 .content {
@@ -90,20 +98,13 @@ const isVideo = computed(() => {
     object-fit: cover;
 }
 
-.img-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-}
-
 .crop-icon {
     font-size: 24px;
     position: absolute;
     right: 10px;
     top: 10px;
     background-color: black;
-    opacity: 0.2;
+    opacity: 0.25;
     border-radius: 50%;
     padding: 0.6em;
     line-height: 0;
@@ -115,5 +116,14 @@ const isVideo = computed(() => {
         left: -0.06em;
         top: -0.06em;
     }
+}
+
+.play-icon {
+    position: absolute;
+    font-size: 60px;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    filter: drop-shadow(0 0 2px black) drop-shadow(0 0 6px black);
 }
 </style>
