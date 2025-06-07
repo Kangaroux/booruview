@@ -4,7 +4,7 @@ import { computed, onMounted, onUnmounted, ref } from "vue";
 import ContentTab from "./ContentTab.vue";
 import InfoTab from "./InfoTab.vue";
 import ScreenCover from "../ScreenCover.vue";
-import { useIsVideo } from "@/composable";
+import { useIsVideo, useStationaryClick } from "@/composable";
 
 type Tab = "content" | "info";
 
@@ -33,6 +33,8 @@ const tabClasses = computed(() => {
     };
 });
 
+const tabHandler = useStationaryClick(close);
+
 onMounted(() => {
     document.addEventListener("keydown", onKeyDown);
 });
@@ -46,7 +48,12 @@ onUnmounted(() => {
     <div class="fullscreen-viewer">
         <ScreenCover />
         <div class="viewer-container">
-            <div class="tab" :class="tabClasses" @click.self="close()">
+            <div
+                class="tab"
+                :class="tabClasses"
+                @mousedown.self="tabHandler.mouseDown"
+                @mouseup.self="tabHandler.mouseUp"
+            >
                 <KeepAlive>
                     <ContentTab v-if="currentTab == 'content'" />
                     <InfoTab v-else-if="currentTab == 'info'" />
