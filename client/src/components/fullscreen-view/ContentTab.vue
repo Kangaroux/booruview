@@ -103,12 +103,7 @@ const content = computed(() => {
 
 <style scoped>
 video {
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    padding-bottom: 100px;
+    max-width: 100%;
     max-height: 100%;
-    max-width: 90%;
 }
 </style>

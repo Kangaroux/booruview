@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import store from "@/store";
-import { onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import ContentTab from "./ContentTab.vue";
 import InfoTab from "./InfoTab.vue";
 import ScreenCover from "../ScreenCover.vue";
+import { useIsVideo } from "@/composable";
 
 type Tab = "content" | "info";
 
+const post = store.fullscreenPost!;
 const currentTab = ref<Tab>("content");
 
 function close() {
@@ -20,6 +22,17 @@ function onKeyDown(e: KeyboardEvent) {
     }
 }
 
+const isVideo = useIsVideo(post);
+
+const tabClasses = computed(() => {
+    // Center unless we're displaying an image and viewing the content tab.
+    // Image viewing uses panzoom which breaks when the container is flexbox
+    const centered = !(currentTab.value === "content" && !isVideo.value);
+    return {
+        "tab-centered": centered,
+    };
+});
+
 onMounted(() => {
     document.addEventListener("keydown", onKeyDown);
 });
@@ -31,9 +44,9 @@ onUnmounted(() => {
 
 <template>
     <div class="fullscreen-viewer">
-        <ScreenCover @click="close()" />
+        <ScreenCover />
         <div class="viewer-container">
-            <div class="tab">
+            <div class="tab" :class="tabClasses" @click.self="close()">
                 <KeepAlive>
                     <ContentTab v-if="currentTab == 'content'" />
                     <InfoTab v-else-if="currentTab == 'info'" />
@@ -90,14 +103,20 @@ onUnmounted(() => {
     height: 100%;
     position: relative;
     z-index: 2;
-    width: fit-content;
-    margin: auto;
-    max-width: 100%;
+    width: 100%;
 }
 
 .tab {
     min-height: 0;
     height: 100%;
+}
+
+.tab-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 100px;
+    padding-top: 10px;
 }
 
 .tab-menu {

@@ -9,8 +9,10 @@ const { cropped, maxHeight, post } = defineProps<{
     post: Post;
 }>();
 
+const isVideo = useIsVideo(post);
+
 const content = computed<{ url: string; width: number; height: number }>(() => {
-    if (isVideo) {
+    if (isVideo.value) {
         return {
             url: post.thumbnail_url,
             width: post.thumbnail_width,
@@ -32,8 +34,6 @@ const content = computed<{ url: string; width: number; height: number }>(() => {
         height: post.height,
     };
 });
-
-const isVideo = useIsVideo(post);
 </script>
 
 <template>
@@ -42,27 +42,6 @@ const isVideo = useIsVideo(post);
         :style="{ maxHeight: maxHeight + 'px' }"
         @click="store.fullscreenPost = post"
     >
-        <template v-if="isVideo">
-            <!-- <video
-            class="content"
-            :poster="post.thumbnail_url || post.lowres_url"
-            :width="content.width"
-            :height="content.height"
-            preload="none"
-            >
-                <source
-                    :src="content.url"
-                    type="video/mp4"
-                    v-if="content.url.endsWith('.mp4')"
-                />
-                <source
-                    :src="content.url"
-                    type="video/webm"
-                    v-if="content.url.endsWith('.webm')"
-                />
-            </video> -->
-        </template>
-
         <img
             class="content"
             :src="content.url"
