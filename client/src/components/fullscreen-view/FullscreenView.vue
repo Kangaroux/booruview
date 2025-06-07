@@ -96,7 +96,6 @@ onUnmounted(() => {
 }
 
 .tab {
-    z-index: 2;
     min-height: 0;
     height: 100%;
 }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useIsVideo } from "@/composable";
 import store from "@/store";
 import { computed } from "vue";
 
@@ -32,9 +33,7 @@ const content = computed<{ url: string; width: number; height: number }>(() => {
     };
 });
 
-const isVideo = computed(() => {
-    return post.image_url.endsWith(".mp4") || post.image_url.endsWith(".webm");
-});
+const isVideo = useIsVideo(post);
 </script>
 
 <template>

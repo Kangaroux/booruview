@@ -9,14 +9,22 @@ import {
     useTemplateRef,
 } from "vue";
 import createPanZoom, { type PanZoom } from "panzoom";
+import { useIsVideo } from "@/composable";
 
 const imgRef = useTemplateRef("imgRef");
-let pz: PanZoom;
+let pz: PanZoom | undefined;
 
+const post = store.fullscreenPost!;
 const htmlRoot = document.body.parentElement as HTMLElement;
 const overscrollCssClass = "prevent-overscroll";
 
+const isVideo = useIsVideo(post);
+
 onMounted(() => {
+    if (isVideo.value) {
+        return;
+    }
+
     pz = createPanZoom(imgRef.value!, {
         autocenter: true,
         bounds: true,
@@ -34,15 +42,18 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    pz.dispose();
+    if (isVideo.value) {
+        return;
+    }
+
+    pz?.dispose();
     htmlRoot.classList.remove(overscrollCssClass);
 });
 
-onDeactivated(() => pz.pause());
-onActivated(() => pz.resume());
+onDeactivated(() => pz?.pause());
+onActivated(() => pz?.resume());
 
 const content = computed(() => {
-    const post = store.fullscreenPost!;
     const hasHighRes = post.image_url.length > 0;
     const hasLowRes = post.lowres_url.length > 0;
 
@@ -63,11 +74,41 @@ const content = computed(() => {
 </script>
 
 <template>
+    <video
+        v-if="isVideo"
+        :poster="post.thumbnail_url || post.lowres_url"
+        controls
+        loop
+    >
+        <source
+            :src="content.url"
+            type="video/mp4"
+            v-if="content.url.endsWith('.mp4')"
+        />
+        <source
+            :src="content.url"
+            type="video/webm"
+            v-if="content.url.endsWith('.webm')"
+        />
+    </video>
+
     <img
+        v-else
         :src="content.url"
         :width="content.width"
         :height="content.height"
-        loading="lazy"
         ref="imgRef"
     />
 </template>
+
+<style scoped>
+video {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    padding-bottom: 100px;
+    max-height: 100%;
+    max-width: 90%;
+}
+</style>
