@@ -1,9 +1,3 @@
-{
-	servers {
-		trusted_proxies static private_ranges
-	}
-}
-
 {$CADDY_HOST} {
 	encode
 	file_server

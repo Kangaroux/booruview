@@ -17,11 +17,8 @@ services:
     image: ghcr.io/kangaroux/booruview-caddy:latest
     restart: unless-stopped
     ports:
-      - target: 80
-        published: 80
-      - target: 443
-        published: 443
-        mode: host
+      - "80:80"
+      - "443:443"
     environment:
       - "CADDY_HOST=booruview.com, www.booruview.com"
     logging: *logging
@@ -51,6 +48,12 @@ services:
       - "3100:3100"
     volumes:
       - loki-data:/loki
+
+networks:
+  default:
+    # Fixes client IP not being passed to container when connecting via ipv6
+    # https://github.com/moby/moby/issues/44408
+    enable_ipv6: true
 
 volumes:
   caddy-data:
