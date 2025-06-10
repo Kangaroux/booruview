@@ -109,6 +109,7 @@ function onTagSelect(tag: Tag, negated: boolean) {
     display: flex;
     flex-direction: column;
     flex: 1;
+    min-height: 0;
 
     @media (max-width: $mobile-width) {
         .sidebar-open & {
