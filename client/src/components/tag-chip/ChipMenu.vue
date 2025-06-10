@@ -6,26 +6,41 @@ import { useDismiss } from "@/composable";
 const containerRef = useTemplateRef("container");
 
 const isIncluded = computed(() => {
-    if (!store.tagMenu) {
+    if (store.tagMenu === null) {
         return false;
     }
 
-    store.query.include.has(store.tagMenu.tag.name);
+    return store.query.include.has(store.tagMenu.tag.name);
 });
 
 const isExcluded = computed(() => {
-    if (!store.tagMenu) {
+    if (store.tagMenu === null) {
         return false;
     }
 
-    store.query.exclude.has(store.tagMenu.tag.name);
+    return store.query.exclude.has(store.tagMenu.tag.name);
 });
-
-useDismiss([containerRef.value, store.tagMenu?.ref || null], closeMenu);
 
 function closeMenu() {
     store.tagMenu = null;
 }
+
+useDismiss([containerRef.value, store.tagMenu?.ref || null], closeMenu);
+
+const menuPosition = computed(() => {
+    const ref = store.tagMenu?.ref;
+
+    if (ref == null) {
+        return;
+    }
+
+    const { left, bottom } = ref.getBoundingClientRect();
+
+    return {
+        left: left + "px",
+        top: bottom + "px",
+    };
+});
 
 function onAdd() {
     if (!store.tagMenu) {
@@ -56,7 +71,7 @@ function onRemove() {
 </script>
 
 <template>
-    <div class="options" ref="container">
+    <div class="options" ref="container" :style="menuPosition">
         <button
             class="btn-primary option-btn"
             v-if="isExcluded || !isIncluded"
@@ -92,7 +107,7 @@ function onRemove() {
     position: absolute;
     display: flex;
     flex-direction: column;
-    z-index: 2;
+    z-index: 999;
     width: max-content;
     box-shadow: 0 0 10px black;
 }
