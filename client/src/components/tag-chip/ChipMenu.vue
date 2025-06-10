@@ -34,11 +34,24 @@ const menuPosition = computed(() => {
         return;
     }
 
-    const { left, bottom } = ref.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const allowedMargin = 125;
+    const { left, bottom, top } = ref.getBoundingClientRect();
+
+    // Anchor the menu to the bottom of the chip if there is enough space in the viewport
+    if (windowHeight - bottom >= allowedMargin) {
+        return {
+            left: left + "px",
+            top: bottom + "px",
+        };
+    }
+
+    // If space is limited move the anchor to the top of the chip
+    const bottomToTop = windowHeight - top;
 
     return {
         left: left + "px",
-        top: bottom + "px",
+        bottom: bottomToTop + "px",
     };
 });
 
