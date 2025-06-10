@@ -27,7 +27,7 @@ watchEffect(() => {
 .tag-list {
     max-width: 800px;
     overflow-y: scroll;
-    height: 100%;
+    max-height: 100%;
 
     @include hide-scrollbar;
 }
