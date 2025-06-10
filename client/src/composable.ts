@@ -3,20 +3,23 @@ import {
     onMounted,
     onUnmounted,
     ref,
+    type ComponentPublicInstance,
     type ComputedRef,
     type ShallowRef,
 } from "vue";
 
-export function useDismiss(
-    el: Readonly<ShallowRef<HTMLElement | null>>,
-    onDismiss: () => void,
-) {
+export function useDismiss(el: (HTMLElement | null)[], onDismiss: () => void) {
     function handler(e: MouseEvent) {
-        if (el.value === null) {
-            return;
-        }
+        const clickedOutside =
+            el.findIndex((v) => {
+                if (v === null) {
+                    return false;
+                }
 
-        if (e.target === null || !el.value.contains(e.target as Node)) {
+                return v.contains(e.target as Node);
+            }) === -1; // Clicked element was not found in any of `el`
+
+        if (clickedOutside) {
             onDismiss();
         }
     }

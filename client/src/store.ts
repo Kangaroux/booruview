@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import { reactive, type ShallowRef } from "vue";
 import SearchQuery from "./search";
 
 type SettingsKey = keyof Omit<Store["settings"], "save" | "write">;
@@ -23,6 +23,11 @@ type Store = {
     resultsPerPage: number;
     hasSearched: boolean;
     fetchingPosts: boolean;
+
+    tagMenu: {
+        tag: Tag;
+        ref: HTMLElement | null;
+    } | null;
 
     fullscreenPost: Post | null;
 
@@ -70,6 +75,8 @@ const store = reactive<Store>({
     resultsPerPage: 0,
     hasSearched: false,
     fetchingPosts: false,
+
+    tagMenu: null,
 
     fullscreenPost: null,
 

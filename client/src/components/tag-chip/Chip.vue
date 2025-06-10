@@ -1,107 +1,136 @@
 <script setup lang="ts">
 import store from "@/store";
-import { computed, ref, useTemplateRef } from "vue";
-import ChipStatic from "./ChipStatic.vue";
-import { useDismiss } from "@/composable";
+import { computed, onMounted, ref, useTemplateRef } from "vue";
 
-const props = defineProps<{ jiggle?: boolean; state: TagState; tag: Tag }>();
-const { tag } = props;
-const showOptions = ref(false);
-const containerRef = useTemplateRef("container");
+const {
+    jiggle = false,
+    state,
+    tag,
+} = defineProps<{ jiggle?: boolean; state: TagState; tag: Tag }>();
+const hasJiggled = ref(false);
+const chipRef = useTemplateRef("chip");
 
-useDismiss(containerRef, () => (showOptions.value = false));
+const cls = computed(() => ({
+    [`state-${state}`]: true,
+    [tag.type]: true,
+    jiggle: jiggle && !hasJiggled,
+}));
 
-const isIncluded = computed(() => store.query.include.has(tag.name));
-const isExcluded = computed(() => store.query.exclude.has(tag.name));
+onMounted(() => {
+    if (jiggle) {
+        // Prevents the jiggle animation from playing when the sidebar
+        // is opened (display:none triggers animations)
+        setTimeout(() => (hasJiggled.value = true), 1000);
+    }
+});
 
-function onAdd() {
-    store.query.includeTag(tag);
-    showOptions.value = false;
-}
+function onClick() {
+    if (!chipRef.value) {
+        return;
+    }
 
-function onExclude() {
-    store.query.excludeTag(tag);
-    showOptions.value = false;
-}
+    // Tag menu is currently open for this chip, close it
+    if (store.tagMenu?.ref === chipRef.value) {
+        store.tagMenu = null;
+        return;
+    }
 
-function onRemove() {
-    store.query.removeTag(tag);
-    showOptions.value = false;
+    store.tagMenu = {
+        tag,
+        ref: chipRef.value,
+    };
 }
 </script>
 
 <template>
-    <div class="chip-container" ref="container">
-        <ChipStatic v-bind="props" @click="showOptions = !showOptions" />
-        <div class="options" v-if="showOptions">
-            <button
-                class="btn-primary option-btn"
-                v-if="isExcluded || !isIncluded"
-                @click="onAdd"
-            >
-                <i class="bi bi-plus-lg"></i> include
-            </button>
-            <button
-                class="btn-primary option-btn"
-                v-if="!isExcluded || isIncluded"
-                @click="onExclude"
-            >
-                <i class="bi bi-dash-lg"></i> exclude
-            </button>
-            <button
-                class="btn-primary option-btn"
-                v-if="isExcluded || isIncluded"
-                @click="onRemove"
-            >
-                <i class="bi bi-x-lg"></i> remove
-            </button>
-            <button class="btn-primary option-btn blacklist" disabled>
-                <i class="bi bi-ban"></i> blacklist
-            </button>
-        </div>
+    <div class="chip" :class="cls" ref="chip" @click="onClick">
+        <i class="bi bi-check-lg" v-if="state === 'include'"></i>
+        {{ tag.name
+        }}<span class="dep-warning" v-if="tag.type === 'deprecated'">
+            (deprecated)</span
+        >
     </div>
 </template>
 
 <style lang="scss" scoped>
-@import "@/assets/buttons";
 @import "@/assets/colors";
 
-.chip-container {
+.chip {
+    padding: 8px;
+    margin: 0 4px 4px 0;
+    border: none;
+    border-radius: 8px;
     display: inline-block;
-    position: relative;
-}
+    font-size: 16px;
+    word-break: break-all;
+    cursor: pointer;
 
-.options {
-    position: absolute;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    z-index: 2;
-    width: max-content;
-    box-shadow: 0 0 10px black;
-}
-
-.option-btn {
-    text-align: left;
-
-    .bi {
-        margin-right: 5px;
+    &.state-exclude {
+        filter: brightness(0.8);
+        text-decoration: line-through;
     }
 
-    &:first-of-type {
-        border-radius: 4px 4px 0 0;
-    }
-
-    &:last-of-type {
-        border-radius: 0 0 4px 4px;
-    }
-
-    &:not(:last-of-type) {
-        border-bottom: none;
+    .dep-warning {
+        color: #f44;
     }
 }
 
-.blacklist {
-    color: #ff5d5d;
+.chip-options {
+    button {
+        border: 1px solid white;
+        background: $color-lightgray;
+        color: white;
+    }
+}
+
+@keyframes jiggle-anim {
+    0% {
+        transform: scale(0.9);
+    }
+
+    33% {
+        transform: scale(1.1);
+    }
+
+    66% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.jiggle {
+    animation: 300ms linear 0s jiggle-anim;
+}
+
+.deprecated,
+.tag {
+    background-color: #303030;
+    color: hsl(208, 56%, 75%);
+}
+
+.artist {
+    background-color: #a00;
+    color: #fff;
+}
+
+.copyright {
+    background-color: #a0a;
+    color: #fff;
+}
+
+.character {
+    background-color: #0a0;
+}
+
+.metadata {
+    background-color: #f80;
+}
+
+.unknown {
+    background-color: #6275ae;
+    color: #0b1227;
 }
 </style>

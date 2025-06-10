@@ -8,6 +8,7 @@ import Router from "./Router.vue";
 import ContentWarning from "./components/ContentWarning.vue";
 import Footer from "./components/Footer.vue";
 import NoResults from "./components/NoResults.vue";
+import ChipMenu from "./components/tag-chip/ChipMenu.vue";
 
 const mainContainer = useTemplateRef("main");
 
@@ -49,6 +50,7 @@ const hasConsented = computed(() => {
             'sidebar-open': !store.sidebarClosed,
         }"
     >
+        <ChipMenu v-if="store.tagMenu !== null" />
         <ContentWarning v-if="!hasConsented" />
         <FullscreenView v-if="store.fullscreenPost !== null" />
 

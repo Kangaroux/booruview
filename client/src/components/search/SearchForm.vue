@@ -27,7 +27,7 @@ const timer = ref();
 const inputRef = useTemplateRef("input");
 const showSuggestions = ref(false);
 
-useDismiss(containerRef, () => (showSuggestions.value = false));
+useDismiss([containerRef.value], () => (showSuggestions.value = false));
 
 function doTagSearch(query: string) {
     // Encoding the query prevents trailing whitespace from being stripped
