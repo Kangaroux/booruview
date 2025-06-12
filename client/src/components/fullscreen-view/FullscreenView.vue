@@ -20,6 +20,12 @@ function onKeyDown(e: KeyboardEvent) {
     if (e.key === "Esc" || e.key === "Escape") {
         e.preventDefault();
         close();
+    } else if (e.key === "ArrowLeft" || e.key.toUpperCase() === "A") {
+        e.preventDefault();
+        showPrevPost();
+    } else if (e.key === "ArrowRight" || e.key.toUpperCase() === "D") {
+        e.preventDefault();
+        showNextPost();
     }
 }
 
@@ -130,11 +136,11 @@ function showPrevPost() {
 }
 
 onMounted(() => {
-    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("keydown", onKeyDown, { capture: true });
 });
 
 onUnmounted(() => {
-    document.removeEventListener("keydown", onKeyDown);
+    document.removeEventListener("keydown", onKeyDown, { capture: true });
 });
 </script>
 
