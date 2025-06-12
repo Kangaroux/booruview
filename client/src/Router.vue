@@ -73,6 +73,8 @@ function onRouteChange() {
 
     loadQueryParams()
         .then(() => {
+            // NOTE: Checking if these changed can help avoid double searches. For example when
+            // clicking the "next" button while viewing a post in fullscreen mode causes a page change
             const pageChanged = store.currentPage !== lastPage;
             const searchChanged = !lastSearch.equals(store.query);
 

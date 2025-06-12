@@ -23,7 +23,7 @@ function onKeyDown(e: KeyboardEvent) {
     }
 }
 
-const isVideo = useIsVideo(post);
+const isVideo = useIsVideo(() => post);
 
 const tabClasses = computed(() => {
     // Center unless we're displaying an image and viewing the content tab.
@@ -45,7 +45,7 @@ const nextPost = computed<PostNavInfo>(() => {
     }
 
     const isLastPage = store.currentPage === store.maxPage();
-    const isLastResult = currentPostIndex.value === store.resultsPerPage;
+    const isLastResult = currentPostIndex.value === store.resultsPerPage - 1;
 
     if (isLastPage && isLastResult) {
         return null;
@@ -97,15 +97,14 @@ function showNextPost() {
     }
 
     if (store.currentPage === nav.page) {
-        store.fullscreenPost = store.posts.get(nav.page)![nav.index];
+        store.fullscreenPost = store.posts.get(nav.page)![nav.index] || null;
     } else {
         store
             .nextPage()
             ?.then(
                 () =>
-                    (store.fullscreenPost = store.posts.get(nav.page)![
-                        nav.index
-                    ]),
+                    (store.fullscreenPost =
+                        store.posts.get(nav.page)![nav.index] || null),
             );
     }
 }
@@ -117,10 +116,17 @@ function showPrevPost() {
         return;
     }
 
-    console.log(nav);
-
-    store.currentPage = nav.page;
-    store.fullscreenPost = store.posts.get(nav.page)![nav.index];
+    if (store.currentPage === nav.page) {
+        store.fullscreenPost = store.posts.get(nav.page)![nav.index] || null;
+    } else {
+        store
+            .prevPage()
+            ?.then(
+                () =>
+                    (store.fullscreenPost =
+                        store.posts.get(nav.page)![nav.index] || null),
+            );
+    }
 }
 
 onMounted(() => {

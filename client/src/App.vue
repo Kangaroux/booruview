@@ -52,9 +52,10 @@ const hasConsented = computed(() => {
     >
         <ChipMenu v-if="store.tagMenu !== null" />
         <ContentWarning v-if="!hasConsented" />
+
         <FullscreenView
             v-if="store.fullscreenPost !== null"
-            :post="store.fullscreenPost!"
+            :post="store.fullscreenPost"
         />
 
         <Sidebar

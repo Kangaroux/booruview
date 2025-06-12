@@ -8,8 +8,6 @@ import {
     onUnmounted,
     useTemplateRef,
     watch,
-    watchEffect,
-    watchPostEffect,
 } from "vue";
 import createPanZoom, { type PanZoom } from "panzoom";
 import { useIsVideo } from "@/composable";
@@ -19,8 +17,7 @@ let pz: PanZoom | undefined;
 const { post } = defineProps<{ post: Post }>();
 const htmlRoot = document.body.parentElement as HTMLElement;
 const overscrollCssClass = "prevent-overscroll";
-
-const isVideo = useIsVideo(post);
+const isVideo = useIsVideo(() => post);
 
 function setupPanZoom() {
     pz?.dispose();
@@ -99,11 +96,13 @@ const content = computed(() => {
         />
     </video>
 
+    <!-- Using a key on the image prevents it from stretching when changing between posts -->
     <img
         v-else
         :src="content.url"
         :width="content.width"
         :height="content.height"
+        :key="post.id"
         ref="imgRef"
     />
 </template>

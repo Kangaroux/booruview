@@ -259,7 +259,7 @@ const store = reactive<Store>({
             return null;
         }
 
-        this.currentPage++;
+        this.currentPage--;
         return this.searchPosts();
     },
 });

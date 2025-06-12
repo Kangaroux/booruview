@@ -9,7 +9,7 @@ const { cropped, maxHeight, post } = defineProps<{
     post: Post;
 }>();
 
-const isVideo = useIsVideo(post);
+const isVideo = useIsVideo(() => post);
 
 const content = computed<{ url: string; width: number; height: number }>(() => {
     if (isVideo.value) {

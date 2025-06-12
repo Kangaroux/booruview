@@ -3,8 +3,10 @@ import {
     onMounted,
     onUnmounted,
     ref,
+    toValue,
     type ComponentPublicInstance,
     type ComputedRef,
+    type MaybeRefOrGetter,
     type ShallowRef,
 } from "vue";
 
@@ -28,10 +30,12 @@ export function useDismiss(el: (HTMLElement | null)[], onDismiss: () => void) {
     onUnmounted(() => document.removeEventListener("click", handler));
 }
 
-export function useIsVideo(post: Post): ComputedRef<boolean> {
+export function useIsVideo(post: MaybeRefOrGetter<Post>): ComputedRef<boolean> {
     return computed(() => {
+        const val = toValue(post);
+
         return (
-            post.image_url.endsWith(".mp4") || post.image_url.endsWith(".webm")
+            val.image_url.endsWith(".mp4") || val.image_url.endsWith(".webm")
         );
     });
 }
