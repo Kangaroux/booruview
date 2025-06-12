@@ -62,9 +62,9 @@ type Store = {
 
     loadTags(tags: string[]): Promise<void>;
     maxPage(): number;
-    nextPage(): void;
+    nextPage(): Promise<void> | null;
     postsForCurrentPage(): Post[] | undefined;
-    prevPage(): void;
+    prevPage(): Promise<void> | null;
     searchPosts(): Promise<void>;
     setQueryParams(): void;
 };
@@ -245,18 +245,22 @@ const store = reactive<Store>({
         return this.posts.get(this.currentPage);
     },
 
-    nextPage() {
-        if (this.currentPage < this.maxPage()) {
-            this.currentPage++;
-            this.searchPosts();
+    nextPage(): Promise<void> | null {
+        if (this.currentPage >= this.maxPage()) {
+            return null;
         }
+
+        this.currentPage++;
+        return this.searchPosts();
     },
 
-    prevPage() {
-        if (this.currentPage > 0) {
-            this.currentPage--;
-            this.searchPosts();
+    prevPage(): Promise<void> | null {
+        if (this.currentPage <= 1) {
+            return null;
         }
+
+        this.currentPage++;
+        return this.searchPosts();
     },
 });
 

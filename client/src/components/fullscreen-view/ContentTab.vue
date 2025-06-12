@@ -7,20 +7,25 @@ import {
     onMounted,
     onUnmounted,
     useTemplateRef,
+    watch,
+    watchEffect,
+    watchPostEffect,
 } from "vue";
 import createPanZoom, { type PanZoom } from "panzoom";
 import { useIsVideo } from "@/composable";
 
 const imgRef = useTemplateRef("imgRef");
 let pz: PanZoom | undefined;
-
-const post = store.fullscreenPost!;
+const { post } = defineProps<{ post: Post }>();
 const htmlRoot = document.body.parentElement as HTMLElement;
 const overscrollCssClass = "prevent-overscroll";
 
 const isVideo = useIsVideo(post);
 
-onMounted(() => {
+function setupPanZoom() {
+    pz?.dispose();
+
+    // Don't use panzoom for videos
     if (isVideo.value) {
         return;
     }
@@ -35,6 +40,12 @@ onMounted(() => {
             return false;
         },
     });
+}
+
+watch(() => post.id, setupPanZoom, { flush: "post" });
+
+onMounted(() => {
+    setupPanZoom();
 
     // Since the touch event isn't being blocked we need to prevent the user from
     // overscrolling the page (refresh by pulling down)
@@ -42,10 +53,6 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    if (isVideo.value) {
-        return;
-    }
-
     pz?.dispose();
     htmlRoot.classList.remove(overscrollCssClass);
 });

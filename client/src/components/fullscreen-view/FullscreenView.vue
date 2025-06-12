@@ -7,8 +7,9 @@ import ScreenCover from "../ScreenCover.vue";
 import { useIsVideo, useStationaryClick } from "@/composable";
 
 type Tab = "content" | "info";
+type PostNavInfo = { page: number; index: number } | null;
 
-const post = store.fullscreenPost!;
+const { post } = defineProps<{ post: Post }>();
 const currentTab = ref<Tab>("content");
 
 function close() {
@@ -35,6 +36,93 @@ const tabClasses = computed(() => {
 
 const tabHandler = useStationaryClick(close);
 
+const currentPostIndex = computed(() =>
+    store.posts.get(store.currentPage)?.findIndex((p) => p.id === post.id),
+);
+const nextPost = computed<PostNavInfo>(() => {
+    if (currentPostIndex.value == null) {
+        return null;
+    }
+
+    const isLastPage = store.currentPage === store.maxPage();
+    const isLastResult = currentPostIndex.value === store.resultsPerPage;
+
+    if (isLastPage && isLastResult) {
+        return null;
+    }
+
+    if (isLastResult) {
+        return {
+            page: store.currentPage + 1,
+            index: 0,
+        };
+    }
+
+    return {
+        page: store.currentPage,
+        index: currentPostIndex.value + 1,
+    };
+});
+
+const prevPost = computed<PostNavInfo>(() => {
+    if (currentPostIndex.value == null) {
+        return null;
+    }
+
+    const isFirstPage = store.currentPage === 1;
+    const isFirstResult = currentPostIndex.value === 0;
+
+    if (isFirstPage && isFirstResult) {
+        return null;
+    }
+
+    if (isFirstResult) {
+        return {
+            page: store.currentPage - 1,
+            index: store.resultsPerPage - 1,
+        };
+    }
+
+    return {
+        page: store.currentPage,
+        index: currentPostIndex.value - 1,
+    };
+});
+
+function showNextPost() {
+    const nav = nextPost.value;
+
+    if (nav === null) {
+        return;
+    }
+
+    if (store.currentPage === nav.page) {
+        store.fullscreenPost = store.posts.get(nav.page)![nav.index];
+    } else {
+        store
+            .nextPage()
+            ?.then(
+                () =>
+                    (store.fullscreenPost = store.posts.get(nav.page)![
+                        nav.index
+                    ]),
+            );
+    }
+}
+
+function showPrevPost() {
+    const nav = prevPost.value;
+
+    if (nav === null) {
+        return;
+    }
+
+    console.log(nav);
+
+    store.currentPage = nav.page;
+    store.fullscreenPost = store.posts.get(nav.page)![nav.index];
+}
+
 onMounted(() => {
     document.addEventListener("keydown", onKeyDown);
 });
@@ -55,8 +143,8 @@ onUnmounted(() => {
                 @mouseup.self="tabHandler.mouseUp"
             >
                 <KeepAlive>
-                    <ContentTab v-if="currentTab == 'content'" />
-                    <InfoTab v-else-if="currentTab == 'info'" />
+                    <ContentTab v-if="currentTab == 'content'" :post="post" />
+                    <InfoTab v-else-if="currentTab == 'info'" :post="post" />
                 </KeepAlive>
             </div>
             <footer class="tab-menu">
@@ -76,10 +164,20 @@ onUnmounted(() => {
                 >
                     <i class="bi bi-info-circle"></i>
                 </button>
-                <button class="menu-btn" title="previous image">
+                <button
+                    class="menu-btn"
+                    title="previous image"
+                    @click="showPrevPost"
+                    :disabled="prevPost === null"
+                >
                     <i class="bi bi-arrow-left"></i>
                 </button>
-                <button class="menu-btn" title="next image">
+                <button
+                    class="menu-btn"
+                    title="next image"
+                    @click="showNextPost"
+                    :disabled="nextPost === null"
+                >
                     <i class="bi bi-arrow-right"></i>
                 </button>
                 <button
@@ -152,9 +250,16 @@ onUnmounted(() => {
     cursor: pointer;
     padding: 10px 15px;
 
-    &:hover,
-    &.active {
-        opacity: 1;
+    &:not(:disabled) {
+        &:hover,
+        &.active {
+            opacity: 1;
+        }
+    }
+
+    &:disabled {
+        opacity: 0.2;
+        cursor: default;
     }
 }
 

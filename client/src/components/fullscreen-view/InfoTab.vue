@@ -4,13 +4,14 @@ import { ref, watchEffect } from "vue";
 import TagList from "../TagList.vue";
 
 const tags = ref<Tag[]>([]);
+const { post } = defineProps<{ post: Post }>();
 
 watchEffect(() => {
-    if (store.fullscreenPost === null) {
+    if (post === null) {
         return;
     }
 
-    store.tagsForPost(store.fullscreenPost).then((val) => (tags.value = val));
+    store.tagsForPost(post).then((val) => (tags.value = val));
 });
 </script>
 
