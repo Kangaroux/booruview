@@ -169,6 +169,13 @@ const store = reactive<Store>({
 
             this.setQueryParams();
 
+            // Don't refetch posts we already have
+            if(this.posts.has(this.currentPage)) {
+                this.fetchingPosts = false;
+                resolve();
+                return;
+            }
+
             fetch("/api/posts?" + query)
                 .then((resp) => {
                     resp.json().then((json: PostListResponse) => {
