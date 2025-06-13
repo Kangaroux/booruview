@@ -25,6 +25,7 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 	query := strings.TrimLeftFunc(r.FormValue("q"), unicode.IsSpace)
 	// Words are separated by underscores even though they are rendered using whitespace
 	query = strings.ReplaceAll(query, " ", "_")
+	query = strings.ToLower(query)
 
 	if query == "" {
 		handle400Error(w, "required GET param `q` is missing or blank")
