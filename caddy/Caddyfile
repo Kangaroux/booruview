@@ -11,8 +11,7 @@
 	log file-log {
 		level INFO
 		output file /var/log/caddy.log {
-			roll_size 5MiB
-			roll_keep 0
+			roll_keep 1
 		}
 	}
 
