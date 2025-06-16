@@ -12,12 +12,12 @@ import { COMMIT_SHA, LAST_COMMIT_DATE } from "@/config";
         This project is open source and development is ongoing. Feedback and
         suggestions are welcome. You can use the
         <a
-            href="https://github.com/Kangaroux/booru-viewer/issues"
+            href="https://github.com/jessienyan/booruview/issues"
             target="_blank"
             >Github issue tracker</a
         >
         or send me an
-        <a href="mailto:2302541+Kangaroux@users.noreply.github.com">email</a>.
+        <a href="mailto:216619670+jessienyan@users.noreply.github.com">email</a>.
     </p>
     <p class="version">last commit {{ COMMIT_SHA }} @ {{ LAST_COMMIT_DATE }}</p>
 </template>

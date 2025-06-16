@@ -1,4 +1,4 @@
-module github.com/kangaroux/booru-viewer
+module github.com/jessienyan/booruview
 
 go 1.24.0
 

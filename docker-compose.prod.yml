@@ -1,6 +1,6 @@
 services:
   api:
-    image: ghcr.io/kangaroux/booruview-api:latest
+    image: ghcr.io/jessienyan/booruview-api:latest
     restart: unless-stopped
     environment:
       - "VALKEY_ADDR=db:6379"
@@ -16,7 +16,7 @@ services:
         loki-url: http://localhost:3100/loki/api/v1/push
 
   caddy:
-    image: ghcr.io/kangaroux/booruview-caddy:latest
+    image: ghcr.io/jessienyan/booruview-caddy:latest
     restart: unless-stopped
     ports:
       - "80:80"
@@ -29,7 +29,7 @@ services:
       - ./caddy.log:/var/log/caddy.log
 
   db:
-    image: ghcr.io/kangaroux/booruview-valkey:latest
+    image: ghcr.io/jessienyan/booruview-valkey:latest
     restart: unless-stopped
     volumes:
       - valkey-data:/data

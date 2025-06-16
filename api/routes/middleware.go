@@ -6,7 +6,7 @@ import (
 	"runtime/debug"
 	"strings"
 
-	api "github.com/kangaroux/booru-viewer"
+	api "github.com/jessienyan/booruview"
 )
 
 // Gracefully recover from a panic

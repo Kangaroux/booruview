@@ -8,8 +8,8 @@ import (
 	"strings"
 	"unicode"
 
-	api "github.com/kangaroux/booru-viewer"
-	"github.com/kangaroux/booru-viewer/gelbooru"
+	api "github.com/jessienyan/booruview"
+	"github.com/jessienyan/booruview/gelbooru"
 	"github.com/valkey-io/valkey-go"
 )
 

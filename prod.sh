@@ -2,7 +2,7 @@
 
 set -e
 cd ${0%/*}
-PREFIX=ghcr.io/kangaroux
+PREFIX=ghcr.io/jessienyan
 COMMIT=$(git rev-parse --short master)
 DATE=$(git show -s --format=%cs master)
 TAG=$COMMIT-$DATE

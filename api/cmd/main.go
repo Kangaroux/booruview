@@ -8,8 +8,8 @@ import (
 	"os/signal"
 	"time"
 
-	api "github.com/kangaroux/booru-viewer"
-	"github.com/kangaroux/booru-viewer/routes"
+	api "github.com/jessienyan/booruview"
+	"github.com/jessienyan/booruview/routes"
 )
 
 func main() {

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/url"
 
-	api "github.com/kangaroux/booru-viewer"
+	api "github.com/jessienyan/booruview"
 )
 
 func httpGet(theUrl string, params url.Values) (*http.Response, error) {

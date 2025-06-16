@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	api "github.com/kangaroux/booru-viewer"
+	api "github.com/jessienyan/booruview"
 )
 
 var (
