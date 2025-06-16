@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -16,6 +17,39 @@ import (
 var (
 	ApiUrl = "https://gelbooru.com/index.php"
 )
+
+type Client struct {
+	UserId string
+	ApiKey string
+}
+
+var DefaultClient Client
+
+func init() {
+	uid := os.Getenv("GELBOORU_USERID")
+	if uid == "" {
+		log.Println("warning: GELBOORU_USERID is not set (may be subject to rate limiting)")
+	}
+
+	apiKey := os.Getenv("GELBOORU_APIKEY")
+	if apiKey == "" {
+		log.Println("warning: GELBOORU_APIKEY is not set (may be subject to rate limiting)")
+	}
+
+	DefaultClient = Client{
+		UserId: uid,
+		ApiKey: apiKey,
+	}
+}
+
+func (client *Client) withAuth(params url.Values) {
+	if client.UserId == "" || client.ApiKey == "" {
+		return
+	}
+
+	params.Add("user_id", client.UserId)
+	params.Add("api_key", client.ApiKey)
+}
 
 type TagSearchResponse struct {
 	Type     string
@@ -59,11 +93,12 @@ func ParseTagNumericType(raw int) api.TagType {
 	return api.Unknown
 }
 
-func doApiTagSearch(query string) ([]api.TagResponse, error) {
+func (client *Client) doApiTagSearch(query string) ([]api.TagResponse, error) {
 	var resp []TagSearchResponse
 	params := url.Values{}
 	params.Add("page", "autocomplete2")
 	params.Add("term", query)
+	client.withAuth(params)
 
 	rawResp, err := httpGet(ApiUrl, params)
 	if err != nil {
@@ -102,11 +137,11 @@ func doApiTagSearch(query string) ([]api.TagResponse, error) {
 	return tags, nil
 }
 
-func SearchTags(query string) ([]api.TagResponse, error) {
+func (client *Client) SearchTags(query string) ([]api.TagResponse, error) {
 	isFilter, suggestions := SuggestedSearchFilters(query)
 
 	if !isFilter {
-		return doApiTagSearch(query)
+		return client.doApiTagSearch(query)
 	}
 
 	tags := make([]api.TagResponse, 0, len(suggestions))
@@ -166,7 +201,7 @@ var (
 	postLimitStr = strconv.Itoa(PostsPerPage)
 )
 
-func ListPosts(tags string, page int) (*PostList, error) {
+func (client *Client) ListPosts(tags string, page int) (*PostList, error) {
 	params := url.Values{}
 	params.Add("page", "dapi")
 	params.Add("s", "post")
@@ -175,6 +210,7 @@ func ListPosts(tags string, page int) (*PostList, error) {
 	params.Add("limit", postLimitStr)
 	params.Add("tags", tags)
 	params.Add("pid", strconv.Itoa(page-1)) // Pages are 0-indexed
+	client.withAuth(params)
 
 	rawResp, err := httpGet(ApiUrl, params)
 	if err != nil {
@@ -250,13 +286,14 @@ type FullTagInfoResponse struct {
 
 // ListTags returns a list of info found on the given tags (e.g. count, type).
 // tags should be one or more tags separated by a space.
-func ListTags(tags string) ([]api.TagResponse, error) {
+func (client *Client) ListTags(tags string) ([]api.TagResponse, error) {
 	params := url.Values{}
 	params.Add("page", "dapi")
 	params.Add("s", "tag")
 	params.Add("q", "index")
 	params.Add("json", "1")
 	params.Add("names", tags)
+	client.withAuth(params)
 
 	rawResp, err := httpGet(ApiUrl, params)
 	if err != nil {

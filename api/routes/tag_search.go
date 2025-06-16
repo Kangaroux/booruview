@@ -44,7 +44,7 @@ func TagSearchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	results, err := gelbooru.SearchTags(query)
+	results, err := gelbooru.DefaultClient.SearchTags(query)
 	if err != nil {
 		handleError(w, err)
 		return

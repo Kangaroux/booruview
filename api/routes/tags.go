@@ -74,7 +74,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request) {
 
 	var tags []api.TagResponse
 	if len(missing) > 0 {
-		tags, err = gelbooru.ListTags(strings.Join(missing, " "))
+		tags, err = gelbooru.DefaultClient.ListTags(strings.Join(missing, " "))
 		if err != nil {
 			handleError(w, err)
 			return

@@ -58,7 +58,7 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	results, err := gelbooru.ListPosts(query, page)
+	results, err := gelbooru.DefaultClient.ListPosts(query, page)
 	if err != nil {
 		handleError(w, err)
 		return

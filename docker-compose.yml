@@ -11,6 +11,8 @@ services:
       - "12345:12345"
     environment:
       - "VALKEY_ADDR=db:6379"
+    env_file:
+      - ".env"
     volumes:
       - ./api:/app
 
