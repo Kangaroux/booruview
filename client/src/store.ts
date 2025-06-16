@@ -24,6 +24,8 @@ type Store = {
     hasSearched: boolean;
     fetchingPosts: boolean;
 
+    toastError: string;
+
     tagMenu: {
         tag: Tag;
         ref: HTMLElement | null;
@@ -75,6 +77,8 @@ const store = reactive<Store>({
     resultsPerPage: 0,
     hasSearched: false,
     fetchingPosts: false,
+
+    toastError: "",
 
     tagMenu: null,
 
@@ -170,7 +174,7 @@ const store = reactive<Store>({
             this.setQueryParams();
 
             // Don't refetch posts we already have
-            if(this.posts.has(this.currentPage)) {
+            if (this.posts.has(this.currentPage)) {
                 this.fetchingPosts = false;
                 resolve();
                 return;
@@ -178,19 +182,41 @@ const store = reactive<Store>({
 
             fetch("/api/posts?" + query)
                 .then((resp) => {
+                    if (resp.status >= 400) {
+                        resp.json()
+                            .then((val) => {
+                                if ("error" in val) {
+                                    store.toastError = val["error"];
+                                } else {
+                                    store.toastError = "Something went wrong";
+                                }
+
+                                reject();
+                            })
+                            .catch(() => {
+                                store.toastError = "Something went wrong";
+                                reject();
+                            })
+                            .finally(() => (store.hasSearched = true));
+                        return;
+                    }
+
                     resp.json().then((json: PostListResponse) => {
                         this.posts.set(this.currentPage, json.results);
                         this.resultsPerPage = json.count_per_page;
                         this.totalPostCount = json.total_count;
-                        this.hasSearched = true;
                         resolve();
                     });
                 })
                 .catch((err) => {
                     console.error(err);
+                    store.toastError = "Something went wrong";
                     reject(err);
                 })
-                .finally(() => (this.fetchingPosts = false));
+                .finally(() => {
+                    this.fetchingPosts = false;
+                    store.hasSearched = true;
+                });
         });
     },
 
@@ -258,7 +284,7 @@ const store = reactive<Store>({
         }
 
         this.currentPage++;
-        return this.searchPosts();
+        return this.searchPosts().catch(() => {});
     },
 
     prevPage(): Promise<void> | null {
@@ -267,7 +293,7 @@ const store = reactive<Store>({
         }
 
         this.currentPage--;
-        return this.searchPosts();
+        return this.searchPosts().catch(() => {});
     },
 });
 

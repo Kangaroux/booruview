@@ -9,6 +9,7 @@ import ContentWarning from "./components/ContentWarning.vue";
 import Footer from "./components/Footer.vue";
 import NoResults from "./components/NoResults.vue";
 import ChipMenu from "./components/tag-chip/ChipMenu.vue";
+import Toast from "./components/Toast.vue";
 
 const mainContainer = useTemplateRef("main");
 
@@ -50,6 +51,12 @@ const hasConsented = computed(() => {
             'sidebar-open': !store.sidebarClosed,
         }"
     >
+        <Toast
+            v-if="store.toastError.length > 0"
+            kind="danger"
+            @dismiss="store.toastError = ''"
+            >{{ store.toastError }}</Toast
+        >
         <ChipMenu v-if="store.tagMenu !== null" />
         <ContentWarning v-if="!hasConsented" />
 
