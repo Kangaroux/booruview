@@ -105,6 +105,10 @@ func (client *Client) doApiTagSearch(query string) ([]api.TagResponse, error) {
 		return nil, err
 	}
 
+	if rawResp.StatusCode != 200 {
+		return nil, GelbooruError{Code: rawResp.StatusCode}
+	}
+
 	body, err := io.ReadAll(rawResp.Body)
 	if err != nil {
 		return nil, err
@@ -217,6 +221,10 @@ func (client *Client) ListPosts(tags string, page int) (*PostList, error) {
 		return nil, err
 	}
 
+	if rawResp.StatusCode != 200 {
+		return nil, GelbooruError{Code: rawResp.StatusCode}
+	}
+
 	body, err := io.ReadAll(rawResp.Body)
 	if err != nil {
 		return nil, err
@@ -298,6 +306,10 @@ func (client *Client) ListTags(tags string) ([]api.TagResponse, error) {
 	rawResp, err := httpGet(ApiUrl, params)
 	if err != nil {
 		return nil, err
+	}
+
+	if rawResp.StatusCode != 200 {
+		return nil, GelbooruError{Code: rawResp.StatusCode}
 	}
 
 	body, err := io.ReadAll(rawResp.Body)

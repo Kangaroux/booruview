@@ -60,6 +60,11 @@ func PostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	results, err := gelbooru.DefaultClient.ListPosts(query, page)
 	if err != nil {
+		if _, ok := err.(gelbooru.GelbooruError); ok {
+			handle400Error(w, "Gelbooru is not available right now")
+			return
+		}
+
 		handleError(w, err)
 		return
 	}
