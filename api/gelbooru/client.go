@@ -1,9 +1,7 @@
 package gelbooru
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/url"
 	"os"
 	"strconv"
@@ -101,23 +99,8 @@ func (client *Client) doApiTagSearch(query string) ([]api.TagResponse, error) {
 	params.Add("term", query)
 	client.withAuth(params)
 
-	rawResp, err := httpGet(ApiUrl, params)
-	if err != nil {
+	if err := httpGetJson(params, &resp); err != nil {
 		return nil, err
-	}
-
-	if rawResp.StatusCode != 200 {
-		return nil, GelbooruError{Code: rawResp.StatusCode}
-	}
-
-	body, err := io.ReadAll(rawResp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := json.Unmarshal(body, &resp); err != nil {
-		log.Warn().Str("body", string(body)).Msg("failed to parse json")
-		return nil, GelbooruError{Code: 500}
 	}
 
 	tags := make([]api.TagResponse, 0, len(resp))
@@ -208,6 +191,7 @@ var (
 )
 
 func (client *Client) ListPosts(tags string, page int) (*PostList, error) {
+	var resp FullPostResponse
 	params := url.Values{}
 	params.Add("page", "dapi")
 	params.Add("s", "post")
@@ -218,26 +202,8 @@ func (client *Client) ListPosts(tags string, page int) (*PostList, error) {
 	params.Add("pid", strconv.Itoa(page-1)) // Pages are 0-indexed
 	client.withAuth(params)
 
-	rawResp, err := httpGet(ApiUrl, params)
-	if err != nil {
+	if err := httpGetJson(params, &resp); err != nil {
 		return nil, err
-	}
-
-	if rawResp.StatusCode != 200 {
-		return nil, GelbooruError{Code: rawResp.StatusCode}
-	}
-
-	body, err := io.ReadAll(rawResp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	resp := FullPostResponse{
-		Post: make([]PostResponse, 0, PostsPerPage),
-	}
-	if err := json.Unmarshal(body, &resp); err != nil {
-		log.Warn().Str("body", string(body)).Msg("failed to parse json")
-		return nil, GelbooruError{Code: 500}
 	}
 
 	posts := make([]api.PostResponse, 0, len(resp.Post))
@@ -298,6 +264,7 @@ type FullTagInfoResponse struct {
 // ListTags returns a list of info found on the given tags (e.g. count, type).
 // tags should be one or more tags separated by a space.
 func (client *Client) ListTags(tags string) ([]api.TagResponse, error) {
+	var resp FullTagInfoResponse
 	params := url.Values{}
 	params.Add("page", "dapi")
 	params.Add("s", "tag")
@@ -306,24 +273,8 @@ func (client *Client) ListTags(tags string) ([]api.TagResponse, error) {
 	params.Add("names", tags)
 	client.withAuth(params)
 
-	rawResp, err := httpGet(ApiUrl, params)
-	if err != nil {
+	if err := httpGetJson(params, &resp); err != nil {
 		return nil, err
-	}
-
-	if rawResp.StatusCode != 200 {
-		return nil, GelbooruError{Code: rawResp.StatusCode}
-	}
-
-	body, err := io.ReadAll(rawResp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	var resp FullTagInfoResponse
-	if err := json.Unmarshal(body, &resp); err != nil {
-		log.Warn().Str("body", string(body)).Msg("failed to parse json")
-		return nil, GelbooruError{Code: 500}
 	}
 
 	tagInfo := make([]api.TagResponse, resp.Attributes.Count)
