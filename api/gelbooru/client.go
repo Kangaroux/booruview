@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/url"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/rs/zerolog/log"
 
 	api "github.com/jessienyan/booruview"
 )
@@ -28,12 +29,12 @@ var DefaultClient Client
 func init() {
 	uid := os.Getenv("GELBOORU_USERID")
 	if uid == "" {
-		log.Println("warning: GELBOORU_USERID is not set (may be subject to rate limiting)")
+		log.Warn().Msg("GELBOORU_USERID is not set (may be subject to rate limiting)")
 	}
 
 	apiKey := os.Getenv("GELBOORU_APIKEY")
 	if apiKey == "" {
-		log.Println("warning: GELBOORU_APIKEY is not set (may be subject to rate limiting)")
+		log.Warn().Msg("GELBOORU_APIKEY is not set (may be subject to rate limiting)")
 	}
 
 	DefaultClient = Client{
@@ -115,7 +116,7 @@ func (client *Client) doApiTagSearch(query string) ([]api.TagResponse, error) {
 	}
 
 	if err := json.Unmarshal(body, &resp); err != nil {
-		log.Println("failed to parse json:", string(body))
+		log.Warn().Str("body", string(body)).Msg("failed to parse json")
 		return nil, GelbooruError{Code: 500}
 	}
 
@@ -235,7 +236,7 @@ func (client *Client) ListPosts(tags string, page int) (*PostList, error) {
 		Post: make([]PostResponse, 0, PostsPerPage),
 	}
 	if err := json.Unmarshal(body, &resp); err != nil {
-		log.Println("failed to parse json:", string(body))
+		log.Warn().Str("body", string(body)).Msg("failed to parse json")
 		return nil, GelbooruError{Code: 500}
 	}
 
@@ -264,7 +265,7 @@ func (client *Client) ListPosts(tags string, page int) (*PostList, error) {
 		if createdAt, err := time.Parse(time.RubyDate, p.CreatedAt); err == nil {
 			data.CreatedAtTimestamp = createdAt.Unix()
 		} else {
-			log.Println("warning: failed to parse post created_at:", err)
+			log.Warn().Str("val", p.CreatedAt).Err(err).Msg("failed to parse post created_at")
 		}
 
 		posts = append(posts, data)
@@ -321,7 +322,7 @@ func (client *Client) ListTags(tags string) ([]api.TagResponse, error) {
 
 	var resp FullTagInfoResponse
 	if err := json.Unmarshal(body, &resp); err != nil {
-		log.Println("failed to parse json:", string(body))
+		log.Warn().Str("body", string(body)).Msg("failed to parse json")
 		return nil, GelbooruError{Code: 500}
 	}
 

@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/rs/zerolog/log"
 
 	api "github.com/jessienyan/booruview"
 	"github.com/jessienyan/booruview/gelbooru"
@@ -148,7 +149,7 @@ func getCachedTags(query []string) ([]api.TagResponse, map[string]api.TagRespons
 
 		tag, err := tagFromCache(query[i], entry)
 		if err != nil {
-			log.Println("failed to parse tag from cache:", err)
+			log.Err(err).Msg("failed to parse tag from cache")
 			continue
 		}
 

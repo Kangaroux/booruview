@@ -2,8 +2,10 @@ package routes
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
+
+	api "github.com/jessienyan/booruview"
+	"github.com/rs/zerolog/log"
 )
 
 type badRequestResponse struct {
@@ -17,6 +19,7 @@ func handle400Error(w http.ResponseWriter, msg string) {
 }
 
 func handleError(w http.ResponseWriter, err error) {
-	log.Println(err)
+	log.Err(err).Stack().Msg("api error")
+	api.LogStackTrace()
 	w.WriteHeader(http.StatusInternalServerError)
 }

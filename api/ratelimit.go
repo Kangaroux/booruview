@@ -1,9 +1,10 @@
 package api
 
 import (
-	"log"
 	"sync"
 	"time"
+
+	"github.com/rs/zerolog/log"
 
 	"golang.org/x/time/rate"
 )
@@ -54,7 +55,7 @@ func evictKeys() {
 	}
 
 	if evictCount > 0 {
-		log.Println("[rate limit] evicted", evictCount, "old rate limit keys")
+		log.Info().Int("evicted", evictCount).Msg("evict old rate limit keys")
 	}
 }
 
@@ -71,33 +72,35 @@ func getLimiter(ip string) *limiter {
 	return lim
 }
 
-func isBanned(ip string) bool {
+func isBanned(ip string) (banned bool, unbannedAt *time.Time) {
 	banMutex.Lock()
 	defer banMutex.Unlock()
 
 	unbanTime, banned := bannedIps[ip]
 	if !banned {
-		return false
+		return false, nil
 	}
 
 	// Unban if it expired
 	if time.Now().After(unbanTime) {
 		delete(bannedIps, ip)
-		return false
+		return false, nil
 	}
 
-	return true
+	return true, &unbanTime
 }
 
 func ban(ip string) {
 	banMutex.Lock()
 	defer banMutex.Unlock()
 	bannedIps[ip] = time.Now().Add(banTime)
+
+	log.Warn().Str("ip", ip).Dur("until", banTime).Msg("client banned (too many requests)")
 }
 
 func IsRateLimited(ip string) bool {
-	if isBanned(ip) {
-		log.Println("[rate limit] blocked:", ip)
+	if banned, unbanAt := isBanned(ip); banned {
+		log.Warn().Str("ip", ip).Dur("banRemaining", time.Until(*unbanAt)).Msg("blocked client request (banned)")
 		return true
 	}
 
@@ -106,7 +109,6 @@ func IsRateLimited(ip string) bool {
 
 	if !lim.limiter.Allow() {
 		ban(ip)
-		log.Println("[rate limit] too many requests, banning:", ip)
 		return true
 	}
 

@@ -1,10 +1,11 @@
 package routes
 
 import (
-	"log"
+	"fmt"
 	"net/http"
-	"runtime/debug"
 	"strings"
+
+	"github.com/rs/zerolog/log"
 
 	api "github.com/jessienyan/booruview"
 )
@@ -14,8 +15,8 @@ func RecoverMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Println("recovered from panic:", err)
-				log.Println(string(debug.Stack()))
+				log.Err(fmt.Errorf("%v", err)).Msg("recovered from panic")
+				api.LogStackTrace()
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}()
