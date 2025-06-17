@@ -115,7 +115,8 @@ func (client *Client) doApiTagSearch(query string) ([]api.TagResponse, error) {
 	}
 
 	if err := json.Unmarshal(body, &resp); err != nil {
-		return nil, err
+		log.Println("failed to parse json:", string(body))
+		return nil, GelbooruError{Code: 500}
 	}
 
 	tags := make([]api.TagResponse, 0, len(resp))
@@ -234,7 +235,8 @@ func (client *Client) ListPosts(tags string, page int) (*PostList, error) {
 		Post: make([]PostResponse, 0, PostsPerPage),
 	}
 	if err := json.Unmarshal(body, &resp); err != nil {
-		return nil, err
+		log.Println("failed to parse json:", string(body))
+		return nil, GelbooruError{Code: 500}
 	}
 
 	posts := make([]api.PostResponse, 0, len(resp.Post))
@@ -319,7 +321,8 @@ func (client *Client) ListTags(tags string) ([]api.TagResponse, error) {
 
 	var resp FullTagInfoResponse
 	if err := json.Unmarshal(body, &resp); err != nil {
-		return nil, err
+		log.Println("failed to parse json:", string(body))
+		return nil, GelbooruError{Code: 500}
 	}
 
 	tagInfo := make([]api.TagResponse, resp.Attributes.Count)
